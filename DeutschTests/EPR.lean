@@ -1,0 +1,229 @@
+import Deutsch.EPR
+import Mathlib.Tactic.NormNum
+
+/-!
+# Focused EPR verification
+
+These tests pin the phase, chronology, descriptor signs, and route equivalence used by the
+two-qubit resource and the four-wire circuit.  The `pi/2` regression checks the corrected
+Equation (25) sign against the distinct expression printed in the source.
+-/
+
+namespace DeutschTests
+namespace EPRVerification
+
+open Deutsch Deutsch.Descriptor Deutsch.EPR Deutsch.Foundations Deutsch.Gates
+  Deutsch.Information Deutsch.Register
+open scoped Matrix
+
+noncomputable section
+
+/-! ## Pair preparation and Equation (22) -/
+
+theorem equation22_has_explicit_global_phase :
+    equation22Ket = (-Complex.I) • pairKet :=
+  equation22Ket_eq_globalPhase
+
+theorem equation22_library_ket_has_correct_relative_sign :
+    pairKet = invSqrtTwo •
+      (basisKet paperOneOne - basisKet paperZeroZero) :=
+  pairKet_eq
+
+theorem pair_and_time_boundaries_are_unitary (theta phi : ℝ) :
+    pairCircuit theta phi ∈ Matrix.unitaryGroup (Basis (Fin 2)) ℂ ∧
+      timeOneUnitary ∈ Matrix.unitaryGroup (Basis EPRQubit) ℂ ∧
+      timeTwoUnitary theta phi ∈ Matrix.unitaryGroup (Basis EPRQubit) ℂ ∧
+      timeThreeUnitary theta phi ∈ Matrix.unitaryGroup (Basis EPRQubit) ℂ ∧
+      timeFourUnitary theta phi ∈ Matrix.unitaryGroup (Basis EPRQubit) ℂ :=
+  ⟨pairCircuit_unitary theta phi, timeOneUnitary_unitary,
+    timeTwoUnitary_unitary theta phi, timeThreeUnitary_unitary theta phi,
+    timeFourUnitary_unitary theta phi⟩
+
+/-! ## Equations (23)--(25) -/
+
+theorem equation23_q2_descriptor_is_exact :
+    timeOneDescriptors q2 =
+      { x := xAt q2
+        y := -(yAt q2 * xAt q3)
+        z := -(zAt q2 * xAt q3) } :=
+  equation23_q2
+
+theorem equation23_q3_descriptor_is_exact :
+    timeOneDescriptors q3 =
+      { x := xAt q2 * zAt q3
+        y := -(xAt q2 * yAt q3)
+        z := xAt q3 } :=
+  equation23_q3
+
+theorem equation24_remote_descriptors_are_untouched (theta phi : ℝ) :
+    timeTwoDescriptors theta phi q1 = Descriptor.initial q1 ∧
+      timeTwoDescriptors theta phi q4 = Descriptor.initial q4 :=
+  ⟨equation24_q1 theta phi, equation24_q4 theta phi⟩
+
+theorem equation25_q2_uses_corrected_sine_signs (theta phi : ℝ) :
+    timeTwoDescriptors theta phi q2 =
+      { x := xAt q2
+        y := (theta.cos : ℂ) • (-(yAt q2 * xAt q3)) -
+          (theta.sin : ℂ) • (-(zAt q2 * xAt q3))
+        z := (theta.sin : ℂ) • (-(yAt q2 * xAt q3)) +
+          (theta.cos : ℂ) • (-(zAt q2 * xAt q3)) } :=
+  equation25_q2 theta phi
+
+theorem equation25_q3_uses_corrected_sine_signs (theta phi : ℝ) :
+    timeTwoDescriptors theta phi q3 =
+      { x := xAt q2 * zAt q3
+        y := (phi.cos : ℂ) • (-(xAt q2 * yAt q3)) -
+          (phi.sin : ℂ) • xAt q3
+        z := (phi.sin : ℂ) • (-(xAt q2 * yAt q3)) +
+          (phi.cos : ℂ) • xAt q3 } :=
+  equation25_q3 theta phi
+
+/-! ## Equation (27) coherent records -/
+
+theorem equation27_q1_record_is_factored_through_time_two (theta phi : ℝ) :
+    timeThreeDescriptors theta phi q1 =
+      { x := (timeTwoDescriptors theta phi q1).x
+        y := -((timeTwoDescriptors theta phi q1).y *
+          (timeTwoDescriptors theta phi q2).z)
+        z := -((timeTwoDescriptors theta phi q1).z *
+          (timeTwoDescriptors theta phi q2).z) } :=
+  equation27_q1 theta phi
+
+theorem equation27_q2_record_is_factored_through_time_two (theta phi : ℝ) :
+    timeThreeDescriptors theta phi q2 =
+      { x := (timeTwoDescriptors theta phi q1).x *
+          (timeTwoDescriptors theta phi q2).x
+        y := (timeTwoDescriptors theta phi q1).x *
+          (timeTwoDescriptors theta phi q2).y
+        z := (timeTwoDescriptors theta phi q2).z } :=
+  equation27_q2 theta phi
+
+theorem equation27_q3_record_is_factored_through_time_two (theta phi : ℝ) :
+    timeThreeDescriptors theta phi q3 =
+      { x := (timeTwoDescriptors theta phi q4).x *
+          (timeTwoDescriptors theta phi q3).x
+        y := (timeTwoDescriptors theta phi q4).x *
+          (timeTwoDescriptors theta phi q3).y
+        z := (timeTwoDescriptors theta phi q3).z } :=
+  equation27_q3 theta phi
+
+theorem equation27_q4_record_is_factored_through_time_two (theta phi : ℝ) :
+    timeThreeDescriptors theta phi q4 =
+      { x := (timeTwoDescriptors theta phi q4).x
+        y := -((timeTwoDescriptors theta phi q4).y *
+          (timeTwoDescriptors theta phi q3).z)
+        z := -((timeTwoDescriptors theta phi q4).z *
+          (timeTwoDescriptors theta phi q3).z) } :=
+  equation27_q4 theta phi
+
+/-! ## Equations (38)--(39) and the Equation (25) falsification oracle -/
+
+theorem equation38_has_explicit_global_phase (theta : ℝ) :
+    equation38Ket theta = (-Complex.I) • (pairPureState theta 0).ket :=
+  equation38Ket_eq_globalPhase_pairPureState theta
+
+theorem equation39_routes_prepare_the_same_ket (theta : ℝ) :
+    act (leftRotationRoute theta) (referenceKet (Fin 2)) =
+      act (rightRotationRoute theta) (referenceKet (Fin 2)) :=
+  equation39_route_kets_eq theta
+
+/-! ## Density statistics, source corrections, and provenance -/
+
+theorem both_pair_marginals_are_maximally_mixed (theta phi : ℝ) :
+    (pairDensity theta phi).reduce ({0} : Finset (Fin 2)) =
+        singletonMaximallyMixed 0 ∧
+      (pairDensity theta phi).reduce ({1} : Finset (Fin 2)) =
+        singletonMaximallyMixed 1 :=
+  ⟨pairDensity_reduce_singleton theta phi 0,
+    pairDensity_reduce_singleton theta phi 1⟩
+
+theorem every_singleton_effect_is_setting_independent (q : Fin 2) :
+    LocallyStatisticsIndependent ({q} : Finset (Fin 2))
+      (fun settings : ℝ × ℝ ↦ pairDensity settings.1 settings.2) :=
+  pairDensity_locallyStatisticsIndependent q
+
+theorem equation28_has_corrected_sine_square_probability (theta phi : ℝ) :
+    bornProbability (pairDensity theta phi) differentEffect =
+      Real.sin ((theta - phi) / 2) ^ 2 :=
+  pairDensity_different_probability theta phi
+
+theorem equation40_marginals_are_one_half (theta phi : ℝ) :
+    bornProbability (pairDensity theta phi) (paperOneMarginalEffect 0) = 1 / 2 ∧
+      bornProbability (pairDensity theta phi) (paperOneMarginalEffect 1) = 1 / 2 :=
+  ⟨pairDensity_left_paperOne_probability theta phi,
+    pairDensity_right_paperOne_probability theta phi⟩
+
+theorem equation41_has_corrected_cosine_square_probability (theta phi : ℝ) :
+    bornProbability (pairDensity theta phi) jointPaperOneEffect =
+      (1 / 2 : ℝ) * Real.cos ((theta - phi) / 2) ^ 2 :=
+  pairDensity_jointPaperOne_probability theta phi
+
+theorem equal_settings_expose_both_printed_probability_errors :
+    bornProbability (pairDensity 0 0) differentEffect = 0 ∧
+      bornProbability (pairDensity 0 0) jointPaperOneEffect = 1 / 2 ∧
+      bornProbability (pairDensity 0 0) differentEffect ≠
+        Real.cos (((0 : ℝ) - 0) / 2) ^ 2 ∧
+      bornProbability (pairDensity 0 0) jointPaperOneEffect ≠
+        (1 / 2 : ℝ) * Real.sin (((0 : ℝ) - 0) / 2) ^ 2 :=
+  ⟨pairDensity_different_equal_settings 0,
+    pairDensity_jointPaperOne_equal_settings 0,
+    equation28_printed_equal_angle_counterexample,
+    equation41_printed_equal_angle_counterexample⟩
+
+theorem pi_separated_settings_force_different_outcomes :
+    bornProbability (pairDensity Real.pi 0) differentEffect = 1 :=
+  pairDensity_different_pi_zero
+
+theorem source_resource_zz_correlation_is_nonproduct :
+    densityExpectation (pairDensity 0 0)
+        (zAt (0 : Fin 2) * zAt (1 : Fin 2)) ≠
+      densityExpectation (pairDensity 0 0) (zAt (0 : Fin 2)) *
+        densityExpectation (pairDensity 0 0) (zAt (1 : Fin 2)) :=
+  pairDensity_zero_resource_correlation
+
+theorem finite_setting_family_is_local_but_jointly_detectable :
+    LocallyStatisticsIndependent ({0} : Finset (Fin 2)) pairSettingFamily ∧
+      LocallyStatisticsIndependent ({1} : Finset (Fin 2)) pairSettingFamily ∧
+      StatisticallyDetectable pairSettingFamily :=
+  ⟨pairSettingFamily_locallyStatisticsIndependent 0,
+    pairSettingFamily_locallyStatisticsIndependent 1,
+    pairSettingFamily_statisticallyDetectable⟩
+
+theorem equation39_routes_have_equal_density_but_distinct_histories (theta : ℝ) :
+    leftRouteDensity theta = rightRouteDensity theta ∧
+      leftRoutePreparation.history theta ≠ rightRoutePreparation.history theta ∧
+      leftRoutePreparation.realize (leftRoutePreparation.history theta) =
+        rightRoutePreparation.realize (rightRoutePreparation.history theta) :=
+  ⟨equation39_route_densities_eq theta,
+    routePreparation_histories_distinct theta,
+    routePreparations_same_final_density theta⟩
+
+private def signWitnessInput : Basis EPRQubit := ![0, 0, 0, 0]
+
+private def signWitnessOutput : Basis EPRQubit := ![0, 0, 1, 0]
+
+/-- At `theta = pi/2`, corrected Equation (25) gives `+Z₂X₃`, not the printed `-Z₂X₃`. -/
+theorem equation25_printed_q2_y_sign_fails_at_pi_half :
+    (timeTwoDescriptors (Real.pi / 2) 0 q2).y ≠
+      -(zAt q2 * xAt q3) := by
+  rw [timeTwo_q2_y]
+  simp only [Real.cos_pi_div_two, Complex.ofReal_zero, zero_smul,
+    Real.sin_pi_div_two, Complex.ofReal_one, one_smul, zero_sub, neg_neg]
+  intro h
+  have hentry := congrFun (congrFun h signWitnessOutput) signWitnessInput
+  simp only [Matrix.neg_apply] at hentry
+  rw [show zAt q2 * xAt q3 =
+      embedQubit q2 pauliZ * embedQubit q3 pauliX by rfl,
+    embedQubit_mul_embedQubit_apply_of_ne q2_ne_q3] at hentry
+  have houtside : ∀ j : EPRQubit, j ≠ q2 → j ≠ q3 →
+      signWitnessOutput j = signWitnessInput j := by
+    intro j hj2 hj3
+    fin_cases j <;>
+      simp [q2, q3, signWitnessInput, signWitnessOutput] at hj2 hj3 ⊢
+  simp only [if_pos houtside] at hentry
+  simp [signWitnessInput, signWitnessOutput, q2, q3, pauliX, pauliZ] at hentry
+  norm_num at hentry
+
+end
+end EPRVerification
+end DeutschTests

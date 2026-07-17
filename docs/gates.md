@@ -1,0 +1,128 @@
+# Gates, Rotations, and Bell Chronology
+
+The public gate layer is [`Deutsch.Gates`](../Deutsch/Gates.lean), split into
+[one-qubit gates](../Deutsch/Gates/OneQubit.lean),
+[named-register CNOT](../Deutsch/Gates/CNOT.lean), and
+[Bell/inverse Bell](../Deutsch/Gates/Bell.lean). Focused positive and negative regressions are in
+[`DeutschTests.Gates`](../DeutschTests/Gates.lean). All gates use the bit, tensor, and Heisenberg
+directions fixed in [Global Conventions](conventions.md), and their global operators use the
+embeddings documented in [Finite Registers](registers.md).
+
+## Equality levels and one-qubit gates
+
+The API keeps four claims separate: exact matrix equality, exact action on basis vectors, equality
+up to a stated scalar phase, and equality of Heisenberg conjugations. A global phase is never
+silently discarded from a matrix theorem.
+
+`notGate` is definitionally the existing Pauli `X`. Its two paper-labelled basis actions, complete
+matrix-entry formula, involution, unitarity, and all three Pauli conjugations establish equations
+(9)--(13). For a current valid descriptor `d`, `descriptorNot d = d.x`; the generic theorem
+`descriptorNot_evolve` proves the complete `(X,Y,Z) -> (X,-Y,-Z)` map without assuming that `d`
+is initial.
+
+`paperSqrtNot` deliberately selects the valid square-root branch printed in equation (14):
+
+```text
+(X,Y,Z) -> (X,Z,-Y),       paperSqrtNot * paperSqrtNot = X.
+```
+
+Its exact basis amplitudes and unitarity are proved independently. This is not the positive-angle
+`rotationX (pi/2)` gate; the two have different Heisenberg actions, not merely different global
+phases. Applying the paper branch twice agrees with NOT on every one-qubit observable.
+
+`hadamard` is the usual real matrix `(X+Z)/sqrt 2`. It is Hermitian, involutive, unitary, and sends
+`(X,Y,Z)` to `(Z,-Y,X)`. `diagonalPiRotation = -i H` records the exact scalar relation to a `pi`
+rotation about the axis bisecting `X` and `Z`, while `diagonalPiRotation_heisenberg` proves that the
+phase cancels for every observable.
+
+## The corrected rotation signs
+
+The Schrödinger gate is defined in closed form as
+
+```text
+rotationX theta = cos(theta/2) I - i sin(theta/2) X.
+```
+
+It is proved unitary for every real angle and has exact basis-vector formulas. Under
+`heisenberg U A = U† A U`, symbolic calculation gives
+
+```text
+X -> X
+Y -> cos(theta) Y - sin(theta) Z
+Z -> sin(theta) Y + cos(theta) Z.
+```
+
+These signs follow from equation (17) and `XY=iZ`. Equation (18) prints both sine signs in the
+opposite direction. This is a source contradiction, not a convention choice: the public module
+proves the general corrected identities, checks angles `0`, `±pi/2`, and `pi`, and gives executable
+inequalities showing that both printed `pi/2` predictions are false. Equation (14) remains valid
+as the other square-root branch and is not itself classified as a contradiction.
+
+`rotationXAt`, `paperSqrtNotAt`, and `hadamardAt` place these gates at any named coordinate. Their
+unitarity, singleton support, and same-coordinate Pauli maps are public. The locality API can then
+prove that they fix every observable with disjoint support.
+
+## Named-register CNOT
+
+`cnotAt target control h` requires `h : target ≠ control`. Its ordered placement uses local
+coordinate `0` for the target and `1` for the control. Because paper bit `1` is raw matrix index
+`0`, the target flips exactly when the control is raw `0`. `cnotAt_apply` is the exact global
+permutation-matrix entry theorem, including equality outside the two selected labels, and
+`cnotAt_act_basisKet` proves its coherent action on every computational basis ket.
+
+The ambiguous local/global tensor notation in equation (15) is replaced by the typed equality
+
+```text
+cnotAt target control h =
+  paperBitZeroProjectorAt control +
+    xAt target * paperBitOneProjectorAt control.
+```
+
+Every term is already a global `Operator Q`. `cnotFromDescriptors` evaluates the same polynomial
+on current descriptor components. For every valid family and distinct labels, the descriptor gate
+is proved Hermitian, involutive, and unitary, and all six equation (16) transformations hold
+directly. It agrees with `cnotAt` on the initial family and commutes with every explicitly unitary
+shared descriptor evolution.
+
+The arbitrary-register equation (16) table is
+
+```text
+target:  X -> X              control: X -> X_target X_control
+         Y -> -Y Z_control            Y -> X_target Y_control
+         Z -> -Z Z_control            Z -> Z.
+```
+
+These are direct operator equalities. The target-side minus signs are consequences of the source's
+reversed bit convention. CNOT is Hermitian, involutive, unitary, and carries an explicit
+target/control-pair support witness. `IsSupportedOn` is an at-most support statement; no
+minimal-support claim is needed here. It is a coherent controlled unitary; measurement and
+discarded-record semantics belong to a later channel layer.
+
+## Bell and inverse Bell
+
+Fig. 1 is read with time upward. CNOT acts first and Hadamard then acts on the right/control wire,
+so matrix chronology is
+
+```text
+bellAt        = hadamardAt control * cnotAt target control h
+bellInverseAt = cnotAt target control h * hadamardAt control.
+```
+
+Both products are unitary and carry support witnesses on `{target, control}`; these witnesses do
+not assert minimal support. `bellAt_inverse_left` and
+`bellAt_inverse_right` prove both matrix composition orders. The module proves all six equation
+(20) and all six equation (21) generator transformations, then bundles each target and control
+triple as an exact evolved-descriptor equality.
+
+`bellAt_apply` and `bellInverseAt_apply` independently expose every global computational-basis
+transition amplitude, including the Hadamard coefficient and identity outside the selected pair.
+The tests use those entry formulas to prove that reversing Bell chronology changes the gate; the
+inverse laws therefore cannot pass merely because two definitions share the same order mistake.
+
+## Scope
+
+The gate layer establishes exact finite-matrix and finite-register statements. It does not call
+CNOT a measurement, prove the universality claim following equation (19), define density
+operators or channels, or infer operational information location from descriptor syntax. Those
+statistical and semantic obligations remain separate from these unitary identities and are handled
+where appropriate by [Density States, Channels, and Information Dependence](information.md).

@@ -1,0 +1,14 @@
+name = "deutsch"
+version = "0.1.0"
+defaultTargets = ["Deutsch", "DeutschTests"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "Deutsch"
+
+[[lean_lib]]
+name = "DeutschTests"
