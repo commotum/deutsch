@@ -11,3 +11,4 @@ wheels/
 
 # Lean/Lake build and dependency cache
 .lake/
+.DS_Store
