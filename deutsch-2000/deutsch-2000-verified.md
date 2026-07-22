@@ -352,7 +352,11 @@ $$
 
 In general, since the $\mathbf{cnot}$ gate together with gates of the type $\mathbf{R}_{\mathbf{n}}(\theta)$ constitute a universal set, the effect of any gate can be calculated by considering a computationally equivalent network containing only those gates, and then using (16) and (17).
 
-For example, the gate that performs the so-called Bell transformation on two qubits (Braunstein *et al.* (1992)) is equivalent to the network shown on the right of the equals sign in Fig. 1. (Gates other than $\mathbf{cnot}$ are represented by rectangles, the vertical lines represent the paths of qubits, and the arrows at the top indicate their direction of motion.) Since both $\mathbf{cnot}$ and $\mathbf{H}$ are their own inverses, the same network upside-down (*i.e.* with $\mathbf{H}$ preceding $\mathbf{cnot}$) performs the inverse of the Bell transformation. It follows that the effect of the $\mathbf{Bell}$ gate is
+For example, the gate that performs the so-called Bell transformation on two qubits (Braunstein *et al.* (1992)) is equivalent to the network shown on the right of the equals sign in Fig. 1. (Gates other than $\mathbf{cnot}$ are represented by rectangles, the vertical lines represent the paths of qubits, and the arrows at the top indicate their direction of motion.)
+
+![Fig. 1: The Bell Gate](images-verified/figure-1-bell-gate.png)
+
+Since both $\mathbf{cnot}$ and $\mathbf{H}$ are their own inverses, the same network upside-down (*i.e.* with $\mathbf{H}$ preceding $\mathbf{cnot}$) performs the inverse of the Bell transformation. It follows that the effect of the $\mathbf{Bell}$ gate is
 
 $$
 \text{‘}\mathbf{Bell}\text{’}:\qquad
@@ -410,3 +414,7 @@ $$
 
 
 ### 4. Information flow in Einstein-Podolski-Rosen experiments
+
+The quantum computational network for performing an Einstein–Podolski–Rosen (EPR) experiment is shown in Fig. 2. Since this is the archetypal experiment that has been thought to demonstrate the nonlocal nature of information in quantum physics, it is instructive to trace the paths that information takes during the course of such an experiment. In particular, we shall trace how quantum information about the value of an angle $\phi$, chosen arbitrarily in a region B, reaches a distant region A.
+
+![Fig. 2: An Einstein-Podolski-Rosen Experiment](images-verified/figure-2-epr-experiment.png)
