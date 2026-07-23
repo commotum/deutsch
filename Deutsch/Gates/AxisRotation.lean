@@ -118,7 +118,8 @@ theorem pauliVector_mul_pauliVector (u v : Vector3) :
       pauliX, pauliY, pauliZ, Matrix.mul_apply, Fin.sum_univ_succ,
       Matrix.one_apply] <;>
     ring_nf <;>
-    norm_num [Complex.I_sq]
+    norm_num [Complex.I_sq] <;>
+    simp [sub_eq_add_neg]
 
 /-- A unit-axis Pauli operator is an involution. -/
 theorem axisPauli_sq (n : UnitAxis) :
@@ -126,7 +127,7 @@ theorem axisPauli_sq (n : UnitAxis) :
   rw [axisPauli, pauliVector_mul_pauliVector]
   have hn : Vector3.dot n.1 n.1 = 1 := n.2
   have hcross : Vector3.cross n.1 n.1 = ⟨0, 0, 0⟩ := by
-    ext <;> simp [Vector3.cross]
+    ext <;> simp [Vector3.cross] <;> ring
   rw [hcross]
   simp [hn, pauliVector, identity₂]
 
@@ -194,20 +195,47 @@ private theorem exp_smul_involution (A : QubitMatrix)
   refine HasSum.tsum_eq ?_
   simp_rw [← expSeries_apply_eq]
   apply HasSum.even_add_odd
-  · exact ((Complex.hasSum_cosh z).smul_const identity₂).congr
-      (fun k => (expSeries_even_of_involution A hA z k).symm)
-  · exact ((Complex.hasSum_sinh z).smul_const A).congr
-      (fun k => (expSeries_odd_of_involution A hA z k).symm)
+  · rw [show (fun k => expSeries ℂ QubitMatrix (2 * k) (fun _ => z • A)) =
+        (fun k => (z ^ (2 * k) / (2 * k).factorial) • identity₂) by
+      funext k
+      exact expSeries_even_of_involution A hA z k]
+    exact (Complex.hasSum_cosh z).smul_const identity₂
+  · rw [show (fun k => expSeries ℂ QubitMatrix (2 * k + 1) (fun _ => z • A)) =
+        (fun k => (z ^ (2 * k + 1) / (2 * k + 1).factorial) • A) by
+      funext k
+      exact expSeries_odd_of_involution A hA z k]
+    exact (Complex.hasSum_sinh z).smul_const A
 
 /-- The closed rotation is the actual matrix exponential of its generator. -/
 theorem exp_axisRotationGenerator (n : UnitAxis) (theta : ℝ) :
     exp (axisRotationGenerator n theta) = axisRotation n theta := by
   rw [axisRotationGenerator, exp_smul_involution (axisPauli n) (axisPauli_sq n)]
   unfold axisRotation
-  rw [show (-Complex.I * (theta / 2 : ℂ)) =
-      (-(theta / 2 : ℂ)) * Complex.I by ring]
-  simp only [Complex.cosh_mul_I, Complex.sinh_mul_I, Complex.cos_neg,
-    Complex.sin_neg, neg_mul, Complex.ofReal_cos, Complex.ofReal_sin]
+  have hcosh :
+      Complex.cosh (-Complex.I * (theta / 2 : ℂ)) =
+        (Real.cos (theta / 2) : ℂ) := by
+    calc
+      Complex.cosh (-Complex.I * (theta / 2 : ℂ)) =
+          Complex.cosh ((-(theta / 2 : ℂ)) * Complex.I) := by congr 1 <;> ring
+      _ = Complex.cos (-(theta / 2 : ℂ)) := Complex.cosh_mul_I _
+      _ = Complex.cos (theta / 2 : ℂ) := Complex.cos_neg _
+      _ = (Real.cos (theta / 2) : ℂ) := by
+        simpa using (Complex.ofReal_cos (theta / 2)).symm
+  have hsinh :
+      Complex.sinh (-Complex.I * (theta / 2 : ℂ)) =
+        -(Complex.I * (Real.sin (theta / 2) : ℂ)) := by
+    calc
+      Complex.sinh (-Complex.I * (theta / 2 : ℂ)) =
+          Complex.sinh ((-(theta / 2 : ℂ)) * Complex.I) := by congr 1 <;> ring
+      _ = Complex.sin (-(theta / 2 : ℂ)) * Complex.I := Complex.sinh_mul_I _
+      _ = -(Complex.sin (theta / 2 : ℂ)) * Complex.I := by rw [Complex.sin_neg]
+      _ = -(Complex.I * (Real.sin (theta / 2) : ℂ)) := by
+        have hsin : Complex.sin (theta / 2 : ℂ) =
+            (Real.sin (theta / 2) : ℂ) := by
+          simpa using (Complex.ofReal_sin (theta / 2)).symm
+        rw [hsin]
+        ring
+  rw [hcosh, hsinh]
   module
 
 /-- Exponential form with the positive sign used on the left of Heisenberg conjugation. -/
@@ -215,7 +243,9 @@ theorem exp_positive_axisGenerator (n : UnitAxis) (theta : ℝ) :
     exp ((Complex.I * (theta / 2 : ℂ)) • axisPauli n) =
       axisRotation n (-theta) := by
   rw [← exp_axisRotationGenerator n (-theta)]
-  congr 2
+  apply congrArg exp
+  unfold axisRotationGenerator
+  congr 1
   push_cast
   ring
 
@@ -223,15 +253,16 @@ private theorem axisRotationGenerator_conjTranspose (n : UnitAxis) (theta : ℝ)
     (axisRotationGenerator n theta)ᴴ = -axisRotationGenerator n theta := by
   unfold axisRotationGenerator
   rw [Matrix.conjTranspose_smul, axisPauli_isHermitian]
+  rw [← neg_smul]
   congr 1
-  simp only [map_mul, map_neg, starRingEnd_apply, Complex.star_def,
-    Complex.conj_I, Complex.conj_ofReal, neg_mul]
-  ring
+  apply Complex.ext <;> simp
 
 theorem axisRotation_isUnitary (n : UnitAxis) (theta : ℝ) :
     axisRotation n theta ∈ Matrix.unitaryGroup QubitIndex ℂ := by
   rw [← exp_axisRotationGenerator]
   rw [Matrix.mem_unitaryGroup_iff']
+  change (exp (axisRotationGenerator n theta))ᴴ *
+      exp (axisRotationGenerator n theta) = 1
   rw [← Matrix.exp_conjTranspose, axisRotationGenerator_conjTranspose]
   rw [← Matrix.exp_add_of_commute]
   · simp
@@ -241,8 +272,9 @@ theorem axisRotation_conjTranspose (n : UnitAxis) (theta : ℝ) :
     (axisRotation n theta)ᴴ = axisRotation n (-theta) := by
   rw [← exp_axisRotationGenerator, ← exp_axisRotationGenerator,
     ← Matrix.exp_conjTranspose, axisRotationGenerator_conjTranspose]
-  congr 2
+  apply congrArg exp
   unfold axisRotationGenerator
+  rw [← neg_smul]
   congr 1
   push_cast
   ring
@@ -264,27 +296,52 @@ theorem axisRotation_heisenberg_eq_exponential_conjugation
 theorem axisRotation_heisenberg (n : UnitAxis) (theta : ℝ) (v : Vector3) :
     Foundations.heisenberg (axisRotation n theta) (pauliVector v) =
       pauliVector (Vector3.heisenbergRotate n.1 theta v) := by
-  rw [Foundations.heisenberg, axisRotation_conjTranspose]
-  have hc : Real.cos theta =
-      Real.cos (theta / 2) * Real.cos (theta / 2) -
-        Real.sin (theta / 2) * Real.sin (theta / 2) := by
-    rw [show theta = theta / 2 + theta / 2 by ring, Real.cos_add]
+  set c : ℝ := Real.cos (theta / 2) with hc_def
+  set s : ℝ := Real.sin (theta / 2) with hs_def
+  set C : ℝ := Real.cos theta with hC_def
+  set S : ℝ := Real.sin theta with hS_def
+  have hc : C = c * c - s * s := by
+    rw [hC_def, hc_def, hs_def,
+      show theta = theta / 2 + theta / 2 by ring, Real.cos_add]
     ring
-  have hs : Real.sin theta =
-      2 * Real.sin (theta / 2) * Real.cos (theta / 2) := by
-    rw [show theta = theta / 2 + theta / 2 by ring, Real.sin_add]
+  have hs : S = 2 * s * c := by
+    rw [hS_def, hc_def, hs_def,
+      show theta = theta / 2 + theta / 2 by ring, Real.sin_add]
     ring
+  have hhalf : c * c + s * s = 1 := by
+    rw [hc_def, hs_def]
+    nlinarith [Real.sin_sq_add_cos_sq (theta / 2)]
+  have honeSubCos : 1 - (c * c - s * s) = 2 * s * s := by
+    nlinarith
+  have hpositive :
+      axisRotation n theta =
+        (c : ℂ) • identity₂ - (Complex.I * (s : ℂ)) • axisPauli n := by
+    rw [axisRotation, hc_def, hs_def]
+  have hnegative :
+      axisRotation n (-theta) =
+        (c : ℂ) • identity₂ + (Complex.I * (s : ℂ)) • axisPauli n := by
+    unfold axisRotation
+    rw [show -theta / 2 = -(theta / 2) by ring, Real.cos_neg, Real.sin_neg,
+      ← hc_def, ← hs_def]
+    module
   have hn := n.2
   simp [Vector3.normSq, Vector3.dot] at hn
+  have hn_x := congrArg (fun r : ℝ => s ^ 2 * v.x * r) hn
+  have hn_y := congrArg (fun r : ℝ => s ^ 2 * v.y * r) hn
+  have hn_z := congrArg (fun r : ℝ => s ^ 2 * v.z * r) hn
+  rw [Foundations.heisenberg, axisRotation_conjTranspose, hpositive, hnegative]
+  unfold Vector3.heisenbergRotate
+  rw [← hC_def, ← hS_def]
+  rw [hc, hs, honeSubCos]
   ext i j
   fin_cases i <;> fin_cases j <;>
     apply Complex.ext <;>
-    simp [axisRotation, axisPauli, pauliVector,
+    simp [axisPauli, pauliVector,
       Vector3.heisenbergRotate, Vector3.dot, Vector3.cross, identity₂,
       pauliX, pauliY, pauliZ, Matrix.mul_apply, Fin.sum_univ_succ,
       Matrix.one_apply] <;>
-    ring_nf at hc hs hn ⊢ <;>
-    nlinarith [Real.sin_sq_add_cos_sq (theta / 2)]
+    ring_nf at hn_x hn_y hn_z ⊢ <;>
+    linarith
 
 @[simp]
 theorem axisRotation_xAxis (theta : ℝ) :
