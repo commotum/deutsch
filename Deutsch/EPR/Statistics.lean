@@ -390,7 +390,8 @@ private theorem differentEffect_op_eq_z_product :
     norm_num [differentEffect, parityEffect, twoQubitParity, zAt,
       pairBits, pauliZ, Fin.add_def, Matrix.one_apply]
 
-private theorem differentEffect_op_eq_basis_sum :
+/-- The different-outcome effect is the sum of the two unequal computational-basis effects. -/
+theorem differentEffect_op_eq_unequal_basis_sum :
     differentEffect.op =
       (basisEffect paperOneZero).op + (basisEffect paperZeroOne).op := by
   ext row column
@@ -421,7 +422,7 @@ theorem pairDensity_different_probability (theta phi : ℝ) :
     bornProbability (pairDensity theta phi) differentEffect =
       Real.sin ((theta - phi) / 2) ^ 2 := by
   simp only [bornProbability, bornWeight]
-  rw [differentEffect_op_eq_basis_sum, Matrix.mul_add, Matrix.trace_add,
+  rw [differentEffect_op_eq_unequal_basis_sum, Matrix.mul_add, Matrix.trace_add,
     Complex.add_re]
   change
     bornProbability (pairDensity theta phi) (basisEffect paperOneZero) +

@@ -616,6 +616,23 @@ private theorem fourWireTimeFour_comparison_amplitudes
     paperOneZero, paperZeroOne, pairBits, q1, q2, q3, q4,
     Fin.sum_univ_succ, Complex.add_re]
 
+/--
+Before evaluating either side trigonometrically, the final four-wire comparison probability is
+the sum of the two unequal outcomes of the independently constructed pair state.
+-/
+theorem fourWireTimeFour_comparison_probability_eq_unequal_pair_sum
+    (theta phi : ℝ) :
+    bornProbability (fourWireTimeFourDensity theta phi)
+        finalComparisonPaperOneEffect =
+      bornProbability (pairDensity theta phi) (basisEffect paperOneZero) +
+        bornProbability (pairDensity theta phi) (basisEffect paperZeroOne) := by
+  rw [fourWireTimeFour_comparison_amplitudes]
+  rw [← pureDensity_basisEffect_probability'
+      (pairPureState theta phi) paperOneZero,
+    ← pureDensity_basisEffect_probability'
+      (pairPureState theta phi) paperZeroOne]
+  rfl
+
 theorem fourWireTimeFour_comparison_probability (theta phi : ℝ) :
     bornProbability (fourWireTimeFourDensity theta phi)
         finalComparisonPaperOneEffect =
@@ -638,8 +655,10 @@ theorem fourWireTimeFour_comparison_probability_eq_pairDensity
     bornProbability (fourWireTimeFourDensity theta phi)
         finalComparisonPaperOneEffect =
       bornProbability (pairDensity theta phi) differentEffect := by
-  rw [fourWireTimeFour_comparison_probability,
-    pairDensity_different_probability]
+  rw [fourWireTimeFour_comparison_probability_eq_unequal_pair_sum]
+  simp only [bornProbability, bornWeight,
+    differentEffect_op_eq_unequal_basis_sum, Matrix.mul_add,
+    Matrix.trace_add, Complex.add_re]
 
 theorem fourWireTimeFour_comparison_equal_settings (theta : ℝ) :
     bornProbability (fourWireTimeFourDensity theta theta)

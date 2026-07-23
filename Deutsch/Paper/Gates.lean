@@ -20,8 +20,54 @@ variable {Q : Type*} [Fintype Q] [DecidableEq Q]
 
 /-! ## Transported computation-basis action -/
 
-/-- Equation (9): NOT exchanges the two computation-basis kets. -/
-theorem equation09 :
+/-- An initial computation ket transported to the Heisenberg frame selected by `W`. -/
+def computationKetInFrame
+    (W : QubitMatrix) (psi : QubitIndex → ℂ) : QubitIndex → ℂ :=
+  Wᴴ *ᵥ psi
+
+/-- The NOT gate written in that same Heisenberg frame. -/
+def notGateInFrame (W : QubitMatrix) : QubitMatrix :=
+  Foundations.heisenberg W notGate
+
+private theorem heisenbergGateAdjoint_mulVec_transport
+    (W G : QubitMatrix) (psi : QubitIndex → ℂ)
+    (hW : W ∈ Matrix.unitaryGroup QubitIndex ℂ) :
+    (Foundations.heisenberg W G)ᴴ *ᵥ (Wᴴ *ᵥ psi) =
+      Wᴴ *ᵥ (Gᴴ *ᵥ psi) := by
+  have hWW : W * Wᴴ = 1 := by
+    rw [← Matrix.star_eq_conjTranspose]
+    exact hW.2
+  have hAdjoint :
+      (Foundations.heisenberg W G)ᴴ = Wᴴ * Gᴴ * W := by
+    unfold Foundations.heisenberg
+    rw [Matrix.conjTranspose_mul, Matrix.conjTranspose_mul,
+      Matrix.conjTranspose_conjTranspose]
+    simp [Matrix.mul_assoc]
+  rw [hAdjoint, Matrix.mulVec_mulVec]
+  rw [show (Wᴴ * Gᴴ * W) * Wᴴ =
+      Wᴴ * Gᴴ * (W * Wᴴ) by simp [Matrix.mul_assoc]]
+  rw [hWW, Matrix.mul_one, ← Matrix.mulVec_mulVec]
+
+/-- Equation (9): the current-frame NOT adjoint exchanges the transported computation kets. -/
+theorem equation09
+    (W : QubitMatrix)
+    (hW : W ∈ Matrix.unitaryGroup QubitIndex ℂ) :
+    (notGateInFrame W)ᴴ *ᵥ computationKetInFrame W ketOne =
+        computationKetInFrame W ketZero ∧
+      (notGateInFrame W)ᴴ *ᵥ computationKetInFrame W ketZero =
+        computationKetInFrame W ketOne := by
+  constructor
+  · rw [notGateInFrame, computationKetInFrame,
+      heisenbergGateAdjoint_mulVec_transport W notGate ketOne hW,
+      pauliX_isHermitian, not_mulVec_ketOne]
+    rfl
+  · rw [notGateInFrame, computationKetInFrame,
+      heisenbergGateAdjoint_mulVec_transport W notGate ketZero hW,
+      pauliX_isHermitian, not_mulVec_ketZero]
+    rfl
+
+/-- Initial-frame specialization of Equation (9). -/
+theorem equation09_initial :
     notGate.mulVec ketOne = ketZero ∧
       notGate.mulVec ketZero = ketOne :=
   ⟨not_mulVec_ketOne, not_mulVec_ketZero⟩

@@ -24,12 +24,19 @@ independent two-wire calculation.
 theorem equation28 (theta phi : ℝ) :
     bornProbability (EPR.fourWireTimeFourDensity theta phi)
           EPR.finalComparisonPaperOneEffect =
-        Real.sin ((theta - phi) / 2) ^ 2 ∧
+        bornProbability (EPR.pairDensity theta phi)
+            (basisEffect EPR.paperOneZero) +
+          bornProbability (EPR.pairDensity theta phi)
+            (basisEffect EPR.paperZeroOne) ∧
       bornProbability (EPR.fourWireTimeFourDensity theta phi)
           EPR.finalComparisonPaperOneEffect =
-        bornProbability (EPR.pairDensity theta phi) EPR.differentEffect :=
-  ⟨EPR.fourWireTimeFour_comparison_probability theta phi,
-    EPR.fourWireTimeFour_comparison_probability_eq_pairDensity theta phi⟩
+        bornProbability (EPR.pairDensity theta phi) EPR.differentEffect ∧
+      bornProbability (EPR.fourWireTimeFourDensity theta phi)
+          EPR.finalComparisonPaperOneEffect =
+        Real.sin ((theta - phi) / 2) ^ 2 :=
+  ⟨EPR.fourWireTimeFour_comparison_probability_eq_unequal_pair_sum theta phi,
+    EPR.fourWireTimeFour_comparison_probability_eq_pairDensity theta phi,
+    EPR.fourWireTimeFour_comparison_probability theta phi⟩
 
 end
 end Paper
