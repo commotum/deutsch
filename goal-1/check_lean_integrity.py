@@ -27,6 +27,7 @@ REQUIRED_PUBLIC_ROOT_IMPORTS = (
     "Deutsch.Teleportation",
     "Deutsch.Decoherence",
     "Deutsch.Bell",
+    "Deutsch.Paper",
 )
 
 REQUIRED_PRODUCTION_IMPORT_CLOSURE = {
@@ -92,7 +93,48 @@ REQUIRED_PRODUCTION_IMPORT_CLOSURE = {
         "Deutsch.Bell.Finite",
         "Deutsch.Bell.Quantum",
         "Deutsch.Bell.Moments",
+        "Deutsch.Bell.AngleMoments",
         "Deutsch.Bell.Contradiction",
+    ),
+    "Deutsch/Bell/AngleMoments.lean": (
+        "Deutsch.Bell.Moments",
+    ),
+    "Deutsch/Paper.lean": (
+        "Deutsch.Paper.QuantumTheory",
+        "Deutsch.Paper.Gates",
+        "Deutsch.Paper.EPRExperiment",
+        "Deutsch.Paper.EPRComparison",
+        "Deutsch.Paper.Teleportation",
+        "Deutsch.Paper.LocallyInaccessible",
+        "Deutsch.Paper.Bell",
+    ),
+    "Deutsch/Paper/QuantumTheory.lean": (
+        "Deutsch.Descriptor.Basic",
+        "Deutsch.Information.State",
+        "Deutsch.Register.State",
+    ),
+    "Deutsch/Paper/Gates.lean": (
+        "Deutsch.Gates.Bell",
+        "Deutsch.Gates.AxisRotationRegister",
+        "Mathlib.Tactic.Module",
+    ),
+    "Deutsch/Paper/EPRExperiment.lean": (
+        "Deutsch.EPR.Circuit",
+        "Deutsch.EPR.Statistics",
+        "Deutsch.Information.Qubit",
+    ),
+    "Deutsch/Paper/EPRComparison.lean": (
+        "Deutsch.EPR.RecordStatistics",
+    ),
+    "Deutsch/Paper/Teleportation.lean": (
+        "Deutsch.Teleportation.Statistics",
+    ),
+    "Deutsch/Paper/LocallyInaccessible.lean": (
+        "Deutsch.EPR.Provenance",
+    ),
+    "Deutsch/Paper/Bell.lean": (
+        "Deutsch.Bell.AngleMoments",
+        "Deutsch.EPR.RecordStatistics",
     ),
 }
 
@@ -110,6 +152,7 @@ REQUIRED_TEST_ROOT_IMPORTS = (
     "DeutschTests.Gates",
     "DeutschTests.Information",
     "DeutschTests.Locality",
+    "DeutschTests.Paper",
     "DeutschTests.Register",
     "DeutschTests.Teleportation",
 )
@@ -122,6 +165,47 @@ REQUIRED_EXAMPLE_DECLARATIONS = (
     "one_time_pad_hides_secret_locally",
     "corrected_three_setting_quantum_probability",
     "corrected_quantum_table_refutes_normalized_local_model",
+)
+
+REQUIRED_PAPER_EQUATIONS = tuple(f"equation{index:02d}" for index in range(1, 47))
+
+REQUIRED_PAPER_CHECK_TARGETS = tuple(
+    f"Deutsch.Paper.{name}" for name in REQUIRED_PAPER_EQUATIONS
+)
+
+REQUIRED_PAPER_ORACLES = (
+    "equation09_uses_current_frame",
+    "equation17_uses_true_exp_and_transport",
+    "equation28_has_structural_fourWire_bridge",
+    "equation40_uses_literal_fourWire_records",
+    "equation41_uses_literal_fourWire_joint_record",
+    "equation43_requires_positive_support",
+    "equation44_is_all_real_angles",
+    "equation46_uses_direct_moment_chain",
+)
+
+REQUIRED_PAPER_PUBLIC_DECLARATIONS = {
+    "Deutsch/Paper/QuantumTheory.lean": tuple(
+        f"equation{index:02d}" for index in range(1, 9)
+    ),
+    "Deutsch/Paper/Gates.lean": tuple(
+        f"equation{index:02d}" for index in range(9, 22)
+    ),
+    "Deutsch/Paper/EPRExperiment.lean": tuple(
+        f"equation{index:02d}" for index in range(22, 28)
+    ),
+    "Deutsch/Paper/EPRComparison.lean": ("equation28",),
+    "Deutsch/Paper/Teleportation.lean": tuple(
+        f"equation{index:02d}" for index in range(29, 38)
+    ),
+    "Deutsch/Paper/LocallyInaccessible.lean": ("equation38", "equation39"),
+    "Deutsch/Paper/Bell.lean": tuple(
+        f"equation{index:02d}" for index in range(40, 47)
+    ),
+}
+
+REQUIRED_PAPER_AUDIT_TARGETS = tuple(
+    f"Deutsch.Paper.{name}" for name in REQUIRED_PAPER_EQUATIONS
 )
 
 REQUIRED_FILES = (
@@ -179,7 +263,16 @@ REQUIRED_FILES = (
     "Deutsch/Bell/Finite.lean",
     "Deutsch/Bell/Quantum.lean",
     "Deutsch/Bell/Moments.lean",
+    "Deutsch/Bell/AngleMoments.lean",
     "Deutsch/Bell/Contradiction.lean",
+    "Deutsch/Paper.lean",
+    "Deutsch/Paper/QuantumTheory.lean",
+    "Deutsch/Paper/Gates.lean",
+    "Deutsch/Paper/EPRExperiment.lean",
+    "Deutsch/Paper/EPRComparison.lean",
+    "Deutsch/Paper/Teleportation.lean",
+    "Deutsch/Paper/LocallyInaccessible.lean",
+    "Deutsch/Paper/Bell.lean",
     "DeutschTests.lean",
     "DeutschTests/Audit.lean",
     "DeutschTests/Foundations/Abstract.lean",
@@ -188,6 +281,7 @@ REQUIRED_FILES = (
     "DeutschTests/Gates.lean",
     "DeutschTests/Information.lean",
     "DeutschTests/Locality.lean",
+    "DeutschTests/Paper.lean",
     "DeutschTests/Descriptor.lean",
     "DeutschTests/Register.lean",
     "DeutschTests/EPR.lean",
@@ -798,6 +892,7 @@ REQUIRED_EPR_PUBLIC_DECLARATIONS = {
         "pairDensity_different_probability",
         "pairDensity_jointPaperOne_probability",
         "pairDensity_paperOne_marginal_probability",
+        "differentEffect_op_eq_unequal_basis_sum",
         "pairDensity_different_equal_settings",
         "pairDensity_jointPaperOne_equal_settings",
         "pairDensity_different_pi_zero",
@@ -826,6 +921,7 @@ REQUIRED_EPR_PUBLIC_DECLARATIONS = {
         "fourWireTimeThree_jointRecord_probability_eq_pairDensity",
         "fourWireTimeThree_jointRecord_probability",
         "fourWireTimeFourPureState_ket",
+        "fourWireTimeFour_comparison_probability_eq_unequal_pair_sum",
         "fourWireTimeFour_comparison_probability",
         "fourWireTimeFour_comparison_probability_eq_pairDensity",
         "fourWireTimeFour_comparison_equal_settings",
@@ -1150,6 +1246,12 @@ REQUIRED_BELL_PUBLIC_DECLARATIONS = {
         "no_local_assignments_reproduce_corrected_epr_three_settings",
         "corrected_epr_three_settings_refute_normalized_local_model",
         "no_normalized_local_model_reproduces_corrected_epr_three_settings",
+    ),
+    "Deutsch/Bell/AngleMoments.lean": (
+        "angleEquation42_mean_square_zero",
+        "angleEquation43_equal_on_positive_support",
+        "angleEquation44_alice_joint_moment",
+        "restrictRealAngleMomentsToThreeSettings",
     ),
 }
 

@@ -278,8 +278,138 @@ theorem equation35 (theta : ℝ) :
   rw [hprob]
   rfl
 
-/-- Equation (36): the receiver's three Pauli moments. -/
+private theorem timeFour_receiver_expectation
+    (theta : ℝ) (A : QubitMatrix) :
+    expectation (referenceKet TeleportQubit)
+        (heisenberg (timeFourUnitary theta) (embedQubit q5 A)) =
+      densityExpectation (parameterizedReceiverDensity theta)
+        (embedQubit receiverCoordinate A) := by
+  rw [← fixed_reference_prediction]
+  have hket :
+      act (timeFourUnitary theta) (referenceKet TeleportQubit) =
+        (teleportedPureState (inputAlpha theta) (inputBeta theta)
+          (inputAmplitudes_normalized theta)).ket := by
+    rw [timeFour_act_reference_factorizes]
+    exact (coherentProtocol_factorizes
+      (inputAlpha theta) (inputBeta theta)).symm
+  rw [hket, ← densityExpectation_pureDensity]
+  change
+    densityExpectation (parameterizedTeleportedDensity theta)
+        (embedQubit q5 A) =
+      densityExpectation (parameterizedReceiverDensity theta)
+        (embedQubit receiverCoordinate A)
+  rw [← embed_receiver_operator A]
+  unfold densityExpectation
+  rw [← partialTrace_trace_mul]
+  change
+    Matrix.trace
+        (((parameterizedTeleportedDensity theta).reduce
+            ({q5} : Finset TeleportQubit)).op *
+          embedQubit receiverCoordinate A) = _
+  rw [equation36_receiver_density]
+
+private theorem timeFour_bloch_vector (theta : ℝ) :
+    expectation (referenceKet TeleportQubit)
+          (timeFourDescriptors theta q5).x = 0 ∧
+      expectation (referenceKet TeleportQubit)
+          (timeFourDescriptors theta q5).y = (Real.sin theta : ℂ) ∧
+      expectation (referenceKet TeleportQubit)
+          (timeFourDescriptors theta q5).z = -(Real.cos theta : ℂ) := by
+  have h := equation36_receiver_bloch_vector theta
+  constructor
+  · change
+      expectation (referenceKet TeleportQubit)
+        (heisenberg (timeFourUnitary theta) (embedQubit q5 pauliX)) = 0
+    rw [timeFour_receiver_expectation]
+    exact h.1
+  constructor
+  · change
+      expectation (referenceKet TeleportQubit)
+        (heisenberg (timeFourUnitary theta) (embedQubit q5 pauliY)) = _
+    rw [timeFour_receiver_expectation]
+    exact h.2.1
+  · change
+      expectation (referenceKet TeleportQubit)
+        (heisenberg (timeFourUnitary theta) (embedQubit q5 pauliZ)) = _
+    rw [timeFour_receiver_expectation]
+    exact h.2.2
+
+@[simp] private theorem expectation_add
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    (psi : Ket Q) (A B : Operator Q) :
+    expectation psi (A + B) = expectation psi A + expectation psi B := by
+  simp [expectation, act, inner_add_right]
+
+@[simp] private theorem expectation_sub
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    (psi : Ket Q) (A B : Operator Q) :
+    expectation psi (A - B) = expectation psi A - expectation psi B := by
+  simp [expectation, act, inner_sub_right]
+
+@[simp] private theorem expectation_smul
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    (psi : Ket Q) (c : ℂ) (A : Operator Q) :
+    expectation psi (c • A) = c * expectation psi A := by
+  simp [expectation, act, inner_smul_right]
+
+private theorem referenceExpectation_xAt (q : TeleportQubit) :
+    expectation (referenceKet TeleportQubit) (xAt q) = 0 := by
+  rw [referenceKet, basisKet_expectation, xAt, embedQubit_apply_ite, if_pos]
+  · simp [paperZeroAssignment, pauliX]
+  · intro r hr
+    rfl
+
+private theorem referenceExpectation_yAt (q : TeleportQubit) :
+    expectation (referenceKet TeleportQubit) (yAt q) = 0 := by
+  rw [referenceKet, basisKet_expectation, yAt, embedQubit_apply_ite, if_pos]
+  · simp [paperZeroAssignment, pauliY]
+  · intro r hr
+    rfl
+
+private theorem referenceExpectation_zAt (q : TeleportQubit) :
+    expectation (referenceKet TeleportQubit) (zAt q) = -1 := by
+  rw [referenceKet, basisKet_expectation, zAt, embedQubit_apply_ite, if_pos]
+  · simp [paperZeroAssignment, pauliZ]
+  · intro r hr
+    rfl
+
+private theorem timeOne_bloch_vector (theta : ℝ) :
+    expectation (referenceKet TeleportQubit)
+          (timeOneDescriptors theta q1).x = 0 ∧
+      expectation (referenceKet TeleportQubit)
+          (timeOneDescriptors theta q1).y = (Real.sin theta : ℂ) ∧
+      expectation (referenceKet TeleportQubit)
+          (timeOneDescriptors theta q1).z = -(Real.cos theta : ℂ) := by
+  constructor
+  · rw [timeOne_q1_x, referenceExpectation_xAt]
+  constructor
+  · rw [timeOne_q1_y, expectation_sub, expectation_smul,
+      expectation_smul, referenceExpectation_yAt,
+      referenceExpectation_zAt]
+    ring
+  · rw [timeOne_q1_z, expectation_add, expectation_smul,
+      expectation_smul, referenceExpectation_yAt,
+      referenceExpectation_zAt]
+    ring
+
+/-- Equation (36): the source and receiver descriptors have the same displayed Bloch vector. -/
 theorem equation36 (theta : ℝ) :
+    (expectation (referenceKet TeleportQubit)
+          (timeOneDescriptors theta q1).x = 0 ∧
+      expectation (referenceKet TeleportQubit)
+          (timeOneDescriptors theta q1).y = (Real.sin theta : ℂ) ∧
+      expectation (referenceKet TeleportQubit)
+          (timeOneDescriptors theta q1).z = -(Real.cos theta : ℂ)) ∧
+    (expectation (referenceKet TeleportQubit)
+          (timeFourDescriptors theta q5).x = 0 ∧
+      expectation (referenceKet TeleportQubit)
+          (timeFourDescriptors theta q5).y = (Real.sin theta : ℂ) ∧
+      expectation (referenceKet TeleportQubit)
+          (timeFourDescriptors theta q5).z = -(Real.cos theta : ℂ)) :=
+  ⟨timeOne_bloch_vector theta, timeFour_bloch_vector theta⟩
+
+/-- Receiver-density form of Equation (36). -/
+theorem equation36_receiver (theta : ℝ) :
     densityExpectation (parameterizedReceiverDensity theta)
           (xAt receiverCoordinate) = 0 ∧
       densityExpectation (parameterizedReceiverDensity theta)
@@ -299,6 +429,47 @@ theorem equation37 (theta : ℝ) :
         ((theta.sin : ℂ) * theta.sin) •
           (zAt q1 * zAt q2 * zAt q3 * zAt q4 * zAt q5) :=
   Teleportation.timeFive_q5_z theta
+
+/-- The receiver paper-zero effect embedded on the initial five-wire register. -/
+private theorem receiverPaperZeroEffect_embedded_op :
+    (receiverPaperZeroEffect.embedSubsystem
+        ({q5} : Finset TeleportQubit)).op =
+      ((2 : ℂ)⁻¹) • (1 - zAt q5) := by
+  rw [Effect.embedSubsystem_op, receiverPaperZeroEffect_op,
+    embedSubsystem_smul, embedSubsystem_sub, embedSubsystem_one,
+    zAt, embed_receiver_operator]
+  rfl
+
+private theorem timeFive_paperZero_heisenberg (theta : ℝ) :
+    heisenberg (timeFiveUnitary theta)
+        (receiverPaperZeroEffect.embedSubsystem
+          ({q5} : Finset TeleportQubit)).op =
+      ((2 : ℂ)⁻¹) •
+        (1 - (timeFiveDescriptors theta q5).z) := by
+  rw [receiverPaperZeroEffect_embedded_op, heisenberg_smul,
+    heisenberg_sub,
+    heisenberg_one_of_unitary _ (timeFiveUnitary_unitary theta)]
+  rfl
+
+/-- The literal fixed-reference certainty display immediately following Equation (37). -/
+theorem equation37_fixed_reference_probability (theta : ℝ) :
+    ((2 : ℂ)⁻¹) *
+        expectation (referenceKet TeleportQubit)
+          (1 - (timeFiveDescriptors theta q5).z) = 1 := by
+  rw [← expectation_smul, ← timeFive_paperZero_heisenberg,
+    ← fixed_reference_prediction]
+  change
+    expectation (timeFiveReferenceOutputPureState theta).ket
+      (receiverPaperZeroEffect.embedSubsystem
+        ({q5} : Finset TeleportQubit)).op = 1
+  rw [← densityExpectation_pureDensity]
+  change
+    bornWeight (timeFiveReferenceOutputDensity theta)
+      (receiverPaperZeroEffect.embedSubsystem
+        ({q5} : Finset TeleportQubit)) = 1
+  rw [bornWeight_eq_probability,
+    timeFive_reference_output_paperZero_probability_one]
+  rfl
 
 /-- The unnumbered certainty check immediately following Equation (37). -/
 theorem equation37_probability (theta : ℝ) :

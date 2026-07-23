@@ -13,6 +13,7 @@ import DeutschTests.Information
 import Deutsch.Teleportation
 import Deutsch.Decoherence
 import Deutsch.Bell
+import Deutsch.Paper
 import DeutschTests.Teleportation
 
 /-!
@@ -353,6 +354,7 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.EPR.pairDensity_different_probability
 #print axioms Deutsch.EPR.pairDensity_jointPaperOne_probability
 #print axioms Deutsch.EPR.pairDensity_paperOne_marginal_probability
+#print axioms Deutsch.EPR.differentEffect_op_eq_unequal_basis_sum
 #print axioms Deutsch.EPR.pairDensity_different_equal_settings
 #print axioms Deutsch.EPR.pairDensity_jointPaperOne_equal_settings
 #print axioms Deutsch.EPR.pairDensity_different_pi_zero
@@ -381,6 +383,7 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.EPR.fourWireTimeThree_jointRecord_probability_eq_pairDensity
 #print axioms Deutsch.EPR.fourWireTimeThree_jointRecord_probability
 #print axioms Deutsch.EPR.fourWireTimeFourPureState_ket
+#print axioms Deutsch.EPR.fourWireTimeFour_comparison_probability_eq_unequal_pair_sum
 #print axioms Deutsch.EPR.fourWireTimeFour_comparison_probability
 #print axioms Deutsch.EPR.fourWireTimeFour_comparison_probability_eq_pairDensity
 #print axioms Deutsch.EPR.fourWireTimeFour_comparison_equal_settings
@@ -591,3 +594,58 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Bell.no_local_assignments_reproduce_corrected_epr_three_settings
 #print axioms Deutsch.Bell.corrected_epr_three_settings_refute_normalized_local_model
 #print axioms Deutsch.Bell.no_normalized_local_model_reproduces_corrected_epr_three_settings
+
+-- Arbitrary real-angle moments and their restriction to the three-setting direct chain.
+#print axioms Deutsch.Bell.angleEquation42_mean_square_zero
+#print axioms Deutsch.Bell.angleEquation43_equal_on_positive_support
+#print axioms Deutsch.Bell.angleEquation44_alice_joint_moment
+#print axioms Deutsch.Bell.restrictRealAngleMomentsToThreeSettings
+
+/-! ## Exact paper-equation façade -/
+
+#print axioms Deutsch.Paper.equation01
+#print axioms Deutsch.Paper.equation02
+#print axioms Deutsch.Paper.equation03
+#print axioms Deutsch.Paper.equation04
+#print axioms Deutsch.Paper.equation05
+#print axioms Deutsch.Paper.equation06
+#print axioms Deutsch.Paper.equation07
+#print axioms Deutsch.Paper.equation08
+#print axioms Deutsch.Paper.equation09
+#print axioms Deutsch.Paper.equation10
+#print axioms Deutsch.Paper.equation11
+#print axioms Deutsch.Paper.equation12
+#print axioms Deutsch.Paper.equation13
+#print axioms Deutsch.Paper.equation14
+#print axioms Deutsch.Paper.equation15
+#print axioms Deutsch.Paper.equation16
+#print axioms Deutsch.Paper.equation17
+#print axioms Deutsch.Paper.equation18
+#print axioms Deutsch.Paper.equation19
+#print axioms Deutsch.Paper.equation20
+#print axioms Deutsch.Paper.equation21
+#print axioms Deutsch.Paper.equation22
+#print axioms Deutsch.Paper.equation23
+#print axioms Deutsch.Paper.equation24
+#print axioms Deutsch.Paper.equation25
+#print axioms Deutsch.Paper.equation26
+#print axioms Deutsch.Paper.equation27
+#print axioms Deutsch.Paper.equation28
+#print axioms Deutsch.Paper.equation29
+#print axioms Deutsch.Paper.equation30
+#print axioms Deutsch.Paper.equation31
+#print axioms Deutsch.Paper.equation32
+#print axioms Deutsch.Paper.equation33
+#print axioms Deutsch.Paper.equation34
+#print axioms Deutsch.Paper.equation35
+#print axioms Deutsch.Paper.equation36
+#print axioms Deutsch.Paper.equation37
+#print axioms Deutsch.Paper.equation38
+#print axioms Deutsch.Paper.equation39
+#print axioms Deutsch.Paper.equation40
+#print axioms Deutsch.Paper.equation41
+#print axioms Deutsch.Paper.equation42
+#print axioms Deutsch.Paper.equation43
+#print axioms Deutsch.Paper.equation44
+#print axioms Deutsch.Paper.equation45
+#print axioms Deutsch.Paper.equation46

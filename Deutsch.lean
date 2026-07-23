@@ -8,6 +8,7 @@ import Deutsch.EPR
 import Deutsch.Teleportation
 import Deutsch.Decoherence
 import Deutsch.Bell
+import Deutsch.Paper
 
 /-!
 # Deutsch

@@ -11,6 +11,7 @@ import DeutschTests.Foundations.MatrixSemantics
 import DeutschTests.Gates
 import DeutschTests.Information
 import DeutschTests.Locality
+import DeutschTests.Paper
 import DeutschTests.Register
 import DeutschTests.Teleportation
 
