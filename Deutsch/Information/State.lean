@@ -316,6 +316,20 @@ def basisDensity (bits : Basis Q) : Density Q where
     classical
     simp
 
+/-- The density of a normalized computational-basis ket is its basis projector. -/
+theorem pureDensity_basisState (bits : Basis Q) :
+    pureDensity
+        ({ ket := basisKet bits
+           norm_eq_one := norm_basisKet bits } : PureState Q) =
+      basisDensity bits := by
+  apply Density.ext
+  ext i j
+  classical
+  simp only [pureDensity, densityOfVector, basisDensity, basisKet, basisVector,
+    Matrix.vecMulVec, Matrix.of_apply, Pi.star_apply, Matrix.diagonal_apply]
+  by_cases hi : i = bits <;> by_cases hj : j = bits <;>
+    subst_vars <;> simp_all [Pi.single, eq_comm]
+
 /-- A computational-basis density reads off the matching diagonal matrix entry. -/
 theorem basisDensity_expectation (bits : Basis Q) (A : Operator Q) :
     densityExpectation (basisDensity bits) A = A bits bits := by
@@ -415,6 +429,21 @@ theorem densityExpectation_evolve (rho : Density Q) (U A : Operator Q)
       simp only [Matrix.mul_assoc]
     _ = Matrix.trace (rho.op * (Uᴴ * A * U)) :=
       Matrix.trace_mul_comm (Uᴴ * A * U) rho.op
+
+/-- Evolving a pure-state density agrees exactly with evolving its underlying ket. -/
+theorem pureDensity_evolve (psi : PureState Q) (U : Operator Q)
+    (hU : U ∈ Matrix.unitaryGroup (Basis Q) ℂ) :
+    pureDensity (psi.evolve U hU) =
+      (pureDensity psi).evolve U hU := by
+  apply Density.ext
+  simp only [pureDensity, densityOfVector, PureState.evolve,
+    Density.evolve_op, Register.act, matrixEndEquiv_apply]
+  change Matrix.vecMulVec (U *ᵥ psi.ket.ofLp)
+      (star (U *ᵥ psi.ket.ofLp)) =
+    U * Matrix.vecMulVec psi.ket.ofLp (star psi.ket.ofLp) * Uᴴ
+  rw [Matrix.mul_vecMulVec, Matrix.vecMulVec_mul,
+    Matrix.vecMul_conjTranspose]
+  simp
 
 /-- Density-state purity `re (trace rho^2)`. -/
 def purity (rho : Density Q) : ℝ :=
