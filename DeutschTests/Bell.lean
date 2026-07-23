@@ -15,6 +15,102 @@ open scoped BigOperators
 
 noncomputable section
 
+/-! ## Direct finite-moment route -/
+
+theorem direct_equation42_mean_square
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice bob : Ω → Fin 3 → Bool)
+    (reproduces : ReproducesThreeSettingEPRMoments space alice bob)
+    (setting : Fin 3) :
+    space.expectation (fun sample =>
+      (aliceValue alice sample setting - bobValue bob sample setting) ^ 2) = 0 :=
+  equation42_mean_square_zero space alice bob reproduces setting
+
+theorem direct_equation43_positive_support
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice bob : Ω → Fin 3 → Bool)
+    (reproduces : ReproducesThreeSettingEPRMoments space alice bob)
+    {sample : Ω} (sample_positive : 0 < space.weight sample)
+    (setting : Fin 3) :
+    bob sample setting = alice sample setting :=
+  equation43_equal_on_positive_support
+    space alice bob reproduces sample_positive setting
+
+theorem direct_equation44_alice_joint_moment
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice bob : Ω → Fin 3 → Bool)
+    (reproduces : ReproducesThreeSettingEPRMoments space alice bob)
+    (setting₀ setting₁ : Fin 3) :
+    space.expectation (fun sample =>
+      aliceValue alice sample setting₀ * aliceValue alice sample setting₁) =
+        eprJointMoment setting₀ setting₁ :=
+  equation44_alice_joint_moment
+    space alice bob reproduces setting₀ setting₁
+
+theorem direct_equation45_true_complementary_partition
+    (a₀ a₁ a₂ : Bool) :
+    booleanIndicator a₀ =
+      booleanIndicator a₀ * disjunctionIndicator a₁ a₂ +
+        booleanIndicator a₀ * (1 - disjunctionIndicator a₁ a₂) :=
+  equation45_complementary_partition a₀ a₁ a₂
+
+theorem direct_equation46_all_displayed_comparisons
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice bob : Ω → Fin 3 → Bool)
+    (reproduces : ReproducesThreeSettingEPRMoments space alice bob) :
+    (1 / 2 : ℝ) = equation46PartitionedMean space alice ∧
+      equation46PartitionedMean space alice ≤ equation46ExpandedMean space alice ∧
+      equation46ExpandedMean space alice ≤
+        (3 / 8 : ℝ) - equation46TripleMean space alice ∧
+      (3 / 8 : ℝ) - equation46TripleMean space alice ≤ (3 / 8 : ℝ) :=
+  equation46_chain space alice bob reproduces
+
+theorem direct_equation46_reaches_the_impossible_bound
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice bob : Ω → Fin 3 → Bool)
+    (reproduces : ReproducesThreeSettingEPRMoments space alice bob) :
+    (1 / 2 : ℝ) ≤ (3 / 8 : ℝ) :=
+  equation46_impossible_bound space alice bob reproduces
+
+/-! ## The zero-weight boundary in Equation (43) -/
+
+/-- A two-sample space whose `true` sample has zero probability. -/
+def supportBoundaryWeight : FiniteProbabilityWeight Bool where
+  weight sample := if sample then 0 else 1
+  nonnegative := by
+    intro sample
+    cases sample <;> norm_num
+  normalized := by
+    norm_num
+
+/-- Alice returns zero at both samples. -/
+def supportBoundaryAlice (_sample : Bool) (_setting : Fin 3) : Bool :=
+  false
+
+/-- Bob differs from Alice only at the zero-weight sample. -/
+def supportBoundaryBob (sample : Bool) (_setting : Fin 3) : Bool :=
+  sample
+
+/--
+Zero mean square does not force equality at a zero-weight sample.  This is the concrete boundary
+behind the strict positive-support premise in Equation (43).
+-/
+theorem zero_weight_sample_can_disagree_despite_zero_mean_square
+    (setting : Fin 3) :
+    supportBoundaryWeight.weight true = 0 ∧
+      supportBoundaryWeight.expectation (fun sample =>
+        (aliceValue supportBoundaryAlice sample setting -
+          bobValue supportBoundaryBob sample setting) ^ 2) = 0 ∧
+      supportBoundaryBob true setting ≠ supportBoundaryAlice true setting := by
+  norm_num [supportBoundaryWeight, FiniteProbabilityWeight.expectation,
+    supportBoundaryAlice, supportBoundaryBob, aliceValue, bobValue,
+    booleanIndicator]
+
 /-! ## Printed source defect -/
 
 theorem equation45_printed_identity_is_false_at_the_recorded_counterexample :
@@ -137,6 +233,28 @@ theorem no_normalized_local_model_reproduces_the_corrected_epr_family
     ¬ ReproducesThreeSettingQuantumAgreements weight :=
   no_normalized_local_model_reproduces_corrected_epr_three_settings
     weight weight_nonnegative weight_normalized
+
+/-! ## Independent contradiction-route check -/
+
+/--
+The expectation-chain and pigeonhole routes each reject their own explicit reproduction contract.
+The first component invokes only the direct Equation (46) theorem; the second invokes the
+pre-existing deterministic-assignment theorem.
+-/
+theorem both_finite_bell_routes_reject_their_named_contracts
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice bob : Ω → Fin 3 → Bool)
+    (weight : LocalAssignment → ℝ)
+    (weight_nonnegative : ∀ assignment, 0 ≤ weight assignment)
+    (weight_normalized : ∑ assignment, weight assignment = 1) :
+    (¬ ReproducesThreeSettingEPRMoments space alice bob) ∧
+      (¬ ReproducesThreeSettingQuantumAgreements weight) := by
+  constructor
+  · intro reproduces
+    exact equation46_contradiction space alice bob reproduces
+  · exact no_normalized_local_model_reproduces_corrected_epr_three_settings
+      weight weight_nonnegative weight_normalized
 
 end
 end BellVerification

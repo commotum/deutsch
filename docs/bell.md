@@ -20,8 +20,8 @@ or a corrected argument.
 
 Equation (45) is independently false at `(a₀,a₁,a₂)=(1,0,1)`: its right side evaluates to
 `2`, not `1`. The source-regression API compiles that counterexample and verifies the corrected
-complementary-event partition on all eight Boolean triples. The production Bell inequality does
-not use either form of Equation (45).
+complementary-event partition on all eight Boolean triples. The agreement-counting proof below
+does not use Equation (45); the separate expectation proof uses the complementary partition.
 
 ## Finite deterministic model
 
@@ -70,6 +70,35 @@ The quantum special-angle proofs import the corrected EPR density/effect theorem
 hidden-variable definitions. Conversely, the finite inequality imports no quantum state API.
 `ReproducesThreeSettingQuantumAgreements` is the explicit bridge between those layers.
 
+## Direct Equations (42)--(46) expectation proof
+
+[`Deutsch.Bell.Moments`](../Deutsch/Bell/Moments.lean) formalizes the displayed source route
+independently of the agreement-counting theorem. `FiniteProbabilityWeight` supplies a nonnegative
+normalized weight on a finite sample type, and `ReproducesThreeSettingEPRMoments` states exactly
+the Equation (40) one-site means and Equation (41) joint paper-one moments for separate Alice and
+Bob response functions.
+
+The compiled chain is:
+
+| Display | Production result |
+| --- | --- |
+| (42) | `equation42_mean_square_zero` expands the Boolean square and evaluates its mean as zero. |
+| (43) | `equation43_equal_on_positive_support` derives equal responses only at samples of strictly positive weight. |
+| (44) | `equation44_alice_joint_moment` replaces Bob's response inside an expectation on that positive support. |
+| (45) | `equation45_complementary_partition` uses the actual complement of the Boolean disjunction. |
+| (46) | `equation46_chain` proves every displayed equality and inequality; `equation46_contradiction` derives the contradiction. |
+
+In the Equation (46) proof, the expanded mean is proved equal to
+
+```text
+3/8 - E[a(0) a(2π/3) a(4π/3)].
+```
+
+The triple product is pointwise nonnegative, so the chain ends at `1/2 ≤ 3/8`.
+`Deutsch.Bell.Moments` imports the three-setting trigonometric facts but imports neither
+`Deutsch.Bell.Finite` nor `Deutsch.Bell.Contradiction`; the direct expectation and pigeonhole
+arguments therefore remain independently checkable.
+
 ## What “locality” means here
 
 The Bell theorem's counterfactual locality assumption concerns simultaneous response tables whose
@@ -93,5 +122,6 @@ table. The theorem does not
 prove that a particular premise is uniquely responsible, select a single-outcome or many-worlds
 ontology, or turn matrix-valued descriptors into a philosophical conclusion.
 
-Import `Deutsch.Bell.Finite` for the classical inequality, `Deutsch.Bell.Quantum` for the corrected
-EPR probabilities, or `Deutsch.Bell` for the integrated contradiction.
+Import `Deutsch.Bell.Moments` for the displayed expectation chain, `Deutsch.Bell.Finite` for the
+agreement-counting inequality, `Deutsch.Bell.Quantum` for the EPR probabilities, or
+`Deutsch.Bell` for both integrated contradictions.

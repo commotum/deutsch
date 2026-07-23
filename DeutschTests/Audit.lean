@@ -542,6 +542,26 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Bell.threeSetting_sameOutcomeProbability_of_ne
 #print axioms Deutsch.Bell.threeSetting_sameOutcomeProbability_self
 
+-- Direct finite-expectation derivation of Equations (42)--(46).
+#print axioms Deutsch.Bell.disjunctionIndicator_eq
+#print axioms Deutsch.Bell.complementaryDisjunctionIndicator_eq
+#print axioms Deutsch.Bell.disjunction_complement_partition
+#print axioms Deutsch.Bell.equation42_mean_square_zero
+#print axioms Deutsch.Bell.equation43_equal_on_positive_support
+#print axioms Deutsch.Bell.equation44_alice_joint_moment
+#print axioms Deutsch.Bell.boolean_disjunction_complement_partition
+#print axioms Deutsch.Bell.equation45_complementary_partition
+#print axioms Deutsch.Bell.equation45_expectation_partition
+#print axioms Deutsch.Bell.equation46_first_equality
+#print axioms Deutsch.Bell.equation46_first_inequality
+#print axioms Deutsch.Bell.equation46_expanded_mean
+#print axioms Deutsch.Bell.equation46_second_inequality
+#print axioms Deutsch.Bell.equation46_triple_mean_nonnegative
+#print axioms Deutsch.Bell.equation46_third_inequality
+#print axioms Deutsch.Bell.equation46_chain
+#print axioms Deutsch.Bell.equation46_impossible_bound
+#print axioms Deutsch.Bell.equation46_contradiction
+
 -- Explicit quantum/classical bridge and strongest normalized-local-model contradiction.
 #print axioms Deutsch.Bell.reproducesThreeSettingQuantumAgreements_quarters
 #print axioms Deutsch.Bell.reproducesThreeSettingQuantumAgreements_equal_setting

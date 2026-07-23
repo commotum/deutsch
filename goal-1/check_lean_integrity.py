@@ -89,6 +89,7 @@ REQUIRED_PRODUCTION_IMPORT_CLOSURE = {
         "Deutsch.Bell.SourceCorrection",
         "Deutsch.Bell.Finite",
         "Deutsch.Bell.Quantum",
+        "Deutsch.Bell.Moments",
         "Deutsch.Bell.Contradiction",
     ),
 }
@@ -173,6 +174,7 @@ REQUIRED_FILES = (
     "Deutsch/Bell/SourceCorrection.lean",
     "Deutsch/Bell/Finite.lean",
     "Deutsch/Bell/Quantum.lean",
+    "Deutsch/Bell/Moments.lean",
     "Deutsch/Bell/Contradiction.lean",
     "DeutschTests.lean",
     "DeutschTests/Audit.lean",
@@ -1025,6 +1027,13 @@ REQUIRED_DECOHERENCE_AUDIT_TARGETS = tuple(
 )
 
 REQUIRED_BELL_ORACLES = (
+    "direct_equation42_mean_square",
+    "direct_equation43_positive_support",
+    "direct_equation44_alice_joint_moment",
+    "direct_equation45_true_complementary_partition",
+    "direct_equation46_all_displayed_comparisons",
+    "direct_equation46_reaches_the_impossible_bound",
+    "zero_weight_sample_can_disagree_despite_zero_mean_square",
     "equation45_printed_identity_is_false_at_the_recorded_counterexample",
     "equation45_corrected_partition_holds_for_every_assignment",
     "every_three_bit_assignment_has_an_agreeing_pair",
@@ -1040,6 +1049,7 @@ REQUIRED_BELL_ORACLES = (
     "no_explicit_local_model_reproduces_the_corrected_epr_family",
     "corrected_epr_probabilities_alone_refute_the_normalized_local_model",
     "no_normalized_local_model_reproduces_the_corrected_epr_family",
+    "both_finite_bell_routes_reject_their_named_contracts",
 )
 
 REQUIRED_BELL_PUBLIC_DECLARATIONS = {
@@ -1076,6 +1086,26 @@ REQUIRED_BELL_PUBLIC_DECLARATIONS = {
         "sameOutcomeProbability_settingOne_settingTwo",
         "threeSetting_sameOutcomeProbability_of_ne",
         "threeSetting_sameOutcomeProbability_self",
+    ),
+    "Deutsch/Bell/Moments.lean": (
+        "disjunctionIndicator_eq",
+        "complementaryDisjunctionIndicator_eq",
+        "disjunction_complement_partition",
+        "equation42_mean_square_zero",
+        "equation43_equal_on_positive_support",
+        "equation44_alice_joint_moment",
+        "boolean_disjunction_complement_partition",
+        "equation45_complementary_partition",
+        "equation45_expectation_partition",
+        "equation46_first_equality",
+        "equation46_first_inequality",
+        "equation46_expanded_mean",
+        "equation46_second_inequality",
+        "equation46_triple_mean_nonnegative",
+        "equation46_third_inequality",
+        "equation46_chain",
+        "equation46_impossible_bound",
+        "equation46_contradiction",
     ),
     "Deutsch/Bell/Contradiction.lean": (
         "reproducesThreeSettingQuantumAgreements_quarters",

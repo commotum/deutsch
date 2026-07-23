@@ -300,7 +300,7 @@ to the independent two-qubit pair calculations.
 
 #### Status
 
-In progress.
+Complete with recorded evidence in `goal-2/4-BELL-MOMENTS.md`.
 
 #### Big Picture Objective
 
@@ -331,6 +331,10 @@ retaining the independent pigeonhole proof.
 - Both Bell proofs compile and pass separate axiom reports.
 
 ### 5-EQUATIONS
+
+#### Status
+
+In progress.
 
 #### Big Picture Objective
 
