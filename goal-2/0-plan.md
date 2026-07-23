@@ -382,6 +382,10 @@ over reusable topical mathematics.
 
 ### 6-ERRATA
 
+#### Status
+
+In progress. See `goal-2/6-ERRATA.md`.
+
 #### Big Picture Objective
 
 Create a small, polite historical library that proves the printed defects are localized bookkeeping
