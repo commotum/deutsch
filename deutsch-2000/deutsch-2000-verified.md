@@ -751,7 +751,7 @@ Next we use $\mathbf{cnot}$ gates to perform perfect measurements on $\mathfrak{
 $$
 \left.
 \begin{aligned}
-\hat{\mathbf{q}}_1(3)
+\hat{\mathbf{q}}_2(3)
 &=
 \left(
 \hat{1}\otimes\hat{\sigma}_x\otimes\hat{1}^{\,3},
@@ -1193,24 +1193,43 @@ We wish to thank Artur Ekert for suggesting several simplifications and other im
 ### References
 
 Aspect, A., Dalibard, J., Roger, G. (1982) *Phys. Rev. Lett.* **49** 1804
-Barenco, A., Deutsch, D., Ekert, A. and Jozsa, R. (1995) *Phys. Rev. Lett.* **74** 20 4083-6
-Bell, J. S. (1964) *Physics* **1** 195-200
-Bennett, C.H. and Shor, P.W. (1998) *IEEE Transactions on Information Theory* **44** 6 2724-42
-Bennett, C.H., Brassard, G., Crépeau, C., Jozsa, R., Peres, A. and Wootters, W.K. (1993) *Phys. Rev. Lett.* **70** 1895-9
-Bennett, C.H., DiVincenzo, D.P., Fuchs, C.A., Mor, T., Rains, E., Shor, P.W., Smolin, J.A. and Wootters, W.K. (1998) preprint quant-ph/980453.
-Braunstein, S. L. (1996) *Phys. Rev.* **A53** 3 1900-2
-Braunstein, S. L., Mann, A. and Revzen, M. (1992) *Phys. Rev. Lett.* **68** 22 3259-61
-Deutsch, D. (1989) *Proc. R. Soc. Lond.* **A425** 73
-Deutsch, D. (1999) *Proc. R. Soc. Lond.* (to appear)
-Deutsch, D., Hayden, P. and Vedral, V. (1999) (in preparation)
-d’Espagnat, B. (1971) *Conceptual Foundations of Quantum Mechanics* W.A. Benjamin
-Einstein, A. (1949) quoted in in *Albert Einstein: Philosopher, Scientist*, P.A. Schilpp, Ed., Library of Living Philosophers, Evanston, $3^{\mathrm{rd}}$ edition (1970)
-Gottesman, D. (1998) preprint quant-ph/9807006.
-Jozsa, R. O. (1998) in *The Geometric Universe* (S. A. Huggett, L. J. Mason, K. P. Tod, S. T. Tsou & N. M. J. Woodhouse, eds), pp. 369-379. Oxford University Press.
-Mermin, D. (1985) *Physics Today* **38** 4 38-47
-Page, D.N. (1982) *Phys. Lett.* **91A** 2 57-60
-Penrose, R. (1998) *Phil. Trans. R. Soc. Lond.* **A356** 1743 1927-39
-Tipler, F.J. (1998) (submitted to *Phys. Rev. Lett.*)
-Williams, C.P. and Clearwater, S.H. (1998) *Explorations in Quantum Computing* Springer-Verlag New York
-Zurek, W. H. (1981) *Phys. Rev.* **D24** 1516-25
 
+Barenco, A., Deutsch, D., Ekert, A. and Jozsa, R. (1995) *Phys. Rev. Lett.* **74** 20 4083-6
+
+Bell, J. S. (1964) *Physics* **1** 195-200
+
+Bennett, C.H. and Shor, P.W. (1998) *IEEE Transactions on Information Theory* **44** 6 2724-42
+
+Bennett, C.H., Brassard, G., Crépeau, C., Jozsa, R., Peres, A. and Wootters, W.K. (1993) *Phys. Rev. Lett.* **70** 1895-9
+
+Bennett, C.H., DiVincenzo, D.P., Fuchs, C.A., Mor, T., Rains, E., Shor, P.W., Smolin, J.A. and Wootters, W.K. (1998) preprint quant-ph/980453.
+
+Braunstein, S. L. (1996) *Phys. Rev.* **A53** 3 1900-2
+
+Braunstein, S. L., Mann, A. and Revzen, M. (1992) *Phys. Rev. Lett.* **68** 22 3259-61
+
+Deutsch, D. (1989) *Proc. R. Soc. Lond.* **A425** 73
+
+Deutsch, D. (1999) *Proc. R. Soc. Lond.* (to appear)
+
+Deutsch, D., Hayden, P. and Vedral, V. (1999) (in preparation)
+
+d’Espagnat, B. (1971) *Conceptual Foundations of Quantum Mechanics* W.A. Benjamin
+
+Einstein, A. (1949) quoted in in *Albert Einstein: Philosopher, Scientist*, P.A. Schilpp, Ed., Library of Living Philosophers, Evanston, $3^{\mathrm{rd}}$ edition (1970)
+
+Gottesman, D. (1998) preprint quant-ph/9807006.
+
+Jozsa, R. O. (1998) in *The Geometric Universe* (S. A. Huggett, L. J. Mason, K. P. Tod, S. T. Tsou & N. M. J. Woodhouse, eds), pp. 369-379. Oxford University Press.
+
+Mermin, D. (1985) *Physics Today* **38** 4 38-47
+
+Page, D.N. (1982) *Phys. Lett.* **91A** 2 57-60
+
+Penrose, R. (1998) *Phil. Trans. R. Soc. Lond.* **A356** 1743 1927-39
+
+Tipler, F.J. (1998) (submitted to *Phys. Rev. Lett.*)
+
+Williams, C.P. and Clearwater, S.H. (1998) *Explorations in Quantum Computing* Springer-Verlag New York
+
+Zurek, W. H. (1981) *Phys. Rev.* **D24** 1516-25
