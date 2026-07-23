@@ -1,6 +1,4 @@
-import Deutsch.Gates.CNOT
-import Deutsch.Gates.Bell
-import Deutsch.Gates.OneQubit
+import Deutsch.Gates
 import Deutsch.Locality.Heisenberg
 import Mathlib.Tactic
 
@@ -70,6 +68,38 @@ theorem arbitrary_valid_descriptor_not_has_paper_map
     {d : Descriptor (Fin 2)} (hd : d.Valid) :
     d.evolve (descriptorNot d) = { x := d.x, y := -d.y, z := -d.z } :=
   descriptorNot_evolve hd
+
+/-! ## Arbitrary-axis rotations -/
+
+/-- A unit axis with two nonzero coordinates, used to keep these tests off the coordinate axes. -/
+def threeFourAxis : UnitAxis :=
+  ⟨⟨(3 : ℝ) / 5, (4 : ℝ) / 5, 0⟩, by
+    norm_num [Vector3.normSq, Vector3.dot]⟩
+
+theorem non_coordinate_axis_has_rodrigues_action (theta : ℝ) (v : Vector3) :
+    Foundations.heisenberg (axisRotation threeFourAxis theta) (pauliVector v) =
+      pauliVector (Vector3.heisenbergRotate threeFourAxis.1 theta v) :=
+  axisRotation_heisenberg threeFourAxis theta v
+
+theorem non_coordinate_axis_uses_matrix_exponential (theta : ℝ) :
+    NormedSpace.exp (axisRotationGenerator threeFourAxis theta) =
+      axisRotation threeFourAxis theta :=
+  exp_axisRotationGenerator threeFourAxis theta
+
+theorem non_coordinate_axis_rotation_is_unitary (theta : ℝ) :
+    axisRotation threeFourAxis theta ∈
+      Matrix.unitaryGroup QubitIndex ℂ :=
+  axisRotation_isUnitary threeFourAxis theta
+
+theorem arbitrary_axis_x_specialization_is_rotationX (theta : ℝ) :
+    axisRotation UnitAxis.xAxis theta = rotationX theta :=
+  axisRotation_xAxis theta
+
+theorem arbitrary_axis_x_pi_half_maps_y_to_negative_z :
+    Foundations.heisenberg
+        (axisRotation UnitAxis.xAxis (Real.pi / 2)) pauliY =
+      -pauliZ := by
+  rw [axisRotation_xAxis, rotationX_heisenberg_y_pi_div_two]
 
 /-! ## Named-register one-qubit locality -/
 

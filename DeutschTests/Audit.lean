@@ -156,6 +156,20 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Gates.rotationXAt_heisenberg_y
 #print axioms Deutsch.Gates.hadamardAt_heisenberg_z
 
+-- Arbitrary unit-axis Pauli rotations, genuine matrix exponential, and Rodrigues conjugation.
+#print axioms Deutsch.Gates.pauliVector_mul_pauliVector
+#print axioms Deutsch.Gates.axisPauli_sq
+#print axioms Deutsch.Gates.axisPauli_isHermitian
+#print axioms Deutsch.Gates.axisPauli_unitary
+#print axioms Deutsch.Gates.axisPauli_xAxis
+#print axioms Deutsch.Gates.exp_axisRotationGenerator
+#print axioms Deutsch.Gates.exp_positive_axisGenerator
+#print axioms Deutsch.Gates.axisRotation_isUnitary
+#print axioms Deutsch.Gates.axisRotation_conjTranspose
+#print axioms Deutsch.Gates.axisRotation_heisenberg_eq_exponential_conjugation
+#print axioms Deutsch.Gates.axisRotation_heisenberg
+#print axioms Deutsch.Gates.axisRotation_xAxis
+
 -- Static named-register and generic valid-descriptor CNOT.
 #print axioms Deutsch.Gates.cnotAt_apply
 #print axioms Deutsch.Gates.cnotAt_act_basisKet

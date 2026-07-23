@@ -158,42 +158,123 @@ private theorem equation27_q1_expanded (theta phi : ℝ) :
   rw [EPR.equation27_q1, EPR.equation24_q1, EPR.equation25_q2]
   apply Descriptor.ext_components <;> simp only
   · rfl
-  · simp only [Matrix.mul_add, Matrix.mul_smul, Matrix.smul_mul,
-      Matrix.mul_neg, Matrix.neg_mul, neg_neg]
-    trace_state
+  · simp only [Descriptor.initial, Matrix.mul_add, Matrix.mul_smul,
+      Matrix.mul_neg]
+    let s : ℂ := Real.sin theta
+    let c : ℂ := Real.cos theta
+    change
+      -(s • -(yAt EPR.q1 * (yAt EPR.q2 * xAt EPR.q3)) +
+          c • -(yAt EPR.q1 * (zAt EPR.q2 * xAt EPR.q3))) =
+        yAt EPR.q1 *
+          ((c • zAt EPR.q2 + s • yAt EPR.q2) * xAt EPR.q3)
+    rw [Matrix.add_mul, Matrix.smul_mul, Matrix.smul_mul,
+      Matrix.mul_add, Matrix.mul_smul, Matrix.mul_smul]
     module
-  · simp only [Matrix.mul_add, Matrix.mul_smul, Matrix.smul_mul,
-      Matrix.mul_neg, Matrix.neg_mul, neg_neg]
+  · simp only [Descriptor.initial, Matrix.mul_add, Matrix.mul_smul,
+      Matrix.mul_neg]
+    let s : ℂ := Real.sin theta
+    let c : ℂ := Real.cos theta
+    change
+      -(s • -(zAt EPR.q1 * (yAt EPR.q2 * xAt EPR.q3)) +
+          c • -(zAt EPR.q1 * (zAt EPR.q2 * xAt EPR.q3))) =
+        zAt EPR.q1 *
+          ((c • zAt EPR.q2 + s • yAt EPR.q2) * xAt EPR.q3)
+    rw [Matrix.add_mul, Matrix.smul_mul, Matrix.smul_mul,
+      Matrix.mul_add, Matrix.mul_smul, Matrix.mul_smul]
     module
 
-/-- Equation (27): all four descriptors after the two local coherent records. -/
+private theorem equation27_q2_expanded (theta phi : ℝ) :
+    EPR.timeThreeDescriptors theta phi EPR.q2 =
+      { x := xAt EPR.q1 * xAt EPR.q2
+        y := -(xAt EPR.q1 *
+          (((Real.cos theta : ℂ) • yAt EPR.q2 -
+            (Real.sin theta : ℂ) • zAt EPR.q2) * xAt EPR.q3))
+        z := -(((Real.sin theta : ℂ) • yAt EPR.q2 +
+          (Real.cos theta : ℂ) • zAt EPR.q2) * xAt EPR.q3) } := by
+  rw [EPR.equation27_q2, EPR.equation24_q1, EPR.equation25_q2]
+  apply Descriptor.ext_components <;> simp only
+  · rfl
+  · simp only [Descriptor.initial, Matrix.mul_sub, Matrix.mul_smul,
+      Matrix.mul_neg]
+    let s : ℂ := Real.sin theta
+    let c : ℂ := Real.cos theta
+    change
+      c • -(xAt EPR.q1 * (yAt EPR.q2 * xAt EPR.q3)) -
+          s • -(xAt EPR.q1 * (zAt EPR.q2 * xAt EPR.q3)) =
+        -(xAt EPR.q1 *
+          ((c • yAt EPR.q2 - s • zAt EPR.q2) * xAt EPR.q3))
+    rw [Matrix.sub_mul, Matrix.smul_mul, Matrix.smul_mul,
+      Matrix.mul_sub, Matrix.mul_smul, Matrix.mul_smul]
+    module
+  · let s : ℂ := Real.sin theta
+    let c : ℂ := Real.cos theta
+    change
+      s • -(yAt EPR.q2 * xAt EPR.q3) +
+          c • -(zAt EPR.q2 * xAt EPR.q3) =
+        -((s • yAt EPR.q2 + c • zAt EPR.q2) * xAt EPR.q3)
+    rw [Matrix.add_mul, Matrix.smul_mul, Matrix.smul_mul]
+    module
+
+private theorem equation27_q3_expanded (theta phi : ℝ) :
+    EPR.timeThreeDescriptors theta phi EPR.q3 =
+      { x := xAt EPR.q4 * (xAt EPR.q2 * zAt EPR.q3)
+        y := xAt EPR.q4 *
+          ((Real.cos phi : ℂ) • (-(xAt EPR.q2 * yAt EPR.q3)) -
+            (Real.sin phi : ℂ) • xAt EPR.q3)
+        z := (Real.sin phi : ℂ) • (-(xAt EPR.q2 * yAt EPR.q3)) +
+          (Real.cos phi : ℂ) • xAt EPR.q3 } := by
+  rw [EPR.equation27_q3, EPR.equation24_q4, EPR.equation25_q3]
+
+private theorem equation27_q4_expanded (theta phi : ℝ) :
+    EPR.timeThreeDescriptors theta phi EPR.q4 =
+      { x := xAt EPR.q4
+        y := -(yAt EPR.q4 *
+          ((Real.sin phi : ℂ) • (-(xAt EPR.q2 * yAt EPR.q3)) +
+            (Real.cos phi : ℂ) • xAt EPR.q3))
+        z := -(zAt EPR.q4 *
+          ((Real.sin phi : ℂ) • (-(xAt EPR.q2 * yAt EPR.q3)) +
+            (Real.cos phi : ℂ) • xAt EPR.q3)) } := by
+  rw [EPR.equation27_q4, EPR.equation24_q4, EPR.equation25_q3]
+
+/--
+Equation (27): all four descriptors after the two local coherent records, with every
+time-two descriptor expanded into its Pauli formula.
+-/
 theorem equation27 (theta phi : ℝ) :
     EPR.timeThreeDescriptors theta phi EPR.q1 =
-        { x := (EPR.timeTwoDescriptors theta phi EPR.q1).x
-          y := -((EPR.timeTwoDescriptors theta phi EPR.q1).y *
-            (EPR.timeTwoDescriptors theta phi EPR.q2).z)
-          z := -((EPR.timeTwoDescriptors theta phi EPR.q1).z *
-            (EPR.timeTwoDescriptors theta phi EPR.q2).z) } ∧
+        { x := xAt EPR.q1
+          y := yAt EPR.q1 *
+            (((Real.cos theta : ℂ) • zAt EPR.q2 +
+              (Real.sin theta : ℂ) • yAt EPR.q2) * xAt EPR.q3)
+          z := zAt EPR.q1 *
+            (((Real.cos theta : ℂ) • zAt EPR.q2 +
+              (Real.sin theta : ℂ) • yAt EPR.q2) * xAt EPR.q3) } ∧
       EPR.timeThreeDescriptors theta phi EPR.q2 =
-        { x := (EPR.timeTwoDescriptors theta phi EPR.q1).x *
-            (EPR.timeTwoDescriptors theta phi EPR.q2).x
-          y := (EPR.timeTwoDescriptors theta phi EPR.q1).x *
-            (EPR.timeTwoDescriptors theta phi EPR.q2).y
-          z := (EPR.timeTwoDescriptors theta phi EPR.q2).z } ∧
+        { x := xAt EPR.q1 * xAt EPR.q2
+          y := -(xAt EPR.q1 *
+            (((Real.cos theta : ℂ) • yAt EPR.q2 -
+              (Real.sin theta : ℂ) • zAt EPR.q2) * xAt EPR.q3))
+          z := -(((Real.sin theta : ℂ) • yAt EPR.q2 +
+            (Real.cos theta : ℂ) • zAt EPR.q2) * xAt EPR.q3) } ∧
       EPR.timeThreeDescriptors theta phi EPR.q3 =
-        { x := (EPR.timeTwoDescriptors theta phi EPR.q4).x *
-            (EPR.timeTwoDescriptors theta phi EPR.q3).x
-          y := (EPR.timeTwoDescriptors theta phi EPR.q4).x *
-            (EPR.timeTwoDescriptors theta phi EPR.q3).y
-          z := (EPR.timeTwoDescriptors theta phi EPR.q3).z } ∧
+        { x := xAt EPR.q4 * (xAt EPR.q2 * zAt EPR.q3)
+          y := xAt EPR.q4 *
+            ((Real.cos phi : ℂ) • (-(xAt EPR.q2 * yAt EPR.q3)) -
+              (Real.sin phi : ℂ) • xAt EPR.q3)
+          z := (Real.sin phi : ℂ) • (-(xAt EPR.q2 * yAt EPR.q3)) +
+            (Real.cos phi : ℂ) • xAt EPR.q3 } ∧
       EPR.timeThreeDescriptors theta phi EPR.q4 =
-        { x := (EPR.timeTwoDescriptors theta phi EPR.q4).x
-          y := -((EPR.timeTwoDescriptors theta phi EPR.q4).y *
-            (EPR.timeTwoDescriptors theta phi EPR.q3).z)
-          z := -((EPR.timeTwoDescriptors theta phi EPR.q4).z *
-            (EPR.timeTwoDescriptors theta phi EPR.q3).z) } := by
-  exact ⟨EPR.equation27_q1 theta phi, EPR.equation27_q2 theta phi,
-    EPR.equation27_q3 theta phi, EPR.equation27_q4 theta phi⟩
+        { x := xAt EPR.q4
+          y := -(yAt EPR.q4 *
+            ((Real.sin phi : ℂ) • (-(xAt EPR.q2 * yAt EPR.q3)) +
+              (Real.cos phi : ℂ) • xAt EPR.q3))
+          z := -(zAt EPR.q4 *
+            ((Real.sin phi : ℂ) • (-(xAt EPR.q2 * yAt EPR.q3)) +
+              (Real.cos phi : ℂ) • xAt EPR.q3)) } := by
+  exact ⟨equation27_q1_expanded theta phi,
+    equation27_q2_expanded theta phi,
+    equation27_q3_expanded theta phi,
+    equation27_q4_expanded theta phi⟩
 
 end
 end Paper
