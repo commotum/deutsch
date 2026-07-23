@@ -1,17 +1,17 @@
 import Deutsch.Gates.Bell
+import Deutsch.Gates.AxisRotationRegister
 import Mathlib.Tactic.Module
 
 /-!
 # Paper façade: specific quantum gates
 
-Source-shaped entries for Equations (9)--(16) and (18)--(21).  Equation (17) belongs to the
-arbitrary-axis rotation module and is intentionally not represented here.
+Source-shaped entries for Equations (9)--(21).
 -/
 
 namespace Deutsch
 namespace Paper
 
-open Foundations Gates Register
+open Foundations Gates Register NormedSpace
 open scoped Matrix
 
 noncomputable section
@@ -174,6 +174,28 @@ theorem equation16
     · exact cnotFromDescriptors_conjugates_control_y hD hne
     · exact cnotFromDescriptors_conjugates_control_z hD hne
 
+/-- Equation (17): exponential conjugation about an arbitrary unit descriptor axis. -/
+theorem equation17
+    (W : Operator Q) (hW : W ∈ Matrix.unitaryGroup (Basis Q) ℂ)
+    (q : Q) (n : UnitAxis) (theta : ℝ) (a : Axis) :
+    Register.heisenberg
+        (Register.heisenberg W (axisRotationAt q n theta))
+        (((Descriptor.initial q).evolve W).component a) =
+      exp ((Complex.I * (theta / 2 : ℂ)) • currentAxisPauli W q n) *
+        ((Descriptor.initial q).evolve W).component a *
+        exp ((-Complex.I * (theta / 2 : ℂ)) • currentAxisPauli W q n) :=
+  axisRotationAt_heisenberg_current_component_exp W q n theta a hW
+
+/-- Rodrigues form of the same arbitrary-axis current-frame transformation. -/
+theorem equation17_rodrigues
+    (W : Operator Q) (hW : W ∈ Matrix.unitaryGroup (Basis Q) ℂ)
+    (q : Q) (n : UnitAxis) (theta : ℝ) (v : Vector3) :
+    Register.heisenberg (currentAxisRotation W q n theta)
+        (descriptorPauliVector ((Descriptor.initial q).evolve W) v) =
+      descriptorPauliVector ((Descriptor.initial q).evolve W)
+        (Vector3.heisenbergRotate n.1 theta v) :=
+  currentAxisRotation_heisenberg W q n theta v hW
+
 /-- Equation (18): an `X` rotation in an arbitrary current Heisenberg frame. -/
 theorem equation18
     (W : Operator Q) (hW : W ∈ Matrix.unitaryGroup (Basis Q) ℂ)
@@ -231,35 +253,155 @@ theorem equation19
         Register.heisenberg W (xAt q)
     rw [heisenberg_covariance _ _ _ hW, hadamardAt_heisenberg_z]
 
-/-- Equation (20): the six components of the Bell transformation on named wires. -/
-theorem equation20 (target control : Q) (hne : target ≠ control) :
-    DescriptorFamily.evolve (bellAt target control hne)
-        (DescriptorFamily.initial Q) target =
-        { x := xAt target
-          y := -(yAt target * zAt control)
-          z := -(zAt target * zAt control) } ∧
-      DescriptorFamily.evolve (bellAt target control hne)
-        (DescriptorFamily.initial Q) control =
-        { x := zAt control
-          y := -(xAt target * yAt control)
-          z := xAt target * xAt control } :=
-  ⟨bellAt_evolves_target_descriptor target control hne,
-    bellAt_evolves_control_descriptor target control hne⟩
+/-- Equation (20): the six components of the Bell transformation in any current frame. -/
+theorem equation20
+    (W : Operator Q) (hW : W ∈ Matrix.unitaryGroup (Basis Q) ℂ)
+    (target control : Q) (hne : target ≠ control) :
+    (descriptorInFrame W target).evolve
+        (gateInFrame W (bellAt target control hne)) =
+        { x := (descriptorInFrame W target).x
+          y := -((descriptorInFrame W target).y *
+            (descriptorInFrame W control).z)
+          z := -((descriptorInFrame W target).z *
+            (descriptorInFrame W control).z) } ∧
+      (descriptorInFrame W control).evolve
+        (gateInFrame W (bellAt target control hne)) =
+        { x := (descriptorInFrame W control).z
+          y := -((descriptorInFrame W target).x *
+            (descriptorInFrame W control).y)
+          z := (descriptorInFrame W target).x *
+            (descriptorInFrame W control).x } := by
+  constructor
+  · apply Descriptor.ext_components
+    ·
+      change
+        Register.heisenberg (Register.heisenberg W (bellAt target control hne))
+            (Register.heisenberg W (xAt target)) =
+          Register.heisenberg W (xAt target)
+      rw [Register.heisenberg_covariance _ _ _ hW,
+        bellAt_conjugates_target_x]
+    ·
+      change
+        Register.heisenberg (Register.heisenberg W (bellAt target control hne))
+            (Register.heisenberg W (yAt target)) =
+          -(Register.heisenberg W (yAt target) *
+            Register.heisenberg W (zAt control))
+      rw [Register.heisenberg_covariance _ _ _ hW,
+        bellAt_conjugates_target_y, Gates.heisenberg_neg,
+        Register.heisenberg_mul_of_unitary W _ _ hW]
+    ·
+      change
+        Register.heisenberg (Register.heisenberg W (bellAt target control hne))
+            (Register.heisenberg W (zAt target)) =
+          -(Register.heisenberg W (zAt target) *
+            Register.heisenberg W (zAt control))
+      rw [Register.heisenberg_covariance _ _ _ hW,
+        bellAt_conjugates_target_z, Gates.heisenberg_neg,
+        Register.heisenberg_mul_of_unitary W _ _ hW]
+  · apply Descriptor.ext_components
+    ·
+      change
+        Register.heisenberg (Register.heisenberg W (bellAt target control hne))
+            (Register.heisenberg W (xAt control)) =
+          Register.heisenberg W (zAt control)
+      rw [Register.heisenberg_covariance _ _ _ hW,
+        bellAt_conjugates_control_x]
+    ·
+      change
+        Register.heisenberg (Register.heisenberg W (bellAt target control hne))
+            (Register.heisenberg W (yAt control)) =
+          -(Register.heisenberg W (xAt target) *
+            Register.heisenberg W (yAt control))
+      rw [Register.heisenberg_covariance _ _ _ hW,
+        bellAt_conjugates_control_y, Gates.heisenberg_neg,
+        Register.heisenberg_mul_of_unitary W _ _ hW]
+    ·
+      change
+        Register.heisenberg (Register.heisenberg W (bellAt target control hne))
+            (Register.heisenberg W (zAt control)) =
+          Register.heisenberg W (xAt target) *
+            Register.heisenberg W (xAt control)
+      rw [Register.heisenberg_covariance _ _ _ hW,
+        bellAt_conjugates_control_z,
+        Register.heisenberg_mul_of_unitary W _ _ hW]
 
-/-- Equation (21): the six components of the inverse Bell transformation on named wires. -/
-theorem equation21 (target control : Q) (hne : target ≠ control) :
-    DescriptorFamily.evolve (bellInverseAt target control hne)
-        (DescriptorFamily.initial Q) target =
-        { x := xAt target
-          y := -(yAt target * xAt control)
-          z := -(zAt target * xAt control) } ∧
-      DescriptorFamily.evolve (bellInverseAt target control hne)
-        (DescriptorFamily.initial Q) control =
-        { x := xAt target * zAt control
-          y := -(xAt target * yAt control)
-          z := xAt control } :=
-  ⟨bellInverseAt_evolves_target_descriptor target control hne,
-    bellInverseAt_evolves_control_descriptor target control hne⟩
+/-- Equation (21): the six components of the inverse Bell transformation in any current frame. -/
+theorem equation21
+    (W : Operator Q) (hW : W ∈ Matrix.unitaryGroup (Basis Q) ℂ)
+    (target control : Q) (hne : target ≠ control) :
+    (descriptorInFrame W target).evolve
+        (gateInFrame W (bellInverseAt target control hne)) =
+        { x := (descriptorInFrame W target).x
+          y := -((descriptorInFrame W target).y *
+            (descriptorInFrame W control).x)
+          z := -((descriptorInFrame W target).z *
+            (descriptorInFrame W control).x) } ∧
+      (descriptorInFrame W control).evolve
+        (gateInFrame W (bellInverseAt target control hne)) =
+        { x := (descriptorInFrame W target).x *
+            (descriptorInFrame W control).z
+          y := -((descriptorInFrame W target).x *
+            (descriptorInFrame W control).y)
+          z := (descriptorInFrame W control).x } := by
+  constructor
+  · apply Descriptor.ext_components
+    ·
+      change
+        Register.heisenberg
+            (Register.heisenberg W (bellInverseAt target control hne))
+            (Register.heisenberg W (xAt target)) =
+          Register.heisenberg W (xAt target)
+      rw [Register.heisenberg_covariance _ _ _ hW,
+        bellInverseAt_conjugates_target_x]
+    ·
+      change
+        Register.heisenberg
+            (Register.heisenberg W (bellInverseAt target control hne))
+            (Register.heisenberg W (yAt target)) =
+          -(Register.heisenberg W (yAt target) *
+            Register.heisenberg W (xAt control))
+      rw [Register.heisenberg_covariance _ _ _ hW,
+        bellInverseAt_conjugates_target_y, Gates.heisenberg_neg,
+        Register.heisenberg_mul_of_unitary W _ _ hW]
+    ·
+      change
+        Register.heisenberg
+            (Register.heisenberg W (bellInverseAt target control hne))
+            (Register.heisenberg W (zAt target)) =
+          -(Register.heisenberg W (zAt target) *
+            Register.heisenberg W (xAt control))
+      rw [Register.heisenberg_covariance _ _ _ hW,
+        bellInverseAt_conjugates_target_z, Gates.heisenberg_neg,
+        Register.heisenberg_mul_of_unitary W _ _ hW]
+  · apply Descriptor.ext_components
+    ·
+      change
+        Register.heisenberg
+            (Register.heisenberg W (bellInverseAt target control hne))
+            (Register.heisenberg W (xAt control)) =
+          Register.heisenberg W (xAt target) *
+            Register.heisenberg W (zAt control)
+      rw [Register.heisenberg_covariance _ _ _ hW,
+        bellInverseAt_conjugates_control_x,
+        Register.heisenberg_mul_of_unitary W _ _ hW]
+    ·
+      change
+        Register.heisenberg
+            (Register.heisenberg W (bellInverseAt target control hne))
+            (Register.heisenberg W (yAt control)) =
+          -(Register.heisenberg W (xAt target) *
+            Register.heisenberg W (yAt control))
+      rw [Register.heisenberg_covariance _ _ _ hW,
+        bellInverseAt_conjugates_control_y, Gates.heisenberg_neg,
+        Register.heisenberg_mul_of_unitary W _ _ hW]
+    ·
+      change
+        Register.heisenberg
+            (Register.heisenberg W (bellInverseAt target control hne))
+            (Register.heisenberg W (zAt control)) =
+          Register.heisenberg W (xAt control)
+      rw [Register.heisenberg_covariance _ _ _ hW,
+        bellInverseAt_conjugates_control_z]
 
 end
 end Paper

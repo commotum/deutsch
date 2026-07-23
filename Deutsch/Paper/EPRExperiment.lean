@@ -85,7 +85,7 @@ theorem equation25 (theta phi : ℝ) :
     {Q : Type*} [Fintype Q] [DecidableEq Q]
     (rho : Density Q) (A : Operator Q) :
     densityExpectation rho (-A) = -densityExpectation rho A := by
-  simp [densityExpectation, Matrix.mul_neg, Matrix.trace_neg]
+  simp [densityExpectation, Matrix.trace_neg]
 
 private theorem referenceExpectation_xAt (q : EPR.EPRQubit) :
     densityExpectation (referenceDensity EPR.EPRQubit) (xAt q) = 0 := by
@@ -105,7 +105,7 @@ private theorem referenceExpectation_y_mul_x
       (paperZeroAssignment EPR.EPRQubit)
       (paperZeroAssignment EPR.EPRQubit) = 0
   rw [embedQubit_mul_embedQubit_apply_of_ne hne]
-  simp [paperZeroAssignment, yAt, xAt, pauliY, pauliX]
+  simp [paperZeroAssignment, pauliY, pauliX]
 
 private theorem referenceExpectation_z_mul_x
     (q r : EPR.EPRQubit) (hne : q ≠ r) :
@@ -117,7 +117,7 @@ private theorem referenceExpectation_z_mul_x
       (paperZeroAssignment EPR.EPRQubit)
       (paperZeroAssignment EPR.EPRQubit) = 0
   rw [embedQubit_mul_embedQubit_apply_of_ne hne]
-  simp [paperZeroAssignment, zAt, xAt, pauliZ, pauliX]
+  simp [paperZeroAssignment, pauliZ, pauliX]
 
 /--
 Equation (26): the fixed-reference expectations of the three displayed time-two descriptor
@@ -224,6 +224,7 @@ private theorem equation27_q3_expanded (theta phi : ℝ) :
         z := (Real.sin phi : ℂ) • (-(xAt EPR.q2 * yAt EPR.q3)) +
           (Real.cos phi : ℂ) • xAt EPR.q3 } := by
   rw [EPR.equation27_q3, EPR.equation24_q4, EPR.equation25_q3]
+  rfl
 
 private theorem equation27_q4_expanded (theta phi : ℝ) :
     EPR.timeThreeDescriptors theta phi EPR.q4 =
@@ -235,6 +236,7 @@ private theorem equation27_q4_expanded (theta phi : ℝ) :
           ((Real.sin phi : ℂ) • (-(xAt EPR.q2 * yAt EPR.q3)) +
             (Real.cos phi : ℂ) • xAt EPR.q3)) } := by
   rw [EPR.equation27_q4, EPR.equation24_q4, EPR.equation25_q3]
+  rfl
 
 /--
 Equation (27): all four descriptors after the two local coherent records, with every
