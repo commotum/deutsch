@@ -127,6 +127,96 @@ theorem equation39_routes_prepare_the_same_ket (theta : ℝ) :
       act (rightRotationRoute theta) (referenceKet (Fin 2)) :=
   equation39_route_kets_eq theta
 
+/-! ## Literal four-wire record statistics -/
+
+theorem four_wire_record_effects_pin_paper_one_as_raw_zero :
+    recordLeftPaperOneEffect.op = paperBitOneProjectorAt q1 ∧
+      recordRightPaperOneEffect.op = paperBitOneProjectorAt q4 ∧
+      recordJointPaperOneEffect =
+        (basisEffect (pairBits 0 0)).embedAlong recordPlacement ∧
+      finalComparisonPaperOneEffect.op = paperBitOneProjectorAt q1 := by
+  constructor
+  · exact zPlusEffect_op_eq_paperBitOneProjectorAt q1
+  constructor
+  · exact zPlusEffect_op_eq_paperBitOneProjectorAt q4
+  constructor
+  · rfl
+  · exact zPlusEffect_op_eq_paperBitOneProjectorAt q1
+
+theorem equation40_is_derived_on_the_four_wire_records
+    (theta phi : ℝ) :
+    bornProbability (fourWireTimeThreeDensity theta phi)
+          recordLeftPaperOneEffect = 1 / 2 ∧
+      bornProbability (fourWireTimeThreeDensity theta phi)
+          recordRightPaperOneEffect = 1 / 2 :=
+  ⟨fourWireTimeThree_leftRecord_probability theta phi,
+    fourWireTimeThree_rightRecord_probability theta phi⟩
+
+theorem equation41_is_derived_on_the_four_wire_records
+    (theta phi : ℝ) :
+    bornProbability (fourWireTimeThreeDensity theta phi)
+        recordJointPaperOneEffect =
+      (1 / 2 : ℝ) * Real.cos ((theta - phi) / 2) ^ 2 :=
+  fourWireTimeThree_jointRecord_probability theta phi
+
+theorem equation28_is_derived_after_the_four_wire_comparison
+    (theta phi : ℝ) :
+    bornProbability (fourWireTimeFourDensity theta phi)
+        finalComparisonPaperOneEffect =
+      Real.sin ((theta - phi) / 2) ^ 2 :=
+  fourWireTimeFour_comparison_probability theta phi
+
+theorem every_four_wire_record_outcome_matches_the_pair_density
+    (theta phi : ℝ) (left right : QubitIndex) :
+    bornProbability (fourWireTimeThreeDensity theta phi)
+        (recordOutcomeEffect left right) =
+      bornProbability (pairDensity theta phi)
+        (basisEffect (pairBits left right)) :=
+  fourWireTimeThree_recordOutcome_probability_eq_pairDensity
+    theta phi left right
+
+theorem four_wire_record_and_comparison_statistics_match_the_pair_density
+    (theta phi : ℝ) :
+    bornProbability (fourWireTimeThreeDensity theta phi)
+          recordLeftPaperOneEffect =
+        bornProbability (pairDensity theta phi)
+          (paperOneMarginalEffect 0) ∧
+      bornProbability (fourWireTimeThreeDensity theta phi)
+          recordRightPaperOneEffect =
+        bornProbability (pairDensity theta phi)
+          (paperOneMarginalEffect 1) ∧
+      bornProbability (fourWireTimeThreeDensity theta phi)
+          recordJointPaperOneEffect =
+        bornProbability (pairDensity theta phi) jointPaperOneEffect ∧
+      bornProbability (fourWireTimeFourDensity theta phi)
+          finalComparisonPaperOneEffect =
+        bornProbability (pairDensity theta phi) differentEffect :=
+  ⟨fourWireTimeThree_leftRecord_probability_eq_pairDensity theta phi,
+    fourWireTimeThree_rightRecord_probability_eq_pairDensity theta phi,
+    fourWireTimeThree_jointRecord_probability_eq_pairDensity theta phi,
+    fourWireTimeFour_comparison_probability_eq_pairDensity theta phi⟩
+
+theorem equal_settings_are_a_four_wire_boundary (theta : ℝ) :
+    bornProbability (fourWireTimeFourDensity theta theta)
+          finalComparisonPaperOneEffect = 0 ∧
+      bornProbability (fourWireTimeThreeDensity theta theta)
+          recordJointPaperOneEffect = 1 / 2 := by
+  constructor
+  · exact fourWireTimeFour_comparison_equal_settings theta
+  · rw [fourWireTimeThree_jointRecord_probability]
+    norm_num
+
+theorem relative_pi_is_a_four_wire_boundary
+    (theta phi : ℝ) (hrelative : theta - phi = Real.pi) :
+    bornProbability (fourWireTimeFourDensity theta phi)
+          finalComparisonPaperOneEffect = 1 ∧
+      bornProbability (fourWireTimeThreeDensity theta phi)
+          recordJointPaperOneEffect = 0 := by
+  constructor
+  · exact fourWireTimeFour_comparison_relative_pi theta phi hrelative
+  · rw [fourWireTimeThree_jointRecord_probability, hrelative]
+    norm_num [Real.cos_pi_div_two]
+
 /-! ## Density statistics, source corrections, and provenance -/
 
 theorem both_pair_marginals_are_maximally_mixed (theta phi : ℝ) :
