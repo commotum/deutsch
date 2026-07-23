@@ -209,6 +209,51 @@ theorem Effect.embedSubsystem_op (s : Finset Q)
     (effect : Effect {q : Q // q ∈ s}) :
     (effect.embedSubsystem s).op = Register.embedSubsystem s effect.op := rfl
 
+private theorem reindexAlong_posSemidef
+    {K R : Type*} [Fintype K] [DecidableEq K] [DecidableEq R]
+    (p : K ↪ R) {A : Operator K} (hA : A.PosSemidef) :
+    (Matrix.reindexAlgEquiv ℂ ℂ (alongBasisEquiv p) A).PosSemidef := by
+  apply (Matrix.posSemidef_submatrix_equiv (alongBasisEquiv p)).1
+  simpa [Matrix.reindexAlgEquiv] using hA
+
+/-- Place an effect along an ordered injection of finite registers. -/
+def Effect.embedAlong {K : Type*} [Fintype K] [DecidableEq K]
+    (p : K ↪ Q) (effect : Effect K) : Effect Q where
+  op := Register.embedAlong p effect.op
+  positive :=
+    embedSubsystem_posSemidef (placementFinset p)
+      (reindexAlong_posSemidef p effect.positive)
+  complement_positive := by
+    rw [← embedAlong_one p]
+    change (embedAlongAlgHom p 1 - embedAlongAlgHom p effect.op).PosSemidef
+    rw [← map_sub]
+    exact
+      embedSubsystem_posSemidef (placementFinset p)
+        (reindexAlong_posSemidef p effect.complement_positive)
+
+@[simp]
+theorem Effect.embedAlong_op {K : Type*} [Fintype K] [DecidableEq K]
+    (p : K ↪ Q) (effect : Effect K) :
+    (effect.embedAlong p).op = Register.embedAlong p effect.op := rfl
+
+/--
+Placing an operator on named coordinates does not change its expectation in the all-paper-zero
+reference state.
+-/
+theorem referenceDensity_expectation_embedAlong
+    {K : Type*} [Fintype K] [DecidableEq K]
+    (p : K ↪ Q) (A : Operator K) :
+    densityExpectation (referenceDensity Q) (embedAlong p A) =
+      densityExpectation (referenceDensity K) A := by
+  rw [referenceDensity, referenceDensity,
+    basisDensity_expectation, basisDensity_expectation,
+    embedAlong_apply_ite]
+  simp only [paperZeroAssignment]
+  rw [if_pos]
+  · rfl
+  · intro q hq
+    trivial
+
 /-- Reduced and embedded local effects give exactly the same complex Born weight. -/
 theorem bornWeight_reduce (rho : Density Q) (s : Finset Q)
     (effect : Effect {q : Q // q ∈ s}) :

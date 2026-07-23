@@ -316,6 +316,13 @@ def basisDensity (bits : Basis Q) : Density Q where
     classical
     simp
 
+/-- A computational-basis density reads off the matching diagonal matrix entry. -/
+theorem basisDensity_expectation (bits : Basis Q) (A : Operator Q) :
+    densityExpectation (basisDensity bits) A = A bits bits := by
+  classical
+  simp [densityExpectation, basisDensity, Matrix.trace,
+    Matrix.diagonal_mul, Pi.single_apply]
+
 /-- The rank-one computational-basis effect at `bits`. -/
 def basisEffect (bits : Basis Q) : Effect Q where
   op := (basisDensity bits).op

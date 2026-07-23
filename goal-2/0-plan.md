@@ -265,6 +265,10 @@ Finalize the corrected Markdown as a faithful, minimally edited canonical source
 
 ### 3-EPR-BRIDGE
 
+#### Status
+
+In progress; current design and proof evidence are recorded in `goal-2/3-EPR-BRIDGE.md`.
+
 #### Big Picture Objective
 
 Derive Equations (28), (40), and (41) from Figure 2's literal four-wire chronology and connect them
