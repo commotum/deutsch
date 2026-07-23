@@ -97,7 +97,7 @@ theorem equation45 (a₀ a₁ a₂ : Bool) :
   Bell.equation45_complementary_partition a₀ a₁ a₂
 
 /--
-Equation (46): every displayed equality and inequality in the corrected finite expectation
+Equation (46): every displayed equality and inequality in the finite expectation
 chain.  The independent theorem `Bell.equation46_contradiction` derives `False` from the same
 explicit reproduction assumptions.
 -/

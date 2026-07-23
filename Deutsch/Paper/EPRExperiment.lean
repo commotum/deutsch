@@ -124,12 +124,13 @@ Equation (26): the fixed-reference expectations of the three displayed time-two 
 components of `q2` vanish.
 -/
 theorem equation26 (theta phi : ℝ) :
-    densityExpectation (referenceDensity EPR.EPRQubit)
+    expectation (referenceKet EPR.EPRQubit)
           (EPR.timeTwoDescriptors theta phi EPR.q2).x = 0 ∧
-      densityExpectation (referenceDensity EPR.EPRQubit)
+      expectation (referenceKet EPR.EPRQubit)
           (EPR.timeTwoDescriptors theta phi EPR.q2).y = 0 ∧
-      densityExpectation (referenceDensity EPR.EPRQubit)
+      expectation (referenceKet EPR.EPRQubit)
           (EPR.timeTwoDescriptors theta phi EPR.q2).z = 0 := by
+  simp only [← referenceDensity_expectation]
   constructor
   · rw [EPR.timeTwo_q2_x, referenceExpectation_xAt]
   constructor

@@ -101,6 +101,60 @@ theorem arbitrary_axis_x_pi_half_maps_y_to_negative_z :
       -pauliZ := by
   rw [axisRotation_xAxis, rotationX_heisenberg_y_pi_div_two]
 
+/-! ## Named-wire and current-frame arbitrary-axis rotations -/
+
+theorem named_non_coordinate_axis_uses_global_matrix_exponential
+    (q : Fin 3) (theta : ℝ) :
+    NormedSpace.exp (axisRotationGeneratorAt q threeFourAxis theta) =
+      axisRotationAt q threeFourAxis theta :=
+  exp_axisRotationGeneratorAt q threeFourAxis theta
+
+theorem current_non_coordinate_axis_is_transported_named_gate
+    (W : Operator (Fin 3)) (q : Fin 3) (theta : ℝ)
+    (hW : W ∈ Matrix.unitaryGroup (Basis (Fin 3)) ℂ) :
+    currentAxisRotation W q threeFourAxis theta =
+      Register.heisenberg W (axisRotationAt q threeFourAxis theta) :=
+  currentAxisRotation_eq_heisenberg W q threeFourAxis theta hW
+
+theorem transported_named_gate_has_current_exponential_action
+    (W : Operator (Fin 3)) (q : Fin 3) (theta : ℝ) (a : Axis)
+    (hW : W ∈ Matrix.unitaryGroup (Basis (Fin 3)) ℂ) :
+    Register.heisenberg
+        (Register.heisenberg W (axisRotationAt q threeFourAxis theta))
+        (((Descriptor.initial q).evolve W).component a) =
+      NormedSpace.exp
+          ((Complex.I * (theta / 2 : ℂ)) •
+            currentAxisPauli W q threeFourAxis) *
+        ((Descriptor.initial q).evolve W).component a *
+        NormedSpace.exp
+          ((-Complex.I * (theta / 2 : ℂ)) •
+            currentAxisPauli W q threeFourAxis) :=
+  axisRotationAt_heisenberg_current_component_exp
+    W q threeFourAxis theta a hW
+
+theorem current_non_coordinate_axis_has_rodrigues_action
+    (W : Operator (Fin 3)) (q : Fin 3) (theta : ℝ) (v : Vector3)
+    (hW : W ∈ Matrix.unitaryGroup (Basis (Fin 3)) ℂ) :
+    Register.heisenberg (currentAxisRotation W q threeFourAxis theta)
+        (descriptorPauliVector ((Descriptor.initial q).evolve W) v) =
+      descriptorPauliVector ((Descriptor.initial q).evolve W)
+        (Vector3.heisenbergRotate threeFourAxis.1 theta v) :=
+  currentAxisRotation_heisenberg W q threeFourAxis theta v hW
+
+theorem current_x_axis_has_correct_y_sign
+    (W : Operator (Fin 3)) (q : Fin 3) (theta : ℝ)
+    (hW : W ∈ Matrix.unitaryGroup (Basis (Fin 3)) ℂ) :
+    Register.heisenberg
+        (currentAxisRotation W q UnitAxis.xAxis theta)
+        ((Descriptor.initial q).evolve W).y =
+      (Real.cos theta : ℂ) • ((Descriptor.initial q).evolve W).y -
+        (Real.sin theta : ℂ) • ((Descriptor.initial q).evolve W).z := by
+  simpa [sub_eq_add_neg, descriptorPauliVector,
+    Vector3.heisenbergRotate, Vector3.dot, Vector3.cross,
+    UnitAxis.xAxis] using
+    currentAxisRotation_heisenberg W q UnitAxis.xAxis theta
+      (⟨0, 1, 0⟩ : Vector3) hW
+
 /-! ## Named-register one-qubit locality -/
 
 theorem rotation_on_zero_fixes_remote_z (theta : Real) :

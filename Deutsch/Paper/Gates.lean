@@ -20,27 +20,11 @@ variable {Q : Type*} [Fintype Q] [DecidableEq Q]
 
 /-! ## Transported computation-basis action -/
 
-/--
-Equation (9): a NOT truth table at one time transports to the corresponding Heisenberg-frame
-basis at the next time.  The hypotheses state only the earlier truth table; the displayed
-next-time action is derived by unitary conjugation.
--/
-theorem equation09
-    (U A : Operator Q)
-    (zeroKet oneKet : Ket Q)
-    (hU : U ∈ Matrix.unitaryGroup (Basis Q) ℂ)
-    (hZero : act A zeroKet = oneKet)
-    (hOne : act A oneKet = zeroKet) :
-    act (Register.heisenberg U A) (act Uᴴ zeroKet) = act Uᴴ oneKet ∧
-      act (Register.heisenberg U A) (act Uᴴ oneKet) = act Uᴴ zeroKet := by
-  have hUU : U * Uᴴ = 1 := by
-    rw [← Matrix.star_eq_conjTranspose]
-    exact hU.2
-  constructor
-  · simp only [Register.heisenberg, act_mul]
-    rw [← act_mul U Uᴴ zeroKet, hUU, act_one, hZero]
-  · simp only [Register.heisenberg, act_mul]
-    rw [← act_mul U Uᴴ oneKet, hUU, act_one, hOne]
+/-- Equation (9): NOT exchanges the two computation-basis kets. -/
+theorem equation09 :
+    notGate.mulVec ketOne = ketZero ∧
+      notGate.mulVec ketZero = ketOne :=
+  ⟨not_mulVec_ketOne, not_mulVec_ketZero⟩
 
 /-- Equation (10): the source-labelled NOT matrix entries. -/
 theorem equation10 (r s : QubitIndex) :
@@ -148,9 +132,15 @@ theorem equation14
     rw [heisenberg_covariance _ _ _ hW, paperSqrtNotAt_heisenberg_z]
     simpa only [neg_one_smul] using heisenberg_smul W (yAt q) (-1)
 
-/-- Equation (15): CNOT as a polynomial in the current target/control descriptors. -/
+/-- Equation (15): CNOT as the explicit projector polynomial in current descriptors. -/
 def equation15 (D : DescriptorFamily Q) (target control : Q) : Operator Q :=
-  cnotFromDescriptors D target control
+  ((2 : ℂ)⁻¹) • (1 - (D control).z) +
+    (D target).x * (((2 : ℂ)⁻¹) • (1 + (D control).z))
+
+theorem equation15_eq_cnotFromDescriptors
+    (D : DescriptorFamily Q) (target control : Q) :
+    equation15 D target control = cnotFromDescriptors D target control :=
+  rfl
 
 /-- Equation (16): the six current-descriptor components after CNOT. -/
 theorem equation16

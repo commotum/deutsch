@@ -1,4 +1,5 @@
 import Deutsch.Gates.AxisRotation
+import Deutsch.Gates.AxisRotationRegister
 import Deutsch.Gates.Bell
 import Deutsch.Gates.CNOT
 import Deutsch.Gates.OneQubit

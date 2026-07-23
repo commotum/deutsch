@@ -41,10 +41,15 @@ def equation03 : Axis → QubitMatrix
   | .y => pauliY
   | .z => pauliZ
 
-/-- Equation (4): the logical-paper-one projector is `(I + Z) / 2`. -/
-theorem equation04 (q : Q) :
-    paperBitOneProjectorAt q = ((2 : ℂ)⁻¹) • (1 + zAt q) :=
-  paperBitOneProjectorAt_eq q
+/-- Equation (4): the Boolean observable formed from a current descriptor's `Z` component. -/
+def equation04 (d : Descriptor Q) : Operator Q :=
+  ((2 : ℂ)⁻¹) • (1 + d.z)
+
+/-- Named initial specialization of Equation (4). -/
+theorem equation04_initial (q : Q) :
+    equation04 (Descriptor.initial q) = paperBitOneProjectorAt q := by
+  rw [equation04, paperBitOneProjectorAt_eq]
+  rfl
 
 /-- Equation (5): the initial descriptor is the Pauli triple embedded at one coordinate. -/
 theorem equation05 (q : Q) :

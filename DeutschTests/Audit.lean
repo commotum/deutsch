@@ -170,6 +170,14 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Gates.axisRotation_heisenberg
 #print axioms Deutsch.Gates.axisRotation_xAxis
 
+-- Named-wire matrix exponential and exact current-frame Equation (17).
+#print axioms Deutsch.Gates.exp_axisRotationGeneratorAt
+#print axioms Deutsch.Gates.axisRotationAt_unitary
+#print axioms Deutsch.Gates.currentAxisPauli_eq_heisenberg
+#print axioms Deutsch.Gates.currentAxisRotation_eq_heisenberg
+#print axioms Deutsch.Gates.axisRotationAt_heisenberg_current_component_exp
+#print axioms Deutsch.Gates.currentAxisRotation_heisenberg
+
 -- Static named-register and generic valid-descriptor CNOT.
 #print axioms Deutsch.Gates.cnotAt_apply
 #print axioms Deutsch.Gates.cnotAt_act_basisKet
