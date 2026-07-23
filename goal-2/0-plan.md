@@ -81,10 +81,11 @@ auditable source mapping.
 
 - The current canonical source is `deutsch-2000/deutsch-2000.md`; the corresponding PDF and all
   three figures are present under `deutsch-2000/`.
-- The canonical Markdown has 1255 lines and exactly 47 display-math blocks: 46 uniquely tagged
-  equations numbered (1)–(46) and one unnumbered display following (37). Two formulas classified as
-  U01 and U03 in the old audit are inline in both the PDF and verified transcription; only the
-  compact original transcription promoted them to display blocks.
+- After the agreed heading/note rewrite, the canonical Markdown has 1258 lines and exactly 47
+  display-math blocks: 46 uniquely tagged equations numbered (1)–(46) and one unnumbered display
+  following (37). Two formulas classified as U01 and U03 in the old audit are inline in both the
+  PDF and verified transcription; only the compact original transcription promoted them to display
+  blocks.
 - The earlier compact and verified transcriptions remain available for review in
   `/home/jake/Developer/bqp/papers/deutsch-2000/`, but they are external to this repository and
   cannot be runtime or build dependencies.
@@ -93,15 +94,14 @@ auditable source mapping.
 - The seventeen changed equation displays reduce to three root bookkeeping slips. Equation (44)
   remains unchanged and is the point at which the repaired EPR/Bell route rejoins the printed
   argument.
-- The current end note begins at `deutsch-2000/deutsch-2000.md:1244`. It is accurate but should
-  describe the three root slips more naturally, mention the recomputed intermediate operator in
-  (28), and avoid the conspicuous phrase “joint paper-one probability.”
-- The current Markdown uses the author as an `##` heading and the abstract and numbered sections as
-  `###` headings. `goal-1/check_source_audit.py` expects `## 1.` through `## 8.`, so the source audit
-  presently fails at the section-hierarchy check even though the equation and image content is
-  intact.
-- The most faithful planned hierarchy is a non-heading author line, `## Abstract`, and `## 1.`
-  through `## 8.`. The abstract body remains italicized and its heading remains present.
+- The editorial note at `deutsch-2000/deutsch-2000.md:1244` now describes one harmless index
+  correction and three root bookkeeping slips, including the recomputed Equation (28) operator,
+  their mechanical propagation, and Equation (44)'s unchanged status.
+- The current Markdown uses an ordinary bold author line, `## Abstract`, `## 1.` through `## 8.`,
+  `## Acknowledgement`, and `## References`; the abstract body remains wholly italicized.
+- The protected tagged-equation bundle and Equation (35) prose hashes are unchanged from Stage 1.
+  The canonical Markdown SHA-256 after the Stage 2 rewrite is
+  `f18273e9da7109c3be329b17b3942f0fa0b6f064904e7334befbdee66732d032`.
 - The Lake package is pinned to Lean/mathlib `v4.32.0` and currently defines the `Deutsch` and
   `DeutschTests` libraries.
 - A fresh Stage 1 build completed 3309 jobs. The integrity audit scanned 65 Lean
@@ -123,9 +123,8 @@ auditable source mapping.
   four-wire route for Equations (28), (40), and (41), and the direct corrected expectation route
   through Equations (42)–(44) and (46). The existing Bell contradiction is an independent
   agreement/pigeonhole proof rather than that displayed chain.
-- The current project report and parts of the old goal ledger contain stale statements that no PDF
-  or independently checked facsimile is present. Those statements must be reconciled with the
-  current repository.
+- Present-tense source-fidelity claims in the project report and old goal ledger now acknowledge
+  the PDF/verified-transcription comparison; dated historical stage evidence was left unchanged.
 - The canonical PDF is a 24-page A4 file with 1999-06-02 creation metadata and is byte-identical to
   the BQP comparison PDF. The repository figures are byte-identical to BQP's verified figure set,
   and Git history retains the deleted compact, verified, and corrected Markdown variants.
@@ -197,6 +196,10 @@ auditable source mapping.
 
 ### 1-BASELINE
 
+#### Status
+
+Complete with recorded evidence in `goal-2/1-BASELINE.md`.
+
 #### Big Picture Objective
 
 Freeze a trustworthy starting point, resolve the exact public contract, and turn every reviewed
@@ -225,6 +228,10 @@ gap into a tracked obligation before changing source or Lean declarations.
   baseline tooling fix that is itself documented and verified.
 
 ### 2-SOURCE
+
+#### Status
+
+Complete with recorded evidence in `goal-2/2-SOURCE.md`.
 
 #### Big Picture Objective
 

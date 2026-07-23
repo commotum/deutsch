@@ -29,7 +29,7 @@ The paper is evidence and a source of conjectures, not a formal specification. T
 
 - The working directory is `/home/jake/Developer/deutsch` in the current environment (the original brief used `/Users/jake/Developer/deutsch`).
 - The paper is available as `deutsch-2000/deutsch-2000.md`, with three referenced circuit images in `deutsch-2000/images/`.
-- The Markdown source has 760 lines, eight numbered sections, 49 display-math blocks (46 tagged equations numbered (1)–(46) and three unnumbered displays), and three figures.
+- The canonical corrected Markdown has 1258 lines, eight numbered sections, 47 display-math blocks (46 tagged equations numbered (1)–(46) and one untagged display), two additional audited inline formulas, and three figures.
 - The source has sections on Heisenberg computation, gates, EPR, teleportation, locally inaccessible information, Bell's theorem, and the Schrödinger picture.
 - The original Python scaffold (`pyproject.toml`, `main.py`, `uv.lock`) remains intact. `README.md` now documents the Lean build and audit commands.
 - Stage 2 added a Lake project pinned to Lean/mathlib `v4.32.0`; the resolved mathlib commit is `81a5d257c8e410db227a6665ed08f64fea08e997`.
@@ -74,7 +74,7 @@ The paper is evidence and a source of conjectures, not a formal specification. T
   Equation (45) is false at `(a_0,a_1,a_2)=(1,0,1)` and the corrected complementary partition
   passes all eight Boolean cases. Stage 11 independently proves the corrected three-setting
   contradiction without using either form of Equation (45).
-- No PDF/facsimile is present, so the Markdown transcription itself remains an external-fidelity assumption to document in the final audit.
+- The original 24-page PDF is present and has been compared with the canonical Markdown and an independently prepared verified transcription. Stable hashes guard the PDF and all three figures, and the canonical edition discloses its intentional mathematical corrections.
 
 ## Stage 2 Findings and Representation Commitments
 
@@ -258,7 +258,7 @@ Turn the paper into a traceable set of mathematical obligations without treating
 
 ### Evidence
 
-- `python3 -B goal-1/check_source_audit.py` reports exact E01–E46/source-tag agreement, all 49 display blocks with U01–U03, exact F01–F03 IDs and resolved image links, contiguous D01–D11/C01–C66/I01–I10 identifiers, complete LC01–LC66 class/status pairs, and a passing equation-(45) counterexample/corrected truth table.
+- `python3 -B goal-1/check_source_audit.py` reports exact E01–E46/source-tag agreement, 47 display blocks (46 tagged and one untagged), U01/U03 inline and U02 displayed, exact F01–F03 IDs and resolved image links, stable PDF/figure provenance, tagged-equation and Equation-(35)-prose guards, the canonical Equation (45) complement signature, contiguous D01–D11/C01–C66/I01–I10 identifiers, and complete LC01–LC66 class/status pairs.
 - A manual section-by-section review supplies the semantic evidence for definition and prose-claim completeness; the checker deliberately proves identifier coverage, not the judgment that a prose inventory is exhaustive.
 - All three figures were visually inspected: their upward chronology, wires, controls/targets, transports, and stage boundaries are recorded in F01–F03.
 - No Lean build, Lean forbidden-token scan, or `#print axioms` audit is applicable yet because there are zero Lean files and no Lake project. Those mechanisms remain mandatory Stage 2 deliverables rather than vacuous Stage 1 passes.

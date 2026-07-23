@@ -1,26 +1,32 @@
 # 2-SOURCE
 
+## Status
+
+- Complete with source, provenance, build, integrity, documentation, and diff evidence on
+  2026-07-23.
+
 ## Current Facts
 
 - Stage 1 established the canonical Markdown/PDF/figure hashes and their Git/BQP provenance.
-- The canonical source has 1255 lines, 46 uniquely tagged equations, 47 display blocks
+- The Stage 1 baseline had 1255 lines; after the agreed heading/note rewrite, the canonical source
+  has 1258 lines, 46 uniquely tagged equations, 47 display blocks
   (46 tagged and one untagged), eight numbered sections, three figures, and two separately audited
   inline formulas formerly classified as U01 and U03.
-- The current mathematical equations are the accepted corrected baseline. No further equation edit
-  is authorized in this stage.
-- The current headings use an H2 author and H3 abstract/sections. The agreed structure is an ordinary
-  bold author line, H2 abstract, H2 numbered sections, H2 acknowledgement, and H2 references.
-- The abstract body is already wholly italicized and its heading must remain.
-- The correction note currently begins at line 1244 and describes four categories of changes, but
-  it does not clearly expose the three root bookkeeping slips or the recomputed intermediate
-  operator in Equation (28).
+- The mathematical equations remain the accepted corrected baseline; this stage made no equation
+  edit.
+- The current hierarchy is an ordinary bold author line, H2 abstract, H2 numbered sections, H2
+  acknowledgement, and H2 references. The abstract body remains wholly italicized.
+- The editorial note begins at line 1244 and now describes one harmless index correction and three
+  root bookkeeping slips, including the recomputed intermediate operator in Equation (28).
 - The prose before Equation (35) must remain unchanged. In particular, this stage must not add
   “non-trivial,” “rank-one,” or equivalent language.
-- `goal-1/check_source_audit.py` currently encodes the compact transcription's 49-display model,
-  stale U01/U03 display signatures, the old printed Equation (45) fixture, and lifecycle assumptions
-  that cannot serve as the final compiled equation registry.
-- Public source-fidelity documentation still contains stale claims that no PDF/facsimile comparison
-  exists.
+- `goal-1/check_source_audit.py` has been separated conceptually from compiled proof coverage: it
+  now checks the canonical source structure, stable provenance, ledger completeness, and protected
+  source content. A compiled equation registry remains a later stage.
+- Present-tense source-fidelity documentation has been reconciled with the available PDF and
+  verified-transcription comparison.
+- The final canonical Markdown SHA-256 is
+  `f18273e9da7109c3be329b17b3942f0fa0b6f064904e7334befbdee66732d032`.
 
 ## Updated Assumptions
 
@@ -92,5 +98,44 @@
 
 ## Stage Results
 
-- In progress.
-
+- The canonical source edit is exactly the agreed structural and editorial change:
+  - the author is an ordinary bold line;
+  - Abstract, sections 1–8, Acknowledgement, and References are H2 headings;
+  - the italic abstract body is unchanged;
+  - the end note now presents one index correction and three minor bookkeeping slips, explicitly
+    names the recomputed Equation (28) operator, records the propagated displays, states that
+    Equation (44) is unchanged, and explains the grouped complement in Equations (45)–(46).
+- Comparing the source commit with its parent gives 27 added and 24 removed lines. Inspection of
+  that focused diff shows only the author/heading replacements and editorial-note rewrite.
+- The Stage 1 source SHA-256 was
+  `b07b7bdafb13db21021b7e0d77efe74c2711fa6841772b00d3f369a67481b208`;
+  the final source SHA-256 is
+  `f18273e9da7109c3be329b17b3942f0fa0b6f064904e7334befbdee66732d032`.
+- The checker pins the unchanged tagged-equation bundle at
+  `b70465f98004c0581e6e68500a14f3ef82e24953e08cecf915fd1bacb351e69f`
+  and the unchanged Equation (35) introductory prose at
+  `3e017d03353e9bfbec7e71f5c1e5b2afeca0fee0a791d608a8027643c7f64c22`.
+  This directly enforces the user's no-qualifier decision as well as preservation of all numbered
+  displays.
+- The source/provenance checker now validates 46 tags in exact order, 47 displays (46 tagged and
+  one untagged), U01/U03 inline, U02 displayed, the full H1/H2 hierarchy, figure links, stable
+  PDF/figure hashes, the corrected Equation (45) signature, the tagged-equation bundle, and the
+  Equation (35) prose. It has no BQP filesystem dependency and no longer truth-tables the original
+  Equation (45).
+- Present-tense source facts were corrected in `goal-1/0-plan.md`,
+  `goal-1/1-SOURCE-AUDIT.md`, `goal-1/12-LIBRARY-AUDIT.md`, and
+  `docs/project-report.md`. Dated historical command evidence elsewhere in Goal 1 was not rewritten.
+  The source ledger now explicitly records that pair-state EPR statistics and the independent
+  pigeonhole Bell theorem do not yet constitute the required direct source-shaped derivations.
+- Verification passed:
+  - `lake build Deutsch DeutschTests`: 3309 jobs.
+  - `python3 -B goal-1/check_lean_integrity.py`: 65 Lean sources, 402 representative axiom
+    reports, no forbidden declarations or proof holes, and only `Classical.choice`, `Quot.sound`,
+    and `propext`.
+  - `python3 -B goal-1/check_source_audit.py`: all source, provenance, protected-content, and ledger
+    checks passed.
+  - `python3 -B goal-1/check_doc_links.py`: 14 expected/discovered public Markdown files and 118
+    repository-local links.
+  - `git diff --check` and the focused trailing-whitespace scan passed.
+- Stage 3 can therefore work entirely against the finalized corrected source. No source edit is
+  anticipated or authorized by the four-wire EPR implementation.

@@ -8,8 +8,8 @@ registers, subsystem embeddings, Heisenberg evolution, support locality, descrip
 density states and channels, EPR correlations, teleportation, explicit dephasing, and a corrected
 finite Bell contradiction.
 
-The paper is not used as proof input. Each numbered equation, unnumbered mathematical display,
-figure, definition, major prose claim, and interpretation group has a lifecycle entry in the
+The paper is not used as proof input. Each numbered equation, additional inline/displayed
+mathematical item, figure, definition, major prose claim, and interpretation group has a lifecycle entry in the
 [source audit](../goal-1/1-SOURCE-AUDIT.md). False or convention-inconsistent formulas are replaced
 by independently proved statements, and philosophical conclusions remain outside theorem
 conclusions unless represented by an explicit mathematical predicate.
@@ -145,8 +145,10 @@ unresolved in the source audit:
 - Communication capacities, entanglement necessity, the cited “nonlocality without entanglement”
   task, and philosophical claims about actual outcomes or many worlds are not inferred from the
   proved finite examples.
-- The repository contains the supplied Markdown transcription and its figures, but no independent
-  PDF/facsimile comparison. External transcription fidelity remains an input assumption.
+- The repository contains the original PDF, the canonical corrected Markdown, and all three
+  figures. The PDF and an independently prepared verified transcription have been compared with
+  the canonical edition; stable hashes guard the PDF and figures, and intentional differences are
+  disclosed by the edition's editorial note.
 
 These are bounded extension paths, not hidden premises of completed theorems.
 

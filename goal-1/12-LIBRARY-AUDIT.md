@@ -16,10 +16,10 @@
   verification roots. The integrity gate scans 65 Lean sources, requires every stage's focused
   oracles and principal declarations, and accepts 402 ordered axiom reports using only
   `Classical.choice`, `Quot.sound`, and `propext`.
-- The source ledger contains every numbered equation E01–E46, unnumbered display U01–U03,
-  definition D01–D11, figure F01–F03, prose claim C01–C66, and interpretation group I01–I10.
-  Every row now has a final scoped lifecycle disposition and the checker rejects any future
-  `Planned` regression.
+- The source ledger contains every numbered equation E01–E46, auxiliary mathematical item
+  U01–U03 (U01/U03 inline and U02 displayed), definition D01–D11, figure F01–F03, prose claim
+  C01–C66, and interpretation group I01–I10. Every row now has a final scoped lifecycle
+  disposition and the checker rejects any future `Planned` regression.
 - Public topic documentation covers conventions, representation, registers, locality,
   descriptors, gates, information, EPR, teleportation, decoherence, Bell, compiled reuse, and the
   final end-to-end report.
@@ -78,8 +78,8 @@
   communication-capacity claims, outcome-conditioned instruments, coherent-circuit/semantic-
   encoder identity, general stochastic Bell refinement, and philosophical diagnoses explicit as
   limitations or next work.
-- Treat the paper transcription's lack of an independently checked facsimile as an external source
-  fidelity limitation, not a Lean theorem gap.
+- Treat the completed PDF/verified-transcription comparison and the canonical edition's disclosed
+  corrections as source-provenance evidence distinct from Lean theorem evidence.
 
 ## No-Cheating Checks
 
@@ -133,9 +133,11 @@
   exact snippets, narrow-import guidance, and convention/scope boundaries.
 - The source checker covers E01–E46, U01–U03, D01–D11, F01–F03, C01–C66, and I01–I10. LC status
   counts are `Corrected=22`, `Partial=31`, `Excluded=8`, `Unresolved=5`, `Planned=0`; mathematical
-  item counts are `Oracle verified=6`, `Corrected=25`, `Partial=31`, `Excluded=1`,
-  `Unresolved=0`, `Planned=0`. It also guards the Equation (45) truth table and direct
-  `Deutsch.Bell` namespace spelling.
+  item counts are `Oracle verified=6`, `Corrected=24`, `Partial=32`, `Excluded=1`,
+  `Unresolved=0`, `Planned=0`. It also guards the PDF and figure hashes, the tagged-equation
+  bundle, the unchanged Equation (35) prose, the canonical Equation (45) complement signature,
+  U01/U03's inline placement, U02's displayed placement, and direct `Deutsch.Bell` namespace
+  spelling.
 - `docs/project-report.md` gives the final public entry points, formalized results, compiled source
   corrections, semantic distinctions, explicit limitations/unblock paths, reuse links, and
   reproducibility procedure. The documentation checker requires and validates all 14 public
