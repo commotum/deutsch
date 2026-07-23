@@ -104,8 +104,7 @@ theorem pauliVector_isHermitian (v : Vector3) :
     (pauliVector v).IsHermitian := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [pauliVector, pauliX, pauliY, pauliZ, Matrix.IsHermitian,
-      Matrix.conjTranspose_apply]
+    simp [pauliVector, pauliX, pauliY, pauliZ, Matrix.conjTranspose_apply]
 
 /-- Pauli multiplication in vector form. -/
 theorem pauliVector_mul_pauliVector (u v : Vector3) :
@@ -115,8 +114,7 @@ theorem pauliVector_mul_pauliVector (u v : Vector3) :
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [pauliVector, Vector3.dot, Vector3.cross, identity₂,
-      pauliX, pauliY, pauliZ, Matrix.mul_apply, Fin.sum_univ_succ,
-      Matrix.one_apply] <;>
+      pauliX, pauliY, pauliZ, Matrix.mul_apply, Fin.sum_univ_succ] <;>
     ring_nf <;>
     norm_num [Complex.I_sq] <;>
     simp [sub_eq_add_neg]
@@ -216,23 +214,33 @@ theorem exp_axisRotationGenerator (n : UnitAxis) (theta : ℝ) :
         (Real.cos (theta / 2) : ℂ) := by
     calc
       Complex.cosh (-Complex.I * (theta / 2 : ℂ)) =
-          Complex.cosh ((-(theta / 2 : ℂ)) * Complex.I) := by congr 1 <;> ring
+          Complex.cosh ((-(theta / 2 : ℂ)) * Complex.I) := by
+            congr 1
+            ring
       _ = Complex.cos (-(theta / 2 : ℂ)) := Complex.cosh_mul_I _
       _ = Complex.cos (theta / 2 : ℂ) := Complex.cos_neg _
       _ = (Real.cos (theta / 2) : ℂ) := by
-        simpa using (Complex.ofReal_cos (theta / 2)).symm
+        convert (Complex.ofReal_cos (theta / 2)).symm using 1
+        all_goals
+          push_cast
+          rfl
   have hsinh :
       Complex.sinh (-Complex.I * (theta / 2 : ℂ)) =
         -(Complex.I * (Real.sin (theta / 2) : ℂ)) := by
     calc
       Complex.sinh (-Complex.I * (theta / 2 : ℂ)) =
-          Complex.sinh ((-(theta / 2 : ℂ)) * Complex.I) := by congr 1 <;> ring
+          Complex.sinh ((-(theta / 2 : ℂ)) * Complex.I) := by
+            congr 1
+            ring
       _ = Complex.sin (-(theta / 2 : ℂ)) * Complex.I := Complex.sinh_mul_I _
       _ = -(Complex.sin (theta / 2 : ℂ)) * Complex.I := by rw [Complex.sin_neg]
       _ = -(Complex.I * (Real.sin (theta / 2) : ℂ)) := by
         have hsin : Complex.sin (theta / 2 : ℂ) =
             (Real.sin (theta / 2) : ℂ) := by
-          simpa using (Complex.ofReal_sin (theta / 2)).symm
+          convert (Complex.ofReal_sin (theta / 2)).symm using 1
+          all_goals
+            push_cast
+            rfl
         rw [hsin]
         ring
   rw [hcosh, hsinh]
@@ -303,11 +311,11 @@ theorem axisRotation_heisenberg (n : UnitAxis) (theta : ℝ) (v : Vector3) :
   have hc : C = c * c - s * s := by
     rw [hC_def, hc_def, hs_def,
       show theta = theta / 2 + theta / 2 by ring, Real.cos_add]
-    ring
+    ring_nf
   have hs : S = 2 * s * c := by
     rw [hS_def, hc_def, hs_def,
       show theta = theta / 2 + theta / 2 by ring, Real.sin_add]
-    ring
+    ring_nf
   have hhalf : c * c + s * s = 1 := by
     rw [hc_def, hs_def]
     nlinarith [Real.sin_sq_add_cos_sq (theta / 2)]
@@ -336,8 +344,7 @@ theorem axisRotation_heisenberg (n : UnitAxis) (theta : ℝ) (v : Vector3) :
   ext i j
   fin_cases i <;> fin_cases j <;>
     apply Complex.ext <;>
-    simp [axisPauli, pauliVector,
-      Vector3.heisenbergRotate, Vector3.dot, Vector3.cross, identity₂,
+    simp [axisPauli, pauliVector, Vector3.dot, Vector3.cross, identity₂,
       pauliX, pauliY, pauliZ, Matrix.mul_apply, Fin.sum_univ_succ,
       Matrix.one_apply] <;>
     ring_nf at hn_x hn_y hn_z ⊢ <;>

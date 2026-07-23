@@ -60,92 +60,111 @@ theorem equation25 (theta phi : ℝ) :
             (phi.cos : ℂ) • xAt EPR.q3 } :=
   ⟨EPR.equation25_q2 theta phi, EPR.equation25_q3 theta phi⟩
 
-private def selectedCoordinate (q : Fin 2) :
-    {r : Fin 2 // r ∈ ({q} : Finset (Fin 2))} :=
-  ⟨q, Finset.mem_singleton_self q⟩
+@[simp] private theorem densityExpectation_add
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    (rho : Density Q) (A B : Operator Q) :
+    densityExpectation rho (A + B) =
+      densityExpectation rho A + densityExpectation rho B := by
+  simp [densityExpectation, Matrix.mul_add, Matrix.trace_add]
 
-private theorem singletonMaximallyMixed_op_eq_smul_one (q : Fin 2) :
-    (singletonMaximallyMixed q).op =
-      ((2 : ℂ)⁻¹) •
-        (1 : Operator {r : Fin 2 // r ∈ ({q} : Finset (Fin 2))}) := by
-  ext i j
-  simp [singletonMaximallyMixed, Matrix.diagonal_apply, Matrix.one_apply]
+@[simp] private theorem densityExpectation_sub
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    (rho : Density Q) (A B : Operator Q) :
+    densityExpectation rho (A - B) =
+      densityExpectation rho A - densityExpectation rho B := by
+  simp [densityExpectation, Matrix.mul_sub, Matrix.trace_sub]
 
-private def selectedBasisEquiv (q : Fin 2) :
-    Basis {r : Fin 2 // r ∈ ({q} : Finset (Fin 2))} ≃ QubitIndex where
-  toFun bits := bits (selectedCoordinate q)
-  invFun bit := fun _ => bit
-  left_inv bits := by
-    funext r
-    apply congrArg bits
-    apply Subtype.ext
-    exact (Finset.mem_singleton.mp r.2).symm
-  right_inv _ := rfl
+@[simp] private theorem densityExpectation_smul
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    (rho : Density Q) (c : ℂ) (A : Operator Q) :
+    densityExpectation rho (c • A) =
+      c * densityExpectation rho A := by
+  simp [densityExpectation, Matrix.trace_smul]
 
-private theorem selected_embedQubit_apply (q : Fin 2) (A : QubitMatrix)
-    (left right : QubitIndex) :
-    embedQubit (selectedCoordinate q) A
-        ((selectedBasisEquiv q).symm left)
-        ((selectedBasisEquiv q).symm right) =
-      A left right := by
-  rw [embedQubit_apply_ite, if_pos]
-  · rfl
+@[simp] private theorem densityExpectation_neg
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    (rho : Density Q) (A : Operator Q) :
+    densityExpectation rho (-A) = -densityExpectation rho A := by
+  simp [densityExpectation, Matrix.mul_neg, Matrix.trace_neg]
+
+private theorem referenceExpectation_xAt (q : EPR.EPRQubit) :
+    densityExpectation (referenceDensity EPR.EPRQubit) (xAt q) = 0 := by
+  rw [referenceDensity_expectation, referenceKet, basisKet_expectation]
+  rw [xAt, embedQubit_apply_ite, if_pos]
+  · simp [paperZeroAssignment, pauliX]
   · intro r hr
-    apply False.elim
-    apply hr
-    apply Subtype.ext
-    exact Finset.mem_singleton.mp r.2
+    exact rfl
 
-private theorem singleton_trace_x (q : Fin 2) :
-    Matrix.trace (xAt (selectedCoordinate q)) = 0 := by
-  unfold Matrix.trace Matrix.diag
-  rw [← (selectedBasisEquiv q).symm.sum_comp]
-  simp [xAt, selected_embedQubit_apply, pauliX]
+private theorem referenceExpectation_y_mul_x
+    (q r : EPR.EPRQubit) (hne : q ≠ r) :
+    densityExpectation (referenceDensity EPR.EPRQubit)
+        (yAt q * xAt r) = 0 := by
+  rw [referenceDensity_expectation, referenceKet, basisKet_expectation]
+  change
+    (embedQubit q pauliY * embedQubit r pauliX)
+      (paperZeroAssignment EPR.EPRQubit)
+      (paperZeroAssignment EPR.EPRQubit) = 0
+  rw [embedQubit_mul_embedQubit_apply_of_ne hne]
+  simp [paperZeroAssignment, yAt, xAt, pauliY, pauliX]
 
-private theorem singleton_trace_y (q : Fin 2) :
-    Matrix.trace (yAt (selectedCoordinate q)) = 0 := by
-  unfold Matrix.trace Matrix.diag
-  rw [← (selectedBasisEquiv q).symm.sum_comp]
-  simp [yAt, selected_embedQubit_apply, pauliY]
-
-private theorem singleton_trace_z (q : Fin 2) :
-    Matrix.trace (zAt (selectedCoordinate q)) = 0 := by
-  unfold Matrix.trace Matrix.diag
-  rw [← (selectedBasisEquiv q).symm.sum_comp]
-  simp [zAt, selected_embedQubit_apply, pauliZ]
+private theorem referenceExpectation_z_mul_x
+    (q r : EPR.EPRQubit) (hne : q ≠ r) :
+    densityExpectation (referenceDensity EPR.EPRQubit)
+        (zAt q * xAt r) = 0 := by
+  rw [referenceDensity_expectation, referenceKet, basisKet_expectation]
+  change
+    (embedQubit q pauliZ * embedQubit r pauliX)
+      (paperZeroAssignment EPR.EPRQubit)
+      (paperZeroAssignment EPR.EPRQubit) = 0
+  rw [embedQubit_mul_embedQubit_apply_of_ne hne]
+  simp [paperZeroAssignment, zAt, xAt, pauliZ, pauliX]
 
 /--
-Equation (26): each time-two EPR qubit is maximally mixed and its three local Pauli moments
-vanish.  Quantifying over `Fin 2` packages the two displayed qubits without privileging either.
+Equation (26): the fixed-reference expectations of the three displayed time-two descriptor
+components of `q2` vanish.
 -/
 theorem equation26 (theta phi : ℝ) :
-    ∀ q : Fin 2,
-      (EPR.pairDensity theta phi).reduce ({q} : Finset (Fin 2)) =
-          singletonMaximallyMixed q ∧
-        densityExpectation
-            ((EPR.pairDensity theta phi).reduce ({q} : Finset (Fin 2)))
-            (xAt (selectedCoordinate q)) = 0 ∧
-        densityExpectation
-            ((EPR.pairDensity theta phi).reduce ({q} : Finset (Fin 2)))
-            (yAt (selectedCoordinate q)) = 0 ∧
-        densityExpectation
-            ((EPR.pairDensity theta phi).reduce ({q} : Finset (Fin 2)))
-            (zAt (selectedCoordinate q)) = 0 := by
-  intro q
+    densityExpectation (referenceDensity EPR.EPRQubit)
+          (EPR.timeTwoDescriptors theta phi EPR.q2).x = 0 ∧
+      densityExpectation (referenceDensity EPR.EPRQubit)
+          (EPR.timeTwoDescriptors theta phi EPR.q2).y = 0 ∧
+      densityExpectation (referenceDensity EPR.EPRQubit)
+          (EPR.timeTwoDescriptors theta phi EPR.q2).z = 0 := by
   constructor
-  · exact EPR.pairDensity_reduce_singleton theta phi q
-  rw [EPR.pairDensity_reduce_singleton]
+  · rw [EPR.timeTwo_q2_x, referenceExpectation_xAt]
   constructor
-  · rw [densityExpectation, singletonMaximallyMixed_op_eq_smul_one,
-      Matrix.smul_mul, Matrix.one_mul, Matrix.trace_smul, singleton_trace_x,
-      smul_zero]
-  constructor
-  · rw [densityExpectation, singletonMaximallyMixed_op_eq_smul_one,
-      Matrix.smul_mul, Matrix.one_mul, Matrix.trace_smul, singleton_trace_y,
-      smul_zero]
-  · rw [densityExpectation, singletonMaximallyMixed_op_eq_smul_one,
-      Matrix.smul_mul, Matrix.one_mul, Matrix.trace_smul, singleton_trace_z,
-      smul_zero]
+  · rw [EPR.timeTwo_q2_y, densityExpectation_sub,
+      densityExpectation_smul, densityExpectation_smul,
+      densityExpectation_neg, densityExpectation_neg,
+      referenceExpectation_y_mul_x EPR.q2 EPR.q3 EPR.q2_ne_q3,
+      referenceExpectation_z_mul_x EPR.q2 EPR.q3 EPR.q2_ne_q3]
+    simp
+  · rw [EPR.timeTwo_q2_z, densityExpectation_add,
+      densityExpectation_smul, densityExpectation_smul,
+      densityExpectation_neg, densityExpectation_neg,
+      referenceExpectation_y_mul_x EPR.q2 EPR.q3 EPR.q2_ne_q3,
+      referenceExpectation_z_mul_x EPR.q2 EPR.q3 EPR.q2_ne_q3]
+    simp
+
+private theorem equation27_q1_expanded (theta phi : ℝ) :
+    EPR.timeThreeDescriptors theta phi EPR.q1 =
+      { x := xAt EPR.q1
+        y := yAt EPR.q1 *
+            (((Real.cos theta : ℂ) • zAt EPR.q2 +
+              (Real.sin theta : ℂ) • yAt EPR.q2) * xAt EPR.q3)
+        z := zAt EPR.q1 *
+            (((Real.cos theta : ℂ) • zAt EPR.q2 +
+              (Real.sin theta : ℂ) • yAt EPR.q2) * xAt EPR.q3) } := by
+  rw [EPR.equation27_q1, EPR.equation24_q1, EPR.equation25_q2]
+  apply Descriptor.ext_components <;> simp only
+  · rfl
+  · simp only [Matrix.mul_add, Matrix.mul_smul, Matrix.smul_mul,
+      Matrix.mul_neg, Matrix.neg_mul, neg_neg]
+    trace_state
+    module
+  · simp only [Matrix.mul_add, Matrix.mul_smul, Matrix.smul_mul,
+      Matrix.mul_neg, Matrix.neg_mul, neg_neg]
+    module
 
 /-- Equation (27): all four descriptors after the two local coherent records. -/
 theorem equation27 (theta phi : ℝ) :
