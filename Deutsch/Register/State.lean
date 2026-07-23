@@ -94,6 +94,12 @@ def PureState.evolve (U : Operator Q)
 /-- Pure-state expectation `⟨ψ|A|ψ⟩`. -/
 def expectation (psi : Ket Q) (A : Operator Q) : ℂ := ⟪psi, act A psi⟫_ℂ
 
+/-- A computational-basis ket reads off the matching diagonal matrix entry. -/
+theorem basisKet_expectation (bits : Basis Q) (A : Operator Q) :
+    expectation (basisKet bits) A = A bits bits := by
+  simp [expectation, act, matrixEndEquiv_apply, basisKet, basisVector,
+    PiLp.inner_apply, RCLike.inner_apply]
+
 theorem star_expectation (psi : Ket Q) (A : Operator Q) :
     star (expectation psi A) = expectation psi Aᴴ := by
   unfold expectation

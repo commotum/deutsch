@@ -373,6 +373,13 @@ theorem basisDensity_basisEffect_probability (prepared observed : Basis Q) :
 def referenceDensity (Q : Type*) [Fintype Q] [DecidableEq Q] : Density Q :=
   basisDensity (paperZeroAssignment Q)
 
+/-- Density and ket expectations agree on the paper's all-zero reference state. -/
+theorem referenceDensity_expectation (A : Operator Q) :
+    densityExpectation (referenceDensity Q) A =
+      Register.expectation (referenceKet Q) A := by
+  rw [referenceDensity, basisDensity_expectation,
+    referenceKet, Register.basisKet_expectation]
+
 /-- Schrödinger unitary evolution of a density state. -/
 def Density.evolve (rho : Density Q) (U : Operator Q)
     (hU : U ∈ Matrix.unitaryGroup (Basis Q) ℂ) : Density Q where
