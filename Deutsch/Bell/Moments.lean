@@ -183,6 +183,12 @@ theorem disjunction_complement_partition (left right : Bool) :
   cases left <;> cases right <;>
     norm_num [disjunctionIndicator, complementaryDisjunctionIndicator]
 
+theorem complementaryDisjunctionIndicator_eq_one_sub (left right : Bool) :
+    complementaryDisjunctionIndicator left right =
+      1 - disjunctionIndicator left right := by
+  cases left <;> cases right <;>
+    norm_num [disjunctionIndicator, complementaryDisjunctionIndicator]
+
 theorem complementaryDisjunctionIndicator_nonnegative (left right : Bool) :
     0 ≤ complementaryDisjunctionIndicator left right :=
   booleanIndicator_nonnegative _
@@ -278,7 +284,8 @@ theorem equation42_mean_square_zero
                 bobValue bob sample setting)) := by
             apply space.expectation_congr
             intro sample
-            simp only [aliceValue, bobValue, booleanIndicator_sq]
+            unfold aliceValue bobValue
+            rw [sub_sq, booleanIndicator_sq, booleanIndicator_sq]
             ring
       _ = space.expectation (fun sample => aliceValue alice sample setting) +
           space.expectation (fun sample => bobValue bob sample setting) -
@@ -341,20 +348,35 @@ theorem equation44_alice_joint_moment
         aliceValue alice sample setting₀ * bobValue bob sample setting₁) := by
           apply space.expectation_congr_on_positive_support
           intro sample weight_positive
-          rw [equation43_equal_on_positive_support
-            space alice bob reproduces weight_positive setting₁]
+          have responses_equal :
+              alice sample setting₁ = bob sample setting₁ :=
+            (equation43_equal_on_positive_support
+              space alice bob reproduces weight_positive setting₁).symm
+          unfold aliceValue bobValue
+          rw [responses_equal]
     _ = eprJointMoment setting₀ setting₁ :=
       reproduces.joint_mean setting₀ setting₁
 
 /-! ## Equations (45)--(46) -/
 
-/-- Equation (45): multiplication by a Boolean event and its actual complement partitions `a₀`. -/
-theorem equation45_complementary_partition (a₀ a₁ a₂ : Bool) :
+/-- Multiplication by a Boolean event and its actual complement partitions `a₀`. -/
+theorem boolean_disjunction_complement_partition (a₀ a₁ a₂ : Bool) :
     booleanIndicator a₀ =
       booleanIndicator a₀ * disjunctionIndicator a₁ a₂ +
         booleanIndicator a₀ * complementaryDisjunctionIndicator a₁ a₂ := by
   cases a₀ <;> cases a₁ <;> cases a₂ <;>
     norm_num [disjunctionIndicator, complementaryDisjunctionIndicator]
+
+/--
+Equation (45), in its displayed real-arithmetic form.  The parenthesized second factor is the
+indicator of the event complementary to the disjunction.
+-/
+theorem equation45_complementary_partition (a₀ a₁ a₂ : Bool) :
+    booleanIndicator a₀ =
+      booleanIndicator a₀ * disjunctionIndicator a₁ a₂ +
+        booleanIndicator a₀ * (1 - disjunctionIndicator a₁ a₂) := by
+  rw [← complementaryDisjunctionIndicator_eq_one_sub]
+  exact boolean_disjunction_complement_partition a₀ a₁ a₂
 
 /-- Averaged form of Equation (45), ready for the first line of Equation (46). -/
 theorem equation45_expectation_partition
@@ -370,7 +392,268 @@ theorem equation45_expectation_partition
           complementaryDisjunctionIndicator (a₁ sample) (a₂ sample)) := by
   rw [← space.expectation_add]
   exact space.expectation_congr fun sample =>
-    equation45_complementary_partition (a₀ sample) (a₁ sample) (a₂ sample)
+    boolean_disjunction_complement_partition
+      (a₀ sample) (a₁ sample) (a₂ sample)
+
+/-- Linear expansion used in the middle of Equation (46). -/
+theorem expectation_disjunction_expansion
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (value₀ value₁ value₂ : Ω → ℝ) :
+    space.expectation (fun sample =>
+        value₀ sample *
+          (value₁ sample + value₂ sample - value₁ sample * value₂ sample)) +
+      space.expectation (fun sample =>
+        1 - value₁ sample - value₂ sample + value₁ sample * value₂ sample) =
+      (space.expectation (fun sample => value₀ sample * value₁ sample) +
+          space.expectation (fun sample => value₀ sample * value₂ sample) -
+            space.expectation (fun sample =>
+              value₀ sample * value₁ sample * value₂ sample)) +
+        (1 - space.expectation value₁ - space.expectation value₂ +
+          space.expectation (fun sample => value₁ sample * value₂ sample)) := by
+  have first_expansion :
+      space.expectation (fun sample =>
+          value₀ sample *
+            (value₁ sample + value₂ sample -
+              value₁ sample * value₂ sample)) =
+        space.expectation (fun sample => value₀ sample * value₁ sample) +
+          space.expectation (fun sample => value₀ sample * value₂ sample) -
+            space.expectation (fun sample =>
+              value₀ sample * value₁ sample * value₂ sample) := by
+    calc
+      space.expectation (fun sample =>
+          value₀ sample *
+            (value₁ sample + value₂ sample -
+              value₁ sample * value₂ sample)) =
+        space.expectation (fun sample =>
+          value₀ sample * value₁ sample +
+            value₀ sample * value₂ sample -
+              value₀ sample * value₁ sample * value₂ sample) := by
+                apply space.expectation_congr
+                intro sample
+                ring
+      _ = space.expectation (fun sample => value₀ sample * value₁ sample) +
+          space.expectation (fun sample => value₀ sample * value₂ sample) -
+            space.expectation (fun sample =>
+              value₀ sample * value₁ sample * value₂ sample) := by
+              rw [space.expectation_sub, space.expectation_add]
+  have complement_expansion :
+      space.expectation (fun sample =>
+          1 - value₁ sample - value₂ sample + value₁ sample * value₂ sample) =
+        1 - space.expectation value₁ - space.expectation value₂ +
+          space.expectation (fun sample => value₁ sample * value₂ sample) := by
+    calc
+      space.expectation (fun sample =>
+          1 - value₁ sample - value₂ sample + value₁ sample * value₂ sample) =
+        space.expectation (fun sample => 1 - value₁ sample - value₂ sample) +
+          space.expectation (fun sample => value₁ sample * value₂ sample) := by
+            rw [space.expectation_add]
+      _ = (space.expectation (fun _ => 1) - space.expectation value₁ -
+          space.expectation value₂) +
+            space.expectation (fun sample => value₁ sample * value₂ sample) := by
+              rw [space.expectation_sub, space.expectation_sub]
+      _ = 1 - space.expectation value₁ - space.expectation value₂ +
+          space.expectation (fun sample => value₁ sample * value₂ sample) := by
+            rw [space.expectation_one]
+  rw [first_expansion, complement_expansion]
+
+/-- The two complementary terms in the first line of Equation (46). -/
+def equation46PartitionedMean
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice : Ω → Fin 3 → Bool) : ℝ :=
+  space.expectation (fun sample =>
+      aliceValue alice sample 0 *
+        disjunctionIndicator (alice sample 1) (alice sample 2)) +
+    space.expectation (fun sample =>
+      aliceValue alice sample 0 *
+        complementaryDisjunctionIndicator (alice sample 1) (alice sample 2))
+
+/-- The arithmetic disjunction and complement bound in the second line of Equation (46). -/
+def equation46ExpandedMean
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice : Ω → Fin 3 → Bool) : ℝ :=
+  space.expectation (fun sample =>
+      aliceValue alice sample 0 *
+        (aliceValue alice sample 1 + aliceValue alice sample 2 -
+          aliceValue alice sample 1 * aliceValue alice sample 2)) +
+    space.expectation (fun sample =>
+      1 - aliceValue alice sample 1 - aliceValue alice sample 2 +
+        aliceValue alice sample 1 * aliceValue alice sample 2)
+
+/-- The nonnegative triple-response moment subtracted in the last two lines of Equation (46). -/
+def equation46TripleMean
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice : Ω → Fin 3 → Bool) : ℝ :=
+  space.expectation (fun sample =>
+    aliceValue alice sample 0 *
+      aliceValue alice sample 1 *
+        aliceValue alice sample 2)
+
+/-- First line of Equation (46): Equation (45) and the `a(0)` marginal give one half. -/
+theorem equation46_first_equality
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice bob : Ω → Fin 3 → Bool)
+    (reproduces : ReproducesThreeSettingEPRMoments space alice bob) :
+    (1 / 2 : ℝ) = equation46PartitionedMean space alice := by
+  calc
+    (1 / 2 : ℝ) =
+        space.expectation (fun sample => aliceValue alice sample 0) :=
+      (reproduces.alice_mean 0).symm
+    _ = equation46PartitionedMean space alice := by
+      simpa [equation46PartitionedMean, aliceValue] using
+        equation45_expectation_partition space
+          (fun sample => alice sample 0)
+          (fun sample => alice sample 1)
+          (fun sample => alice sample 2)
+
+/--
+First inequality of Equation (46): the disjunction is expanded exactly, while multiplication of
+its complementary indicator by `a(0)` can only decrease it.
+-/
+theorem equation46_first_inequality
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice : Ω → Fin 3 → Bool) :
+    equation46PartitionedMean space alice ≤
+      equation46ExpandedMean space alice := by
+  have disjunction_term :
+      space.expectation (fun sample =>
+          aliceValue alice sample 0 *
+            disjunctionIndicator (alice sample 1) (alice sample 2)) =
+        space.expectation (fun sample =>
+          aliceValue alice sample 0 *
+            (aliceValue alice sample 1 + aliceValue alice sample 2 -
+              aliceValue alice sample 1 * aliceValue alice sample 2)) := by
+    apply space.expectation_congr
+    intro sample
+    rw [disjunctionIndicator_eq]
+    rfl
+  have complement_term :
+      space.expectation (fun sample =>
+          aliceValue alice sample 0 *
+            complementaryDisjunctionIndicator
+              (alice sample 1) (alice sample 2)) ≤
+        space.expectation (fun sample =>
+          1 - aliceValue alice sample 1 - aliceValue alice sample 2 +
+            aliceValue alice sample 1 * aliceValue alice sample 2) := by
+    apply space.expectation_mono
+    intro sample
+    rw [show
+      1 - aliceValue alice sample 1 - aliceValue alice sample 2 +
+          aliceValue alice sample 1 * aliceValue alice sample 2 =
+        complementaryDisjunctionIndicator
+          (alice sample 1) (alice sample 2) by
+      symm
+      exact complementaryDisjunctionIndicator_eq
+        (alice sample 1) (alice sample 2)]
+    exact mul_le_of_le_one_left
+      (complementaryDisjunctionIndicator_nonnegative
+        (alice sample 1) (alice sample 2))
+      (booleanIndicator_le_one (alice sample 0))
+  unfold equation46PartitionedMean equation46ExpandedMean
+  rw [disjunction_term]
+  exact add_le_add (le_refl _) complement_term
+
+/-- Exact moment evaluation underlying the second inequality in Equation (46). -/
+theorem equation46_expanded_mean
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice bob : Ω → Fin 3 → Bool)
+    (reproduces : ReproducesThreeSettingEPRMoments space alice bob) :
+    equation46ExpandedMean space alice =
+      (3 / 8 : ℝ) - equation46TripleMean space alice := by
+  rw [equation46ExpandedMean, equation46TripleMean,
+    expectation_disjunction_expansion]
+  rw [equation44_alice_joint_moment space alice bob reproduces 0 1,
+    equation44_alice_joint_moment space alice bob reproduces 0 2,
+    equation44_alice_joint_moment space alice bob reproduces 1 2,
+    reproduces.alice_mean 1, reproduces.alice_mean 2,
+    eprJointMoment_zero_one, eprJointMoment_zero_two,
+    eprJointMoment_one_two]
+  ring
+
+/-- Second inequality in Equation (46), with its exact moment evaluation exposed separately. -/
+theorem equation46_second_inequality
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice bob : Ω → Fin 3 → Bool)
+    (reproduces : ReproducesThreeSettingEPRMoments space alice bob) :
+    equation46ExpandedMean space alice ≤
+      (3 / 8 : ℝ) - equation46TripleMean space alice :=
+  (equation46_expanded_mean space alice bob reproduces).le
+
+/-- The triple Boolean product, and hence its weighted mean, is nonnegative. -/
+theorem equation46_triple_mean_nonnegative
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice : Ω → Fin 3 → Bool) :
+    0 ≤ equation46TripleMean space alice := by
+  unfold equation46TripleMean FiniteProbabilityWeight.expectation
+  apply Finset.sum_nonneg
+  intro sample _
+  exact mul_nonneg (space.nonnegative sample)
+    (mul_nonneg
+      (mul_nonneg
+        (booleanIndicator_nonnegative (alice sample 0))
+        (booleanIndicator_nonnegative (alice sample 1)))
+      (booleanIndicator_nonnegative (alice sample 2)))
+
+/-- Last inequality in Equation (46), from nonnegativity of the triple product. -/
+theorem equation46_third_inequality
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice : Ω → Fin 3 → Bool) :
+    (3 / 8 : ℝ) - equation46TripleMean space alice ≤ (3 / 8 : ℝ) :=
+  sub_le_self _ (equation46_triple_mean_nonnegative space alice)
+
+/--
+All displayed comparisons in Equation (46), packaged without replacing any line by the separate
+pigeonhole argument.
+-/
+theorem equation46_chain
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice bob : Ω → Fin 3 → Bool)
+    (reproduces : ReproducesThreeSettingEPRMoments space alice bob) :
+    (1 / 2 : ℝ) = equation46PartitionedMean space alice ∧
+      equation46PartitionedMean space alice ≤ equation46ExpandedMean space alice ∧
+      equation46ExpandedMean space alice ≤
+        (3 / 8 : ℝ) - equation46TripleMean space alice ∧
+      (3 / 8 : ℝ) - equation46TripleMean space alice ≤ (3 / 8 : ℝ) := by
+  exact ⟨
+    equation46_first_equality space alice bob reproduces,
+    equation46_first_inequality space alice,
+    equation46_second_inequality space alice bob reproduces,
+    equation46_third_inequality space alice⟩
+
+/-- The numerical endpoint of Equation (46): the assumptions force `1/2 ≤ 3/8`. -/
+theorem equation46_impossible_bound
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice bob : Ω → Fin 3 → Bool)
+    (reproduces : ReproducesThreeSettingEPRMoments space alice bob) :
+    (1 / 2 : ℝ) ≤ (3 / 8 : ℝ) := by
+  rcases equation46_chain space alice bob reproduces with
+    ⟨first_equality, first_inequality, second_inequality, third_inequality⟩
+  calc
+    (1 / 2 : ℝ) = equation46PartitionedMean space alice := first_equality
+    _ ≤ equation46ExpandedMean space alice := first_inequality
+    _ ≤ (3 / 8 : ℝ) - equation46TripleMean space alice := second_inequality
+    _ ≤ (3 / 8 : ℝ) := third_inequality
+
+/-- The Equation (46) chain yields the displayed impossibility `1/2 ≤ 3/8`. -/
+theorem equation46_contradiction
+    {Ω : Type*} [Fintype Ω]
+    (space : FiniteProbabilityWeight Ω)
+    (alice bob : Ω → Fin 3 → Bool)
+    (reproduces : ReproducesThreeSettingEPRMoments space alice bob) :
+    False := by
+  have impossible := equation46_impossible_bound space alice bob reproduces
+  norm_num at impossible
 
 end
 end Bell

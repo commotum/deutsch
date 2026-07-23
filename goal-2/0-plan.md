@@ -267,7 +267,7 @@ Finalize the corrected Markdown as a faithful, minimally edited canonical source
 
 #### Status
 
-In progress; current design and proof evidence are recorded in `goal-2/3-EPR-BRIDGE.md`.
+Complete with recorded evidence in `goal-2/3-EPR-BRIDGE.md`.
 
 #### Big Picture Objective
 
@@ -297,6 +297,10 @@ to the independent two-qubit pair calculations.
 - Focused EPR tests, the full build, and the axiom audit pass.
 
 ### 4-BELL-MOMENTS
+
+#### Status
+
+In progress.
 
 #### Big Picture Objective
 

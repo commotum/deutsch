@@ -76,6 +76,7 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 
 -- Pure states, preparation, predictions, and transport.
 #print axioms Deutsch.Register.norm_basisKet
+#print axioms Deutsch.Register.basisKet_expectation
 #print axioms Deutsch.Register.norm_act_unitary
 #print axioms Deutsch.Register.expectation_after_action
 #print axioms Deutsch.Register.fixed_reference_prediction
@@ -212,6 +213,10 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Information.basisDensity_basisEffect_probability
 #print axioms Deutsch.Information.densityExpectation_evolve
 #print axioms Deutsch.Information.purity_evolve
+#print axioms Deutsch.Information.pureDensity_basisState
+#print axioms Deutsch.Information.basisDensity_expectation
+#print axioms Deutsch.Information.referenceDensity_expectation
+#print axioms Deutsch.Information.pureDensity_evolve
 
 -- Selected-subsystem reduction, computational bases, and local/global Born duality.
 #print axioms Deutsch.Information.partialTrace_add
@@ -222,6 +227,8 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Information.partialTrace_trace_mul
 #print axioms Deutsch.Information.bornProbability_reduce
 #print axioms Deutsch.Information.reduced_density_eq_iff_embedded_effect_probabilities
+#print axioms Deutsch.Information.Effect.embedAlong_op
+#print axioms Deutsch.Information.referenceDensity_expectation_embedAlong
 
 -- Finite Kraus channels, dual effects, and composition.
 #print axioms Deutsch.Information.KrausChannel.mapOperator_add
@@ -334,6 +341,28 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.EPR.pairDensity_z_expectation
 #print axioms Deutsch.EPR.pairDensity_equal_settings_zz_expectation
 #print axioms Deutsch.EPR.pairDensity_zero_resource_correlation
+
+-- Literal Figure 2 state evolution, record effects, and pair-statistics bridges.
+#print axioms Deutsch.EPR.timeTwoUnitary_eq_embedAlong_pairCircuit
+#print axioms Deutsch.EPR.timeTwoPureKet_eq_liftPair
+#print axioms Deutsch.EPR.recordingLayer_liftPairKet
+#print axioms Deutsch.EPR.fourWireTimeThreeDensity_eq_referenceDensity_evolve
+#print axioms Deutsch.EPR.fourWireTimeFourDensity_eq_referenceDensity_evolve
+#print axioms Deutsch.EPR.fourWireTimeThreePureState_ket
+#print axioms Deutsch.EPR.recordOutcomeEffect_eq_embedAlong
+#print axioms Deutsch.EPR.fourWireTimeThree_recordOutcome_probability
+#print axioms Deutsch.EPR.fourWireTimeThree_recordOutcome_probability_eq_pairDensity
+#print axioms Deutsch.EPR.fourWireTimeThree_leftRecord_probability
+#print axioms Deutsch.EPR.fourWireTimeThree_rightRecord_probability
+#print axioms Deutsch.EPR.fourWireTimeThree_leftRecord_probability_eq_pairDensity
+#print axioms Deutsch.EPR.fourWireTimeThree_rightRecord_probability_eq_pairDensity
+#print axioms Deutsch.EPR.fourWireTimeThree_jointRecord_probability_eq_pairDensity
+#print axioms Deutsch.EPR.fourWireTimeThree_jointRecord_probability
+#print axioms Deutsch.EPR.fourWireTimeFourPureState_ket
+#print axioms Deutsch.EPR.fourWireTimeFour_comparison_probability
+#print axioms Deutsch.EPR.fourWireTimeFour_comparison_probability_eq_pairDensity
+#print axioms Deutsch.EPR.fourWireTimeFour_comparison_equal_settings
+#print axioms Deutsch.EPR.fourWireTimeFour_comparison_relative_pi
 
 -- Same final density with distinct supplied preparation histories.
 #print axioms Deutsch.EPR.equation39_route_densities_eq

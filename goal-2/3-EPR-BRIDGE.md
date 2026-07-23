@@ -2,7 +2,7 @@
 
 ## Status
 
-- In progress.
+- Complete.
 
 ## Current Facts
 
@@ -28,7 +28,7 @@
 
 ## Updated Assumptions
 
-- A neutral `Deutsch.EPR.Records` module can own the literal record densities, effects, circuit
+- A neutral `Deutsch.EPR.RecordStatistics` module can own the literal record densities, effects, circuit
   bridges, and source-facing Equation (28)/(40)/(41) theorems.
 - Generic ordered effect placement and reference-expectation placement lemmas belong in
   `Deutsch.Information.Reduction`, where both EPR and future modules can reuse them.
@@ -46,7 +46,7 @@
 
 - Add general `Effect.embedAlong` and fixed-reference expectation placement lemmas to the
   information/reduction layer, with positivity and exact-operator tests.
-- Add `Deutsch/EPR/Records.lean` containing:
+- Add `Deutsch/EPR/RecordStatistics.lean` containing:
   - ordered placements for the EPR pair (`q2,q3`) and records (`q1,q4`);
   - exact time-two placed-pair circuit equality;
   - time-three and time-four four-wire densities;
@@ -83,6 +83,47 @@
 
 ## Stage Results
 
-- In progress. The next concrete step is to promote the compiled ordered-effect and
-  reference-expectation helpers, then prove the smallest left-record bridge before generalizing to
-  the joint and comparison effects.
+- Added reusable low-level lemmas:
+  - `Register.basisKet_expectation`;
+  - `Information.pureDensity_basisState`, `basisDensity_expectation`,
+    `referenceDensity_expectation`, and `pureDensity_evolve`;
+  - `Information.Effect.embedAlong` with exact operator semantics; and
+  - `Information.referenceDensity_expectation_embedAlong`.
+- Added `Deutsch/EPR/RecordStatistics.lean` and re-exported it from `Deutsch.EPR`. Its principal
+  compiled results include:
+  - the exact identity
+    `timeTwoUnitary theta phi = embedAlong pairPlacement (pairCircuit theta phi)`;
+  - explicit lifted and recorded four-wire kets derived by applying the named circuit gates;
+  - time-three and time-four pure densities, each proved equal to evolution of
+    `referenceDensity EPRQubit` through the corresponding named unitary;
+  - record effects placed along the ordered injection `q1,q4`, together with the left/right
+    marginal and final comparison effects expressed by the canonical paper-one projector;
+  - an arbitrary-outcome probability bridge from the time-three record state to the two-wire pair
+    density;
+  - direct time-three marginal and joint probabilities for Equations (40) and (41);
+  - a direct time-four comparison probability for Equation (28); and
+  - equal-setting and arbitrary relative-`pi` boundary theorems.
+- The bridge intentionally proves equality of the relevant computational-record probabilities.
+  It does not assert equality between the reduced record density and `pairDensity`: tracing out the
+  source wires removes the pair state's record-basis coherences.
+- A second compiled Heisenberg-route experiment recovered the same placed-pair circuit and a
+  generic fixed-reference product factorization. Completing the three record statistics by that
+  route required substantially more projector normal-form bookkeeping without strengthening the
+  result, so the exact ket route was retained.
+- `DeutschTests/EPR.lean` now checks the literal four-wire statements of Equations (28), (40), and
+  (41), all pair/four-wire probability bridges, raw-zero/paper-one effect semantics, equal settings,
+  and arbitrary settings separated by `pi`.
+- Verification:
+  - `lake env lean Deutsch/EPR/RecordStatistics.lean`: pass.
+  - `lake build Deutsch.EPR`: 2722 jobs, pass.
+  - `lake build DeutschTests.EPR`: 2723 jobs, pass.
+  - `lake build DeutschTests.Audit DeutschTests.EPR`: 3299 jobs, pass.
+  - `lake build Deutsch DeutschTests`: 3310 jobs, pass.
+  - `python3 goal-1/check_lean_integrity.py`: 67 Lean sources and 429 representative axiom
+    reports, pass; observed foundations only `Classical.choice`, `Quot.sound`, and `propext`.
+  - `python3 goal-1/check_source_audit.py`: 46 tagged equations, 47 displays, source/provenance
+    guards pass.
+  - `python3 goal-1/check_doc_links.py`: 14 public Markdown files and 119 local links, pass.
+  - `git diff --check` and the focused forbidden-token scan: pass.
+- No EPR module imports `Deutsch.Decoherence`, and no measurement, collapse, source formula, or
+  trigonometric conclusion is assumed in the circuit bridge.

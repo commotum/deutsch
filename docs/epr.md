@@ -2,7 +2,8 @@
 
 The finite EPR layer is split into the phase-sensitive [two-qubit pair](../Deutsch/EPR/Pair.lean),
 the [named four-qubit circuit](../Deutsch/EPR/Circuit.lean), its
-[density/effect statistics](../Deutsch/EPR/Statistics.lean), and
+[two-qubit density/effect statistics](../Deutsch/EPR/Statistics.lean), the
+[literal record statistics](../Deutsch/EPR/RecordStatistics.lean), and
 [preparation provenance](../Deutsch/EPR/Provenance.lean). Focused regression theorems are in
 [`DeutschTests.EPR`](../DeutschTests/EPR.lean). The source equations and their correction lifecycle
 are tracked in the [source audit ledger](../goal-1/1-SOURCE-AUDIT.md).
@@ -129,7 +130,7 @@ probability for every two pairs of settings. The concrete effects `paperOneMargi
 the pair-level `1/2` marginal identities used for Equation (40)'s numerical values; they do not
 define a measurement instrument on the later four-wire record state.
 
-## Corrected Equations (28) and (41)
+## Equations (28), (40), and (41): pair and literal-record routes
 
 `differentEffect` is the joint effect selecting paper outcomes `(1,0)` and `(0,1)`.
 `jointPaperOneEffect` selects `(1,1)`. Their compiled Born probabilities are
@@ -142,18 +143,46 @@ pairDensity_jointPaperOne_probability:
   P(1,1) = (1/2) cos²((theta - phi)/2).
 ```
 
-These correct the complementary formulas printed in Equations (28) and (41). At equal settings,
-the compiled formulas give `P(different) = 0` and `P(1,1) = 1/2`. At the compiled boundary
-`theta = phi = 0`, the printed formulas instead give `1` and `0`, so both displays are contradicted
-as printed. The API states the result for the original paper-bit outcomes and does not silently
-complement Bob's outcome to recover the source expressions.
+The four-wire route is independent of this shortcut. `fourWireTimeThreeDensity theta phi` and
+`fourWireTimeFourDensity theta phi` are pure densities obtained by evolving the all-paper-zero
+reference state through `timeThreeUnitary` and `timeFourUnitary`. The corresponding equality
+theorems expose those evolved-reference definitions directly. The record effects are local effects
+on `q1,q4`: `recordOutcomeEffect left right` is the two-bit computational basis effect placed along
+`recordPlacement`, while the two marginal effects are `zPlusEffect q1` and `zPlusEffect q4`.
 
-The special cases are themselves compiled. `pairDensity_different_equal_settings` and
-`pairDensity_jointPaperOne_equal_settings` prove the two equal-setting values;
-`equation28_printed_equal_angle_counterexample` and
-`equation41_printed_equal_angle_counterexample` state the two source inequalities explicitly.
-At the other boundary, `pairDensity_different_pi_zero` proves probability one when the settings
-are `pi` and zero.
+The literal circuit proves Equation (40) as
+
+```text
+fourWireTimeThree_leftRecord_probability:
+  P(q1 records 1) = 1/2
+
+fourWireTimeThree_rightRecord_probability:
+  P(q4 records 1) = 1/2,
+```
+
+and Equation (41) as
+
+```text
+fourWireTimeThree_jointRecord_probability:
+  P(q1 and q4 both record 1) = (1/2) cos²((theta - phi)/2).
+```
+
+After the comparison CNOT, `finalComparisonPaperOneEffect = zPlusEffect q1` selects different
+recorded outcomes. Thus Equation (28) is represented directly on the time-four state by
+
+```text
+fourWireTimeFour_comparison_probability:
+  P(q1 records 1 after comparison) = sin²((theta - phi)/2).
+```
+
+The `*_eq_pairDensity` theorems first prove that each four-wire probability equals the independently
+defined pair probability; only then are the trigonometric pair formulas reused. This is equality of
+the relevant computational-record statistics, not equality between the record reduced density and
+the coherent pair density: tracing out the source wires removes record-basis coherences.
+
+The boundary theorems prove that the final comparison probability is zero at equal settings and
+one whenever `theta - phi = pi`. No selective measurement, collapse, or outcome-conditioned
+instrument is inserted into either result.
 
 The source's unnumbered resource-correlation display is also compiled independently.
 `pairDensity_z_expectation` gives zero for either local `Z` mean,
@@ -165,9 +194,8 @@ a general separability criterion.
 The four coordinate theorems `pairDensity_paperOneOne_probability`,
 `pairDensity_paperZeroZero_probability`, `pairDensity_paperOneZero_probability`, and
 `pairDensity_paperZeroOne_probability` expose the same calculation before the two joint events are
-assembled. These are direct effects on the two-qubit pair density. The named four-wire unitary
-circuit is compiled separately; this statistics module does not turn its coherent record qubits
-into a measurement instrument.
+assembled. These are direct effects on the two-qubit pair density and remain an independently
+checkable calculation alongside the literal record route.
 
 ## Keeping operational claims separate
 
