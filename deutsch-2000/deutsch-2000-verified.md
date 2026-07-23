@@ -354,7 +354,7 @@ In general, since the $\mathbf{cnot}$ gate together with gates of the type $\mat
 
 For example, the gate that performs the so-called Bell transformation on two qubits (Braunstein *et al.* (1992)) is equivalent to the network shown on the right of the equals sign in Fig. 1. (Gates other than $\mathbf{cnot}$ are represented by rectangles, the vertical lines represent the paths of qubits, and the arrows at the top indicate their direction of motion.)
 
-![Fig. 1: The Bell Gate](images-verified/figure-1-bell-gate.png)
+![Fig. 1: The Bell Gate](images/figure-1-bell-gate.png)
 
 Since both $\mathbf{cnot}$ and $\mathbf{H}$ are their own inverses, the same network upside-down (*i.e.* with $\mathbf{H}$ preceding $\mathbf{cnot}$) performs the inverse of the Bell transformation. It follows that the effect of the $\mathbf{Bell}$ gate is
 
@@ -417,7 +417,7 @@ $$
 
 The quantum computational network for performing an Einstein–Podolski–Rosen (EPR) experiment is shown in Fig. 2. Since this is the archetypal experiment that has been thought to demonstrate the nonlocal nature of information in quantum physics, it is instructive to trace the paths that information takes during the course of such an experiment. In particular, we shall trace how quantum information about the value of an angle $\phi$, chosen arbitrarily in a region B, reaches a distant region A.
 
-![Fig. 2: An Einstein-Podolski-Rosen Experiment](images-verified/figure-2-epr-experiment.png)
+![Fig. 2: An Einstein-Podolski-Rosen Experiment](images/figure-2-epr-experiment.png)
 
 Starting at time $t=0$ with four qubits $\mathfrak{Q}_1,\ldots,\mathfrak{Q}_4$ in the standard state $\lvert 0,0,0,0;0\rangle$, we entangle $\mathfrak{Q}_2$ with $\mathfrak{Q}_3$ by performing the inverse $\mathbf{Bell}$ operation (21). In Schrödinger-picture terminology they are now in the state
 
@@ -669,7 +669,7 @@ It is easily verified that the result of the experiment would be unchanged if $\
 
 The very term ‘teleportation’ was chosen by the discoverers of the phenomenon (Bennett *et al.* (1993)) because it was deemed to be a spectacular example of information from one location A appearing at another location B without being carried there in any physical object travelling from A to B – *i.e.* without information flow.
 
-![Fig. 3: Quantum Teleportation experiment](images-verified/figure-3-quantum-teleportation.png)
+![Fig. 3: Quantum Teleportation experiment](images/figure-3-quantum-teleportation.png)
 
 A quantum computational network for demonstrating teleportation is shown in Fig. 3. The information of interest is the angle $\theta$ through which, at $t=0$, we choose to rotate the qubit $\mathfrak{Q}_1$, located at A, about its $x$-axis. More generally, the $\mathbf{R}_x(\theta)$ gate could be replaced by an arbitrary single-qubit gate that prepared $\mathfrak{Q}_1$ in an arbitrary pure state, which the network would ‘teleport’ to $\mathfrak{Q}_5$ at the distant location B, but for simplicity we are restricting ourselves to a one-parameter family of states. We have
 
