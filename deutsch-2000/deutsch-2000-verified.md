@@ -10,7 +10,7 @@ June 1999
 
 ### Abstract
 
-All information in quantum systems is, notwithstanding Bell’s theorem, localised. Measuring or otherwise interacting with a quantum system $\mathfrak{S}$ has no effect on distant systems from which $\mathfrak{S}$ is dynamically isolated, even if they are entangled with $\mathfrak{S}$. Using the Heisenberg picture to analyse quantum information processing makes this locality explicit, and reveals that under some circumstances (in particular, in Einstein-Podolski-Rosen experiments and in quantum teleportation) quantum information is transmitted through ‘classical’ (i.e. decoherent) information channels.
+*All information in quantum systems is, notwithstanding Bell’s theorem, localised. Measuring or otherwise interacting with a quantum system $\mathfrak{S}$ has no effect on distant systems from which $\mathfrak{S}$ is dynamically isolated, even if they are entangled with $\mathfrak{S}$. Using the Heisenberg picture to analyse quantum information processing makes this locality explicit, and reveals that under some circumstances (in particular, in Einstein-Podolski-Rosen experiments and in quantum teleportation) quantum information is transmitted through ‘classical’ (i.e. decoherent) information channels.*
 
 ### 1. Quantum information
 
