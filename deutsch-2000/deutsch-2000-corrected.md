@@ -330,8 +330,8 @@ $$
 =
 \left(
 \hat{q}_{kx}(t),
-\hat{q}_{ky}(t)\cos\theta+\hat{q}_{kz}(t)\sin\theta,
-\hat{q}_{kz}(t)\cos\theta-\hat{q}_{ky}(t)\sin\theta
+\hat{q}_{ky}(t)\cos\theta-\hat{q}_{kz}(t)\sin\theta,
+\hat{q}_{kz}(t)\cos\theta+\hat{q}_{ky}(t)\sin\theta
 \right).
 \tag{18}
 $$
@@ -491,8 +491,8 @@ $$
 \hat{1}\otimes
 \left(
 \hat{\sigma}_x\otimes\hat{1},
--\left(\cos\theta\,\hat{\sigma}_y+\sin\theta\,\hat{\sigma}_z\right)\otimes\hat{\sigma}_x,
-\left(\sin\theta\,\hat{\sigma}_y-\cos\theta\,\hat{\sigma}_z\right)\otimes\hat{\sigma}_x
+-\left(\cos\theta\,\hat{\sigma}_y-\sin\theta\,\hat{\sigma}_z\right)\otimes\hat{\sigma}_x,
+-\left(\sin\theta\,\hat{\sigma}_y+\cos\theta\,\hat{\sigma}_z\right)\otimes\hat{\sigma}_x
 \right)
 \otimes\hat{1},
 \\[6pt]
@@ -501,11 +501,11 @@ $$
 \hat{1}\otimes
 \left(
 \hat{\sigma}_x\otimes\hat{\sigma}_z,
-\sin\phi\,\hat{1}\otimes\hat{\sigma}_x
+-\sin\phi\,\hat{1}\otimes\hat{\sigma}_x
 -\cos\phi\,\hat{\sigma}_x\otimes\hat{\sigma}_y,
 \left(
 \cos\phi\,\hat{1}\otimes\hat{\sigma}_x
-+\sin\phi\,\hat{\sigma}_x\otimes\hat{\sigma}_y
+-\sin\phi\,\hat{\sigma}_x\otimes\hat{\sigma}_y
 \right)
 \right)
 \otimes\hat{1}
@@ -539,13 +539,13 @@ $$
 \;
 \hat{\sigma}_y\otimes
 \left(
-\cos\theta\,\hat{\sigma}_z-\sin\theta\,\hat{\sigma}_y
+\cos\theta\,\hat{\sigma}_z+\sin\theta\,\hat{\sigma}_y
 \right)
 \otimes\hat{\sigma}_x,
 \;
 \hat{\sigma}_z\otimes
 \left(
-\cos\theta\,\hat{\sigma}_z-\sin\theta\,\hat{\sigma}_y
+\cos\theta\,\hat{\sigma}_z+\sin\theta\,\hat{\sigma}_y
 \right)
 \otimes\hat{\sigma}_x
 \right)
@@ -558,13 +558,13 @@ $$
 \;
 -\hat{\sigma}_x\otimes
 \left(
-\cos\theta\,\hat{\sigma}_y+\sin\theta\,\hat{\sigma}_z
+\cos\theta\,\hat{\sigma}_y-\sin\theta\,\hat{\sigma}_z
 \right)
 \otimes\hat{\sigma}_x,
 \;
-\hat{1}\otimes
+-\hat{1}\otimes
 \left(
-\sin\theta\,\hat{\sigma}_y-\cos\theta\,\hat{\sigma}_z
+\sin\theta\,\hat{\sigma}_y+\cos\theta\,\hat{\sigma}_z
 \right)
 \otimes\hat{\sigma}_x
 \right)
@@ -577,14 +577,14 @@ $$
 \hat{\sigma}_x\otimes\hat{\sigma}_z\otimes\hat{\sigma}_x,
 \;
 \left(
-\sin\phi\,\hat{1}\otimes\hat{\sigma}_x
+-\sin\phi\,\hat{1}\otimes\hat{\sigma}_x
 -\cos\phi\,\hat{\sigma}_x\otimes\hat{\sigma}_y
 \right)
 \otimes\hat{\sigma}_x,
 \;
 \left(
 \cos\phi\,\hat{1}\otimes\hat{\sigma}_x
-+\sin\phi\,\hat{\sigma}_x\otimes\hat{\sigma}_y
+-\sin\phi\,\hat{\sigma}_x\otimes\hat{\sigma}_y
 \right)
 \otimes\hat{1}
 \right),
@@ -597,13 +597,13 @@ $$
 \;
 -\left(
 \cos\phi\,\hat{1}\otimes\hat{\sigma}_x
-+\sin\phi\,\hat{\sigma}_x\otimes\hat{\sigma}_y
+-\sin\phi\,\hat{\sigma}_x\otimes\hat{\sigma}_y
 \right)
 \otimes\hat{\sigma}_y,
 \;
 -\left(
 \cos\phi\,\hat{1}\otimes\hat{\sigma}_x
-+\sin\phi\,\hat{\sigma}_x\otimes\hat{\sigma}_y
+-\sin\phi\,\hat{\sigma}_x\otimes\hat{\sigma}_y
 \right)
 \otimes\hat{\sigma}_z
 \right)
@@ -641,12 +641,12 @@ $$
 \hat{\sigma}_z
 \otimes
 \left(
-\cos\theta\cos\phi\,\hat{\sigma}_z\otimes\hat{1}
+-\cos\theta\cos\phi\,\hat{\sigma}_z\otimes\hat{1}
 -
 \cos\theta\sin\phi\,\hat{\sigma}_y\otimes\hat{\sigma}_z
 -
 \sin\theta\cos\phi\,\hat{\sigma}_y\otimes\hat{1}
--
++
 \sin\theta\sin\phi\,\hat{\sigma}_z\otimes\hat{\sigma}_z
 \right)
 \otimes
@@ -654,7 +654,7 @@ $$
 \right\rangle
 \\[6pt]
 &=
-\cos^2\left(
+\sin^2\left(
 \frac{\theta-\phi}{2}
 \right).
 \end{aligned}
@@ -678,8 +678,8 @@ $$
 =
 \left(
 \hat{\sigma}_x,
-\cos\theta\,\hat{\sigma}_y+\sin\theta\,\hat{\sigma}_z,
-\cos\theta\,\hat{\sigma}_z-\sin\theta\,\hat{\sigma}_y
+\cos\theta\,\hat{\sigma}_y-\sin\theta\,\hat{\sigma}_z,
+\cos\theta\,\hat{\sigma}_z+\sin\theta\,\hat{\sigma}_y
 \right)
 \otimes
 \hat{1}^{\,4}.
@@ -724,11 +724,11 @@ $$
 \hat{\sigma}_x\otimes\hat{1}^{\,4},
 \;
 \left(
-\cos\theta\,\hat{\sigma}_y+\sin\theta\,\hat{\sigma}_z
+\cos\theta\,\hat{\sigma}_y-\sin\theta\,\hat{\sigma}_z
 \right)\otimes\hat{1}^{\,2}\otimes\hat{\sigma}_z\otimes\hat{\sigma}_x,
 \;
 \left(
-\cos\theta\,\hat{\sigma}_z-\sin\theta\,\hat{\sigma}_y
+\cos\theta\,\hat{\sigma}_z+\sin\theta\,\hat{\sigma}_y
 \right)\otimes\hat{1}^{\,2}\otimes\hat{\sigma}_z\otimes\hat{\sigma}_x
 \right),
 \\[6pt]
@@ -757,12 +757,12 @@ $$
 \hat{1}\otimes\hat{\sigma}_x\otimes\hat{1}^{\,3},
 \;
 \left(
-\sin\theta\,\hat{\sigma}_y-\cos\theta\,\hat{\sigma}_z
+-\sin\theta\,\hat{\sigma}_y-\cos\theta\,\hat{\sigma}_z
 \right)
 \otimes\hat{\sigma}_y\otimes\hat{1}\otimes\hat{\sigma}_z\otimes\hat{\sigma}_x,
 \;
 \left(
-\sin\theta\,\hat{\sigma}_y-\cos\theta\,\hat{\sigma}_z
+-\sin\theta\,\hat{\sigma}_y-\cos\theta\,\hat{\sigma}_z
 \right)
 \otimes\hat{\sigma}_z\otimes\hat{1}\otimes\hat{\sigma}_z\otimes\hat{\sigma}_x
 \right),
@@ -828,12 +828,12 @@ $$
 \hat{\sigma}_x\otimes\hat{1}\otimes\hat{\sigma}_z\otimes\hat{1}\otimes\hat{\sigma}_z,
 \;
 \left(
-\cos\theta\,\hat{\sigma}_y+\sin\theta\,\hat{\sigma}_z
+\cos\theta\,\hat{\sigma}_y-\sin\theta\,\hat{\sigma}_z
 \right)
 \otimes\hat{\sigma}_z\otimes\hat{\sigma}_z\otimes\hat{\sigma}_z\otimes\hat{\sigma}_z,
 \;
 \left(
-\cos\theta\,\hat{\sigma}_z-\sin\theta\,\hat{\sigma}_y
+\cos\theta\,\hat{\sigma}_z+\sin\theta\,\hat{\sigma}_y
 \right)
 \otimes\hat{\sigma}_z\otimes\hat{1}\otimes\hat{\sigma}_z\otimes\hat{1}
 \right).
@@ -847,7 +847,7 @@ $$
 \frac{1}{2}
 \left(
 \hat{1}
--\sin\theta\,\hat{q}_{5y}(4)
++\sin\theta\,\hat{q}_{5y}(4)
 -\cos\theta\,\hat{q}_{5z}(4)
 \right)
 \right\rangle
@@ -865,7 +865,7 @@ $$
 =
 \left(
 0,
--\sin\theta,
+\sin\theta,
 -\cos\theta
 \right),
 \tag{36}
@@ -883,7 +883,7 @@ $$
 \hat{\sigma}_z\otimes\hat{\sigma}_z\otimes\hat{1}
 \otimes\hat{\sigma}_z\otimes\hat{1}
 \\
-&+
+&-
 \cos\theta\sin\theta\,
 \hat{\sigma}_y\otimes\hat{\sigma}_z\otimes
 \left(
@@ -1000,7 +1000,7 @@ $$
 \otimes
 \left(
 \cos\theta\,\hat{\sigma}_z
--
++
 \sin\theta\,\hat{\sigma}_y
 \right)
 \otimes
@@ -1025,7 +1025,7 @@ $$
 \otimes
 \left(
 \cos\phi\,\hat{1}\otimes\hat{\sigma}_x
-+
+-
 \sin\phi\,\hat{\sigma}_x\otimes\hat{\sigma}_y
 \right)
 \otimes
@@ -1049,7 +1049,7 @@ $$
 \right\rangle
 =
 \frac{1}{2}
-\sin^2\left(
+\cos^2\left(
 \frac{\theta-\phi}{2}
 \right).
 \tag{41}
@@ -1058,7 +1058,7 @@ $$
 From (40) and (41) with $\phi=\theta$, we conclude that for any $\theta$,
 
 $$
-\overline{\left(1-a(\theta)-b(\theta)\right)^2}
+\overline{\left(a(\theta)-b(\theta)\right)^2}
 =
 0.
 \tag{42}
@@ -1069,7 +1069,7 @@ and therefore
 $$
 b(\theta)
 =
-1-a(\theta).
+a(\theta).
 \tag{43}
 $$
 
@@ -1238,3 +1238,18 @@ Tipler, F.J. (1998) (submitted to *Phys. Rev. Lett.*)
 Williams, C.P. and Clearwater, S.H. (1998) *Explorations in Quantum Computing* Springer-Verlag New York
 
 Zurek, W. H. (1981) *Phys. Rev.* **D24** 1516-25
+
+---
+
+*Mathematical corrections in this edition.*
+
+- The final index in the computation-basis family following (3) is $n$, rather than $k$.
+- The sine signs in (18) have been made consistent with (17) and the Heisenberg convention
+  $A\mapsto U^\dagger A U$. The resulting sign changes have been propagated through (25), (27),
+  (29), (31), (32), (34)–(37), and the corresponding marginal expressions in (40).
+- In (28), the probability of different outcomes is
+  $\sin^2\left((\theta-\phi)/2\right)$. Consistently, (41) gives the joint paper-one probability
+  as $\frac{1}{2}\cos^2\left((\theta-\phi)/2\right)$, and (42)–(43) express perfect equal-setting
+  correlation.
+- In (45), the second event is the complement of
+  $a(\theta_1)\lor a(\theta_2)$. Its repeated occurrence in (46) has been corrected accordingly.
