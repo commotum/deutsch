@@ -1,6 +1,6 @@
 # Information Flow in Entangled Quantum Systems
 
-## David Deutsch and Patrick Hayden
+**David Deutsch and Patrick Hayden**
 
 Centre for Quantum Computation
 The Clarendon Laboratory
@@ -8,11 +8,11 @@ University of Oxford, Oxford OX1 3PU, UK
 
 June 1999
 
-### Abstract
+## Abstract
 
 *All information in quantum systems is, notwithstanding Bell’s theorem, localised. Measuring or otherwise interacting with a quantum system $\mathfrak{S}$ has no effect on distant systems from which $\mathfrak{S}$ is dynamically isolated, even if they are entangled with $\mathfrak{S}$. Using the Heisenberg picture to analyse quantum information processing makes this locality explicit, and reveals that under some circumstances (in particular, in Einstein-Podolski-Rosen experiments and in quantum teleportation) quantum information is transmitted through ‘classical’ (i.e. decoherent) information channels.*
 
-### 1. Quantum information
+## 1. Quantum information
 
 It is widely believed (see e.g. Bennett and Shor (1998)) that in general a complete description of a composite quantum system is not deducible from complete descriptions of its subsystems unless the ‘description’ of each subsystem $\mathfrak{S}$ depends on what is going on in other subsystems from which $\mathfrak{S}$ is dynamically isolated. If this were so, then in quantum systems information would be a nonlocal quantity—that is to say, the information in a composite system would not be deducible from the information located in all its subsystems and, in particular, changes in the distribution of information in a spatially extended quantum system could not be understood wholly in terms of *information flow*, *i.e.* in terms of subsystems carrying information from one location to another. In this paper we shall show that this belief is false. It has given rise to a wide range of misconceptions, some of which we shall also address here, but our main concern will be with the analysis of information flow in quantum information-processing systems.
 
@@ -22,7 +22,7 @@ Einstein originally proposed this criterion during his celebrated debate with Bo
 
 Our method is to consider a quantum system prepared in a way that depends on one or more parameters, and then to investigate where those parameters subsequently appear in descriptions of that system and others with which it interacts. Although we shall express our results in terms of the location and flow of information, we shall not require a quantitative definition of information. We require only that a system $\mathfrak{S}$ be deemed to *contain information* about a parameter $\theta$ if (though not necessarily only if) the probability of some outcome of some measurement on $\mathfrak{S}$ alone depends on $\theta$; and that $\mathfrak{S}$ be deemed to *contain no information* about $\theta$ if there exists a complete description of $\mathfrak{S}$ that satisfies Einstein’s criterion and is independent of $\theta$.
 
-### 2. Quantum theory of computation in the Heisenberg picture
+## 2. Quantum theory of computation in the Heisenberg picture
 
 Consider a quantum computational network $\mathfrak{N}$ containing $n$ interacting qubits $\mathfrak{Q}_1,\ldots,\mathfrak{Q}_n$. Following Gottesman (1998), we may represent each qubit $\mathfrak{Q}_a$ at time $t$ in the Heisenberg picture by a triple
 
@@ -168,7 +168,7 @@ As for Einstein’s criterion about the effect of one subsystem upon another, co
 
 A quantum computational network is not a general quantum system: for instance, its interactions all take place in discrete computational steps of fixed duration, and during any computational step each of its qubits interacts only with the other qubits that are acted upon by the same gate. Nevertheless, since every quantum system can be simulated with arbitrary accuracy by quantum computational networks (Deutsch 1989), the above conclusions about locality are true for general quantum systems too.
 
-### 3. Some specific quantum gates
+## 3. Some specific quantum gates
 
 We often define gates according to the effect they are to have on the computation basis. In such cases we can use (8) to determine the form of the function $U_G$ associated with a given gate $G$. For example, a $\mathbf{not}$ gate acting on a network consisting of a single qubit at time $t$ must have the effect
 
@@ -413,7 +413,7 @@ $$
 $$
 
 
-### 4. Information flow in Einstein-Podolski-Rosen experiments
+## 4. Information flow in Einstein-Podolski-Rosen experiments
 
 The quantum computational network for performing an Einstein–Podolski–Rosen (EPR) experiment is shown in Fig. 2. Since this is the archetypal experiment that has been thought to demonstrate the nonlocal nature of information in quantum physics, it is instructive to trace the paths that information takes during the course of such an experiment. In particular, we shall trace how quantum information about the value of an angle $\phi$, chosen arbitrarily in a region B, reaches a distant region A.
 
@@ -665,7 +665,7 @@ This is a familiar result, but in the course of calculating it in the Heisenberg
 
 It is easily verified that the result of the experiment would be unchanged if $\hat{z}_4(t)$ were measured any number of times on $\mathfrak{Q}_4$’s journey from B to A. The locally inaccessible information about $\phi$ that is carried in $\mathfrak{Q}_4$ would not be affected by such measurements, nor, therefore, would it be affected if $\mathfrak{Q}_4$ suffered decoherence through environmental interactions that stabilised $\hat{z}_4$. But it would be copied into other qubits, and any qubit holding the outcome of a measurement of $\hat{z}_4$ could be used instead of $\mathfrak{Q}_4$ to carry the information to A. The ability of quantum information to flow through a classical channel in this way, surviving decoherence, is also the basis of *quantum teleportation*, a remarkable phenomenon to which we now turn.
 
-### 5. Information flow in quantum teleportation
+## 5. Information flow in quantum teleportation
 
 The very term ‘teleportation’ was chosen by the discoverers of the phenomenon (Bennett *et al.* (1993)) because it was deemed to be a spectacular example of information from one location A appearing at another location B without being carried there in any physical object travelling from A to B – *i.e.* without information flow.
 
@@ -913,7 +913,7 @@ $$
 
 Once again, we see exactly how the information about the angle $\theta$ reached B: not through ‘nonlocal influences’ allowing it to ‘fly across the entanglement’ (Jozsa (1998)); not by residing in $\mathfrak{N}$ as a whole rather than in any particular qubit (Braunstein (1996)); not by travelling backwards in time to $t=1$ with $\mathfrak{Q}_4$ and then forwards again with $\mathfrak{Q}_5$ (Penrose (1998)); not instantaneously (a traditional misconception that has sometimes found its way into textbooks – e.g. Williams and Clearwater (1998, §8.10)), nor through action at a distance (Williams and Clearwater (1998, §9.2)); nor of course through the ‘collapse of the state vector’ (since the state vector is strictly constant) – but simply, prosaically, in the qubits $\mathfrak{Q}_2$ and $\mathfrak{Q}_3$ as they travelled from A to B.
 
-### 6. Locally inaccessible information
+## 6. Locally inaccessible information
 
 Qubits $\mathfrak{Q}_2$ and $\mathfrak{Q}_3$ do not contain a copy of *all* the information in $\mathfrak{Q}_1$ and $\mathfrak{Q}_4$, but only that which has survived decoherence (in the computation basis). Therefore, to local experiments, $\mathfrak{Q}_2$ and $\mathfrak{Q}_3$ look like a classical information channel through which the four possible outcomes of the ‘Bell measurement’ that took place between $t=1$ and $t=3$ are transmitted from A to B. However, as we have just seen, this channel also carries a qubit’s worth of quantum information, which is locally inaccessible while in transit. This information is transmitted extremely reliably by the decoherent channel, arriving intact provided only that there is no error in communicating the classical message. This illustrates an interesting tradeoff between accessibility and robustness for quantum information: In its simplest manifestations (say, in a single qubit prepared in a pure state) all the quantum information is locally accessible, but it is also maximally vulnerable to decoherence. In contrast, the quantum information that travels from A to B in the teleportation experiment is invulnerable to decoherence but absolutely inaccessible to local experiments.
 
@@ -976,7 +976,7 @@ $$
 
 which means that the Schrödinger state would have been exactly the same if we had placed the information about $\theta$ in $\mathfrak{Q}_3$ instead of $\mathfrak{Q}_2$, by rotating $\mathfrak{Q}_3$ through an angle $-\theta$ – just as, in our classical example, we could have obtained $y$ and $r$ with the same probability distribution function by first choosing $y$ randomly and then constructing $r$ from $x$ and $y$. It follows that in general, to determine where the information about a given parameter is located at a given instant, it is insufficient to know how the Schrödinger state at that instant depends on the parameter. (In contrast, as we have seen, it *is* sufficient to know how the Heisenberg observables at that instant depend on the parameter.)
 
-### 7. Irrelevance of Bell’s theorem
+## 7. Irrelevance of Bell’s theorem
 
 Some readers may be hearing a warning Bell in their minds at the idea that the purely local accounts given in Sections 4 and 5 above – or any purely local account – can be compatible with predictions of quantum theory such as (28) and (36). Such readers will be considering *reductio-ad-absurdum* proofs that supposedly rule out all such accounts, along the following lines:
 
@@ -1181,7 +1181,7 @@ Bell’s theorem has often been misinterpreted as implying that the empirical pr
 
 Note that despite there being, in general, no *single* ‘actual outcome’ of a measurement, there is of course a well-defined set of actual outcomes (viz. some or all of the eigenvalues of the observable being measured), and a probability for each member of that set. These probabilities are not, however, associated with any stochastic variables – again, no such variables occur in the theory presented in Section 2 – but enter quantum theory through an entirely different, deterministic mechanism (see Deutsch (1999)).
 
-### 8. ‘Nonlocality’ of the Schrödinger picture
+## 8. ‘Nonlocality’ of the Schrödinger picture
 
 Given that quantum theory is entirely local when expressed in the Heisenberg picture, but appears nonlocal in the Schrödinger picture, and given that the two pictures are mathematically equivalent, are we therefore still free to believe that quantum theory (and the physical reality it describes) is nonlocal?
 
@@ -1191,11 +1191,11 @@ Moreover, although the Schrödinger picture disguises the locality of quantum ph
 
 Thus the Heisenberg picture makes explicit what is implicit, indeed quite well hidden, in the Schrödinger picture. The latter is optimised for predicting the outcomes of processes given how they were prepared, but (notoriously) not for explaining how the outcomes come about – so it is not surprising that on the face of it, it misrepresents information flow. The relationship between the two pictures is somewhat analogous to that between any descriptive piece of information, such as a text or a digitised image, and an algorithmically compressed version of the same information that eliminates redundancy to achieve a more compact representation. If the compression algorithm used is not ‘lossy’, then, considered as a description of the original data, the two versions are mathematically equivalent. However, the elimination of redundancy results in strong interdependence between the elements of the compressed description so that, for instance, a localised change in the original data can result in changes all over the compressed version, so that a particular character or pixel from the original is not necessarily located at any particular position in the compressed version. Nevertheless, it would be a serious error to conclude that this ‘holistic’ property of the compressed description expresses any analogous property in the original text or image, or of course in the reality that they refer to.
 
-### Acknowledgement
+## Acknowledgement
 
 We wish to thank Artur Ekert for suggesting several simplifications and other improvements to the arguments and text of this paper.
 
-### References
+## References
 
 Aspect, A., Dalibard, J., Roger, G. (1982) *Phys. Rev. Lett.* **49** 1804
 
@@ -1241,15 +1241,18 @@ Zurek, W. H. (1981) *Phys. Rev.* **D24** 1516-25
 
 ---
 
-*Mathematical corrections in this edition.*
+*Editorial note.* This edition corrects one index and three minor bookkeeping slips:
 
-- The final index in the computation-basis family following (3) is $n$, rather than $k$.
-- The sine signs in (18) have been made consistent with (17) and the Heisenberg convention
-  $A\mapsto U^\dagger A U$. The resulting sign changes have been propagated through (25), (27),
-  (29), (31), (32), (34)–(37), and the corresponding marginal expressions in (40).
-- In (28), the probability of different outcomes is
-  $\sin^2\left((\theta-\phi)/2\right)$. Consistently, (41) gives the joint paper-one probability
-  as $\frac{1}{2}\cos^2\left((\theta-\phi)/2\right)$, and (42)–(43) express perfect equal-setting
-  correlation.
-- In (45), the second event is the complement of
-  $a(\theta_1)\lor a(\theta_2)$. Its repeated occurrence in (46) has been corrected accordingly.
+- In the computation-basis family following (3), the final index is $n$, rather than $k$.
+- In expanding (17), the two sine signs in (18) have been made consistent with the Heisenberg
+  convention $A\mapsto U^\dagger A U$. Their consequences have been propagated through (25), (27),
+  (29), (31), (32), (34)–(37), and the operator expressions in (28) and (40).
+- In evaluating $\hat{q}_{1z}(3)\hat{q}_{4z}(3)$, the leading minus sign carried by
+  $\hat{q}_{4z}(3)$ has been retained. The intermediate operator product in (28) has consequently
+  been recomputed using both this sign and the preceding sine convention. This gives the stated
+  $\sin^2\left((\theta-\phi)/2\right)$ probability of different outcomes in (28), the
+  $\frac{1}{2}\cos^2\left((\theta-\phi)/2\right)$ probability that both recorded outcomes are $1$
+  in (41), and the equal-setting relations (42)–(43). Equation (44) is unchanged.
+- In (45), parentheses make the second event the complement of
+  $a(\theta_1)\lor a(\theta_2)$. The same grouping has been supplied at its repetition in the first
+  line of (46); the subsequent expansion and contradiction are unchanged.
