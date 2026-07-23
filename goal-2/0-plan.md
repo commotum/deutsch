@@ -81,6 +81,10 @@ auditable source mapping.
 
 - The current canonical source is `deutsch-2000/deutsch-2000.md`; the corresponding PDF and all
   three figures are present under `deutsch-2000/`.
+- The canonical Markdown has 1255 lines and exactly 47 display-math blocks: 46 uniquely tagged
+  equations numbered (1)–(46) and one unnumbered display following (37). Two formulas classified as
+  U01 and U03 in the old audit are inline in both the PDF and verified transcription; only the
+  compact original transcription promoted them to display blocks.
 - The earlier compact and verified transcriptions remain available for review in
   `/home/jake/Developer/bqp/papers/deutsch-2000/`, but they are external to this repository and
   cannot be runtime or build dependencies.
@@ -100,7 +104,7 @@ auditable source mapping.
   through `## 8.`. The abstract body remains italicized and its heading remains present.
 - The Lake package is pinned to Lean/mathlib `v4.32.0` and currently defines the `Deutsch` and
   `DeutschTests` libraries.
-- The existing clean build previously completed 3309 jobs. The integrity audit scanned 65 Lean
+- A fresh Stage 1 build completed 3309 jobs. The integrity audit scanned 65 Lean
   sources and reported no proof holes, project axioms, unsafe declarations, or opaque escapes. Its
   accepted dependency axioms were only `Classical.choice`, `Quot.sound`, and `propext`.
 - Most reusable mathematics already exists in the production tree: finite registers, subsystem
@@ -111,18 +115,23 @@ auditable source mapping.
   - `*_ne_printed` declarations in gate, EPR, and teleportation modules;
   - `equation35CorrectedEffect` and printed Equation (35) fixtures;
   - `corrected_` Bell theorem names and correction-oriented public documentation.
-- Two substantive direct-source proof gaps remain:
-  1. Equations (28), (40), and (41) are proved for an isolated two-qubit pair, not yet through the
-     literal four-wire record/comparison circuit.
-  2. The current Bell contradiction is an independent agreement/pigeonhole proof rather than the
-     literal corrected expectation chain in Equations (42)–(46).
-- Strict E01–E46 coverage also requires source-shaped wrappers for existing generic results and a
-  genuine arbitrary-axis/matrix-exponential treatment of Equation (17). Smaller packaging gaps
-  include the time-indexed Equation (9), Equation (13)'s other-qubit clause, and current-descriptor
-  forms of Equations (14) and (19).
+- The Stage 1 declaration audit classifies the existing finite production mathematics as 31 direct
+  equation implementations, seven wrapper/packaging gaps (E08, E09, E13, E14, E19, E26, E45), and
+  eight substantive proof gaps (E17, E28, E40–E44, E46). Every item will still receive a canonical
+  source-shaped `Deutsch.Paper` entry in Stage 5.
+- The substantive gaps comprise Equation (17)'s arbitrary-axis exponential, Figure 2's literal
+  four-wire route for Equations (28), (40), and (41), and the direct corrected expectation route
+  through Equations (42)–(44) and (46). The existing Bell contradiction is an independent
+  agreement/pigeonhole proof rather than that displayed chain.
 - The current project report and parts of the old goal ledger contain stale statements that no PDF
   or independently checked facsimile is present. Those statements must be reconciled with the
   current repository.
+- The canonical PDF is a 24-page A4 file with 1999-06-02 creation metadata and is byte-identical to
+  the BQP comparison PDF. The repository figures are byte-identical to BQP's verified figure set,
+  and Git history retains the deleted compact, verified, and corrected Markdown variants.
+- The only direct production import of a wholly historical module is
+  `Deutsch/Bell.lean -> Deutsch.Bell.SourceCorrection`. Additional printed-form witnesses are
+  embedded in the gate, EPR, and teleportation modules and have exact Stage 6 destinations.
 
 ## Current Assumptions to Test
 
@@ -240,7 +249,9 @@ Finalize the corrected Markdown as a faithful, minimally edited canonical source
 - A focused diff shows only the agreed correction-note, heading/author formatting, and directly
   corresponding audit/documentation changes.
 - The Equation (35) purity prose remains unchanged.
-- All 46 equation tags, 49 display blocks, three figures, and eight numbered sections are present.
+- All 46 equation tags, 47 display blocks (46 tagged and one untagged), three figures, and eight
+  numbered sections are present. The two audited inline formulas remain present and are checked as
+  inline source signatures rather than being reformatted into displays.
 - Source, image, and documentation-link checks pass.
 - The correction note is complete, polite, concise, and describes root mistakes rather than
   seventeen independent mathematical failures.
@@ -490,4 +501,3 @@ result.
 - The final report states exact finite scope and limitations without claiming authorial intent or
   ontology as mechanically proved.
 - No required stage or unresolved proof obligation is hidden behind optimistic wording.
-
