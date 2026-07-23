@@ -47,7 +47,9 @@ See
 [Explicit Dephasing and Classical Records](docs/decoherence.md), and
 [Corrected Finite Bell Audit](docs/bell.md). For a compact downstream-oriented entry point, see
 [Reusing the Public Lean API](docs/reuse.md); the end-to-end scope, corrections, limits, and audit
-results are summarized in the [Final Project Report](docs/project-report.md).
+results are summarized in the [Final Project Report](docs/project-report.md). The
+[Equation-by-equation paper façade](docs/paper.md) maps the complete numbered presentation to the
+reusable topical APIs.
 
 ## Build and audit
 

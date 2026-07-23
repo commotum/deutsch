@@ -34,8 +34,10 @@ downstream project wants fewer dependencies:
 | `Deutsch.Teleportation` | Coherent circuit, correction, correctness, semantic protocol, statistics |
 | `Deutsch.Decoherence` | Named dephasing consequences, record errors, EPR stability, correlation boundary |
 | `Deutsch.Bell` | Source correction, finite inequality, corrected quantum bridge, contradiction |
+| `Deutsch.Paper` | Canonical `equation01`–`equation46` façade over the topical APIs |
 
-The [reuse guide](reuse.md) points to examples compiled against the public root. The topic guides
+The [reuse guide](reuse.md) points to examples compiled against the public root, and the
+[paper façade guide](paper.md) maps the numbered sequence to those reusable APIs. The topic guides
 give the representation and theorem boundaries in more detail:
 [conventions](conventions.md), [representation](representation.md),
 [registers](registers.md), [locality](locality.md), [descriptors](descriptors.md),

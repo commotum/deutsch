@@ -2,7 +2,7 @@
 
 ## Status
 
-- In progress.
+- Complete.
 
 ## Current Facts
 
@@ -86,5 +86,77 @@
 
 ## Stage Results
 
-- In progress. The arbitrary-axis module and first source-section façade module are under direct
-  compilation; integration, remaining sections, the registry, and full verification remain.
+- Added `Deutsch/Gates/AxisRotation.lean`. Its unit-axis Pauli operator is proved Hermitian,
+  involutive, and unitary; the closed rotation is proved equal to the genuine
+  `NormedSpace.exp`; exponential conjugation and the full Rodrigues formula are derived; and the
+  positive `x`-axis specialization is proved equal to the existing `rotationX`.
+- Added `Deutsch/Gates/AxisRotationRegister.lean`. It embeds the construction at an arbitrary
+  named wire, proves the global exponential identity, transports the generator and gate through an
+  arbitrary unitary current frame, and proves Equation (17)'s componentwise exponential
+  conjugation and current-frame Rodrigues form.
+- Added the section-organized `Deutsch.Paper` façade:
+  - `QuantumTheory.lean`: Equations (1)--(8);
+  - `Gates.lean`: Equations (9)--(21);
+  - `EPRExperiment.lean`: Equations (22)--(27);
+  - `EPRComparison.lean`: Equation (28);
+  - `Teleportation.lean`: Equations (29)--(37), including the unnumbered fixed-reference
+    probability following Equation (37);
+  - `LocallyInaccessible.lean`: Equations (38)--(39); and
+  - `Bell.lean`: Equations (40)--(46).
+- The façade preserves the required distinctions: Equation (8) accepts an explicitly supplied
+  simultaneous eigenfamily; Equations (22) and (38) retain their exact phases; Equation (35) is the
+  literal fixed-reference observable statement; Equation (36) states both endpoint descriptor
+  triples; and Equation (43) requires positive hidden-variable weight.
+- Strengthened the EPR bridge so Equation (28) first reaches the explicit unequal-basis-event sum
+  through the four-wire comparison circuit before reaching the pair effect and trigonometric law.
+  Equations (40) and (41) likewise expose the literal record effects and their pair-state bridges.
+- Added `Deutsch.Bell.AngleMoments`, which states moment reproduction for arbitrary real settings.
+  The Paper entries for Equations (42)--(44) quantify over all real angles, and Equation (46)
+  restricts that same model to the three displayed settings before invoking the direct moment
+  chain.
+- Added `DeutschTests/Paper.lean` with exactly 46 `#check` commands and eight focused wrappers
+  guarding current-frame Equation (9), true-exponential Equation (17), the structural four-wire
+  Equation (28), literal four-wire Equations (40)--(41), positive-support Equation (43), all-angle
+  Equation (44), and the direct Equation (46) chain.
+- Extended the integrity audit to require exactly one bare production declaration for every
+  `equation01` through `equation46`, the exact contiguous compile registry, all eight wrappers, and
+  an axiom report for every canonical entry. Added `docs/paper.md` and linked it from the public
+  entry points.
+
+### No-cheating evidence
+
+- Equation (17)'s public statement contains `NormedSpace.exp` on both sides of the Heisenberg
+  conjugation, and its proof routes through the actual embedded and transported arbitrary-axis
+  gate. The independently checked Rodrigues theorem and `x`-axis specialization pin the
+  convention.
+- Equations (28), (40), and (41) mention `fourWireTimeFourDensity` or
+  `fourWireTimeThreeDensity` and the actual record/comparison effects. Their pair-density equalities
+  are explicit conjuncts, not substitutions for the circuit statements.
+- Equations (42)--(46) route through `ReproducesAngleEPRMoments` and the finite-moment theorems.
+  The Equation (46) wrapper checks the direct chain and contains no reference to the
+  agreement/pigeonhole contradiction.
+- The source audit reconfirmed that the Equation (35) prose guard is unchanged.
+
+### Verification evidence
+
+- `lake build Deutsch.Paper DeutschTests.Paper` passed: 2744 jobs.
+- `lake build` passed: 3327 jobs.
+- `python3 goal-1/check_lean_integrity.py` passed:
+  - 79 Lean sources scanned;
+  - 46/46/46 exact declarations, compile checks, and axiom targets;
+  - eight Paper no-cheating wrappers;
+  - 517 representative axiom reports;
+  - only `Classical.choice`, `Quot.sound`, and `propext`.
+- `python3 goal-1/check_source_audit.py` passed: 46 equation tags, 47 displays, protected
+  Equation (35) prose, and all source/PDF/figure provenance hashes.
+- `python3 goal-1/check_doc_links.py` passed: 15 expected and discovered documents, 125 local
+  links.
+- Bare-declaration and compile-registry scans each returned exactly 46 entries.
+- `git diff --check` passed.
+
+### Result carried forward
+
+- Every corrected numbered display now has a compiled, source-shaped production entry with no
+  remaining Stage 5 proof or packaging gap.
+- Stage 6 can isolate the few printed-form fixtures in `DeutschErrata`; Stage 7 must then remove
+  every historical declaration and historical word from `Deutsch` without compatibility aliases.

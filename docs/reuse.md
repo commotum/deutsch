@@ -22,6 +22,11 @@ every layer used below. Larger developments may instead import a narrower root s
 surface. Production code should not import `DeutschTests`: that namespace contains verification
 wrappers rather than library declarations.
 
+Readers following the numbered derivation can instead import `Deutsch.Paper`, which exposes
+`Deutsch.Paper.equation01` through `Deutsch.Paper.equation46`. New proofs should normally use the
+underlying topical declarations demonstrated below; the
+[equation-by-equation façade guide](paper.md) gives the module map.
+
 ## Named registers and Heisenberg gates
 
 `DeutschTests.Examples.named_pauli_is_embedded` checks the basic named-register construction:

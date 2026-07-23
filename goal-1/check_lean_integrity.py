@@ -299,6 +299,7 @@ REQUIRED_FILES = (
     "docs/teleportation.md",
     "docs/decoherence.md",
     "docs/bell.md",
+    "docs/paper.md",
     "docs/reuse.md",
     "docs/project-report.md",
     "docs/representation.md",
@@ -1387,6 +1388,27 @@ def axiom_audit_targets(path: Path) -> list[str]:
     )
 
 
+def check_targets(path: Path) -> tuple[str, ...]:
+    """Read exact `#check` targets, ignoring commented-out commands."""
+    code = lean_code_only(path.read_text(encoding="utf-8"))
+    return tuple(
+        re.findall(
+            r"(?m)^\s*#check\s+([A-Za-z_][A-Za-z0-9_'.]*)\s*$",
+            code,
+        )
+    )
+
+
+def bare_paper_equation_declarations(path: Path) -> list[str]:
+    """Return only bare two-digit `equationNN` declarations, excluding suffixed helpers."""
+    code = lean_code_only(path.read_text(encoding="utf-8"))
+    return re.findall(
+        r"(?m)^\s*(?:abbrev|def|structure|theorem)\s+"
+        r"(equation[0-9]{2})(?=\s|\{|\(|:)",
+        code,
+    )
+
+
 def main() -> None:
     missing = [path for path in REQUIRED_FILES if not (ROOT / path).is_file()]
     if missing:
@@ -1405,6 +1427,64 @@ def main() -> None:
         fail(
             "DeutschTests.lean immediate imports differ from the focused-test closure: "
             f"expected {REQUIRED_TEST_ROOT_IMPORTS!r}, found {test_root_imports!r}"
+        )
+
+    paper_equation_locations: dict[str, list[str]] = {}
+    for path in sorted((ROOT / "Deutsch/Paper").glob("*.lean")):
+        relative_path = str(path.relative_to(ROOT))
+        for name in bare_paper_equation_declarations(path):
+            paper_equation_locations.setdefault(name, []).append(relative_path)
+    missing_paper_equations = [
+        name for name in REQUIRED_PAPER_EQUATIONS
+        if name not in paper_equation_locations
+    ]
+    duplicate_paper_equations = {
+        name: locations
+        for name, locations in paper_equation_locations.items()
+        if len(locations) != 1
+    }
+    unexpected_paper_equations = sorted(
+        set(paper_equation_locations) - set(REQUIRED_PAPER_EQUATIONS)
+    )
+    if missing_paper_equations or duplicate_paper_equations or unexpected_paper_equations:
+        details: list[str] = []
+        if missing_paper_equations:
+            details.append("missing " + ", ".join(missing_paper_equations))
+        if duplicate_paper_equations:
+            details.append(
+                "duplicates "
+                + ", ".join(
+                    f"{name} in {locations!r}"
+                    for name, locations in sorted(duplicate_paper_equations.items())
+                )
+            )
+        if unexpected_paper_equations:
+            details.append("unexpected " + ", ".join(unexpected_paper_equations))
+        fail(
+            "bare Deutsch.Paper equation registry is not exactly E01--E46: "
+            + "; ".join(details)
+        )
+
+    paper_check_targets = check_targets(ROOT / "DeutschTests/Paper.lean")
+    if paper_check_targets != REQUIRED_PAPER_CHECK_TARGETS:
+        fail(
+            "DeutschTests/Paper.lean #check registry differs from exact E01--E46: "
+            f"expected {REQUIRED_PAPER_CHECK_TARGETS!r}, "
+            f"found {paper_check_targets!r}"
+        )
+    paper_oracles = declared_names(ROOT / "DeutschTests/Paper.lean")
+    required_paper_oracles = set(REQUIRED_PAPER_ORACLES)
+    if paper_oracles != required_paper_oracles:
+        missing_oracles = sorted(required_paper_oracles - paper_oracles)
+        unexpected_oracles = sorted(paper_oracles - required_paper_oracles)
+        details = []
+        if missing_oracles:
+            details.append("missing " + ", ".join(missing_oracles))
+        if unexpected_oracles:
+            details.append("unexpected " + ", ".join(unexpected_oracles))
+        fail(
+            "paper no-cheating wrappers differ from the required set: "
+            + "; ".join(details)
         )
 
     toolchain = (ROOT / "lean-toolchain").read_text(encoding="utf-8").strip()
@@ -1655,6 +1735,18 @@ def main() -> None:
             + ", ".join(absent_bell_declarations)
         )
 
+    absent_paper_declarations: list[str] = []
+    for relative_path, required_names in REQUIRED_PAPER_PUBLIC_DECLARATIONS.items():
+        present = declared_names(ROOT / relative_path)
+        absent_paper_declarations.extend(
+            f"{relative_path}:{name}" for name in required_names if name not in present
+        )
+    if absent_paper_declarations:
+        fail(
+            "missing exact paper-equation declarations: "
+            + ", ".join(absent_paper_declarations)
+        )
+
     audit_targets = axiom_audit_targets(ROOT / "DeutschTests/Audit.lean")
     audit_commands = len(audit_targets)
     if audit_commands < 10:
@@ -1779,11 +1871,32 @@ def main() -> None:
             f"found {observed_bell_audit_targets!r}"
         )
 
+    absent_paper_audit_targets = [
+        target for target in REQUIRED_PAPER_AUDIT_TARGETS
+        if target not in audit_targets
+    ]
+    if absent_paper_audit_targets:
+        fail(
+            "missing exact paper-equation axiom targets: "
+            + ", ".join(absent_paper_audit_targets)
+        )
+    observed_paper_audit_targets = tuple(
+        target for target in audit_targets
+        if target.startswith("Deutsch.Paper.equation")
+        and re.fullmatch(r"Deutsch\.Paper\.equation[0-9]{2}", target)
+    )
+    if observed_paper_audit_targets != REQUIRED_PAPER_AUDIT_TARGETS:
+        fail(
+            "paper-equation axiom targets differ from exact E01--E46: "
+            f"expected {REQUIRED_PAPER_AUDIT_TARGETS!r}, "
+            f"found {observed_paper_audit_targets!r}"
+        )
+
     build = run([
         "lake", "build", "DeutschTests.Audit", "DeutschTests.Register", "DeutschTests.Locality",
         "DeutschTests.Descriptor", "DeutschTests.Gates", "DeutschTests.Information",
         "DeutschTests.EPR", "DeutschTests.Teleportation", "DeutschTests.Decoherence",
-        "DeutschTests.Bell", "DeutschTests.Examples"
+        "DeutschTests.Bell", "DeutschTests.Paper", "DeutschTests.Examples"
     ])
     if build.returncode:
         fail(f"axiom-audit and focused verification targets did not build:\n{build.stdout}")
@@ -1869,6 +1982,16 @@ def main() -> None:
     print(
         "  Required Stage 11 public declarations: "
         f"{len(REQUIRED_BELL_AUDIT_TARGETS)}"
+    )
+    print(
+        "  Exact paper-equation declarations/checks/axiom targets: "
+        f"{len(REQUIRED_PAPER_EQUATIONS)}/"
+        f"{len(REQUIRED_PAPER_CHECK_TARGETS)}/"
+        f"{len(REQUIRED_PAPER_AUDIT_TARGETS)}"
+    )
+    print(
+        "  Required paper no-cheating wrappers: "
+        f"{len(REQUIRED_PAPER_ORACLES)}"
     )
     print(
         "  Required Stage 12 compiled reuse examples: "

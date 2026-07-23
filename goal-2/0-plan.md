@@ -131,6 +131,20 @@ auditable source mapping.
 - The only direct production import of a wholly historical module is
   `Deutsch/Bell.lean -> Deutsch.Bell.SourceCorrection`. Additional printed-form witnesses are
   embedded in the gate, EPR, and teleportation modules and have exact Stage 6 destinations.
+- `Deutsch.Gates.AxisRotation` now derives arbitrary real unit-axis Pauli rotations from the actual
+  Banach-algebra matrix exponential, proves unitarity and Rodrigues conjugation, and specializes to
+  the existing `X`-axis convention. `Deutsch.Gates.AxisRotationRegister` lifts and transports the
+  construction to a named qubit in an arbitrary unitary Heisenberg frame.
+- The historically neutral `Deutsch.Paper` façade now exposes exactly one bare declaration
+  `equation01` through `equation46`. Equations (28), (40), and (41) expose their literal four-wire
+  circuit statements and pair-state bridges; Equations (42)--(46) use the direct all-real-angle
+  finite-moment chain rather than the independent pigeonhole route.
+- `DeutschTests.Paper` contains all 46 exact compile checks plus eight focused no-cheating wrappers.
+  The integrity checker independently scans declaration locations, the contiguous compile
+  registry, and all 46 axiom targets.
+- A complete Stage 5 build finished 3327 jobs. The integrity audit scanned 79 Lean sources and
+  checked 517 representative axiom reports; only `Classical.choice`, `Quot.sound`, and `propext`
+  occurred. Source, provenance, documentation-link, whitespace, and diff checks also pass.
 
 ## Current Assumptions to Test
 
@@ -334,7 +348,7 @@ retaining the independent pigeonhole proof.
 
 #### Status
 
-In progress.
+Complete with recorded evidence in `goal-2/5-EQUATIONS.md`.
 
 #### Big Picture Objective
 
