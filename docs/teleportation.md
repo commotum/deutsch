@@ -1,13 +1,12 @@
 # Coherent Teleportation, Corrections, and Receiver Semantics
 
 The teleportation layer is split into the [five-wire circuit](../Deutsch/Teleportation/Circuit.lean),
-the explicit [three-qubit correction](../Deutsch/Teleportation/Correction.lean), the corrected
+the explicit [three-qubit correction](../Deutsch/Teleportation/Correction.lean), the
 [Heisenberg descriptors](../Deutsch/Teleportation/Descriptors.lean), the
 [arbitrary-input correctness proof](../Deutsch/Teleportation/Correctness.lean), the
 [operational encoder and decoder](../Deutsch/Teleportation/Protocol.lean), and the
 [one-parameter source statistics](../Deutsch/Teleportation/Statistics.lean). Focused regression
-theorems live in [`DeutschTests.Teleportation`](../DeutschTests/Teleportation.lean), and the
-equation lifecycle is recorded in the [source audit](../goal-1/1-SOURCE-AUDIT.md).
+theorems live in [`DeutschTests.Teleportation`](../DeutschTests/Teleportation.lean).
 
 This page inherits the paper-bit, tensor-order, and Heisenberg conventions from
 [Global Conventions](conventions.md), the finite-register embedding API from
@@ -59,18 +58,16 @@ Global branch phases are retained in the coherent ket proof. They may be irrelev
 isolated conditional ray, but erasing them before recombining coherent branches would be
 incorrect.
 
-## Corrected descriptor equations
+## Descriptor equations
 
-The source repeats Equation (18)'s rotation-sign error in Equation (29) and propagates it through
-Equations (31), (32), and (34)--(37). Under the compiled convention
-`heisenberg U A = U† A U`, `R_x(theta)` acts by
+Under `heisenberg U A = U† A U`, `R_x(theta)` acts by
 
 ```text
 Y ↦ cos(theta) Y - sin(theta) Z,
 Z ↦ sin(theta) Y + cos(theta) Z.
 ```
 
-Consequently, the corrected Equation (29) triple is
+The resulting Equation (29) triple is
 
 ```text
 q1 = (X1,
@@ -78,20 +75,14 @@ q1 = (X1,
       sin(theta) Y1 + cos(theta) Z1).
 ```
 
-`equation29_q1` proves the full triple and `equation29_q1_y_pi_div_two_ne_printed` gives a
-special-angle disagreement with the printed sign. `equation30_q4` and `equation30_q5` compile the
-resource descriptors exactly. `equation31_q1`, `equation31_q4`, `equation32_q2`, and
-`equation32_q3` then derive the Bell/record expressions from the same chronology.
-`equation31_q1_y_pi_div_two_ne_printed` and
-`equation32_q2_y_pi_div_two_ne_printed` independently pin the two propagated disagreements.
+`equation29_q1` proves this full triple. `equation30_q4` and `equation30_q5` derive the resource
+descriptors exactly. `equation31_q1`, `equation31_q4`, `equation32_q2`, and `equation32_q3` then
+derive the Bell and record expressions from the same unitary chronology.
 
-`equation34_q5` derives the corrected receiver triple after the explicit Equation (33) gate.
-`timeFive_q5_z` derives the final verification observable and reverses Equation (37)'s printed
-middle term. `equation34_q5_y_pi_div_two_ne_printed` and
-`equation37_q5_z_pi_div_four_ne_printed` prove that these are genuine operator disagreements,
-not merely alternate presentations. A fixed-reference expectation may still agree when the
-difference has zero expectation, so operator equality and one-state probability are kept as
-separate claims.
+`equation34_q5` derives the receiver triple after the explicit Equation (33) gate, and
+`timeFive_q5_z` derives the final Equation (37) verification observable. These are operator
+equalities. The fixed-reference expectation and Born-probability results below are proved
+separately, so one-state statistics are not substituted for operator identities.
 
 ## Exact arbitrary-input transfer
 
@@ -169,26 +160,27 @@ beta  = -i sin(theta/2).
 ```
 
 `timeFour_act_reference_factorizes` specializes arbitrary-input transfer to this circuit.
-`equation36_receiver_density` gives the corrected receiver Bloch vector through exact density
-equality, and `equation36_receiver_all_effects` upgrades it to every receiver effect. The vector
-is `(0, +sin(theta), -cos(theta))` under the fixed paper-bit convention.
+`equation36_receiver_density` gives the receiver Bloch vector through exact density equality, and
+`equation36_receiver_all_effects` upgrades it to every receiver effect. The vector is
+`(0, +sin(theta), -cos(theta))` under the fixed paper-bit convention.
 `equation35_receiver_purity` separately computes purity `1`, so certainty is not being inferred
 from the identity effect.
 
-Equation (35)'s guaranteed rank-one effect is therefore
+`equation35Effect` is the Equation (35) receiver effect, and `equation35_effect_op` exposes its
+operator as
 
 ```text
 (I + sin(theta) q5y - cos(theta) q5z) / 2.
 ```
 
-The source's minus-sine version is explicitly refuted at `theta = pi/2`, where its probability is
-zero. No uncompiled general probability formula is asserted. The final verification is proved
-both for the evolved five-wire density and for the literal `timeFiveUnitary` reference output by
-`timeFive_teleported_paperZero_probability_one` and
+`equation35_receiver_probability_one` proves certainty on the singleton receiver density, while
+`equation35_teleported_probability_one` proves the embedded five-wire form. The final verification
+is proved both for the evolved five-wire density and for the literal `timeFiveUnitary` reference
+output by `timeFive_teleported_paperZero_probability_one` and
 `timeFive_reference_output_paperZero_probability_one`. The tested effect is pinned to the
 paper-zero projector by `receiverPaperZeroEffect_op_eq_projector`. These probability theorems are
-separate from the corrected Equation (37) operator identity, so a coincident fixed-reference
-expectation cannot be mistaken for the printed operator formula.
+separate from the Equation (37) operator identity, preserving the distinction between an
+operator equality and a fixed-reference expectation.
 
 ## Exact scope and exclusions
 

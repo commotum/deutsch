@@ -67,7 +67,7 @@ quantum capacity.  Recovery uses the records together with the receiver half of 
 resource.  The singleton-independence and joint-recovery results are documented in
 [`teleportation.md`](teleportation.md).
 
-## Corrected robustness claims
+## Bounded robustness claims
 
 The formal results support these bounded readings of the source:
 

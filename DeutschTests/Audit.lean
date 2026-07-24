@@ -469,6 +469,7 @@ this file and rejects `sorryAx` and project-defined axioms in the generated depe
 #print axioms Deutsch.Teleportation.equation36_receiver_bloch_vector
 #print axioms Deutsch.Teleportation.equation36_receiver_density
 #print axioms Deutsch.Teleportation.equation36_receiver_all_effects
+#print axioms Deutsch.Teleportation.equation35Effect
 #print axioms Deutsch.Teleportation.equation35_effect_op
 #print axioms Deutsch.Teleportation.equation35_receiver_purity
 #print axioms Deutsch.Teleportation.equation35_teleported_probability_one

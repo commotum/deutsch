@@ -1,127 +1,121 @@
-# Corrected finite Bell audit
+# Finite Bell derivations
 
-The source's Bell section contains a valid finite contradiction idea but not a valid printed proof.
-This library formalizes a corrected three-setting pigeonhole inequality and keeps its assumptions
-separate from the project's dynamical locality and no-signalling theorems.
+The Bell layer exposes two independently checkable routes from the EPR statistics to a finite
+contradiction:
 
-## Source corrections
+- `Deutsch.Bell.Moments` follows Equations (40)–(46) as expectations of Boolean response
+  functions on one finite weighted space.
+- `Deutsch.Bell.Finite`, `Deutsch.Bell.Quantum`, and `Deutsch.Bell.Contradiction` give a separate
+  three-setting agreement-counting argument over explicit deterministic local response tables.
 
-The EPR layer proves the following raw-outcome probabilities:
+Neither route imports or identifies the project's operator-support locality and channel
+no-signalling predicates with Bell's counterfactual response-table assumptions.
+
+## Quantum statistics
+
+The EPR layer proves
 
 ```text
 P(different at theta, phi) = sin²((theta - phi) / 2)
 P(both paper-one)          = 1/2 cos²((theta - phi) / 2).
 ```
 
-Consequently equal settings give equal raw outcomes with probability one. The source's printed
-Equation (41) uses the complementary Bob event and cannot be combined with the unrelabelled record
-variables as written. Equations (42)–(44) therefore also require either an explicit Bob relabeling
-or a corrected argument.
+Thus equal settings give equal raw outcomes with probability one. The three angles used by the
+finite contradiction are `0`, `2π/3`, and `4π/3`; every distinct pair in that family has
+same-outcome probability `1/4`.
 
-Equation (45) is independently false at `(a₀,a₁,a₂)=(1,0,1)`: its right side evaluates to
-`2`, not `1`. The source-regression API compiles that counterexample and verifies the corrected
-complementary-event partition on all eight Boolean triples. The agreement-counting proof below
-does not use Equation (45); the separate expectation proof uses the complementary partition.
+The literal four-wire Figure 2 circuit is connected to the pair-density calculation, not merely
+compared by a final trigonometric formula:
 
-## Finite deterministic model
+- `fourWireTimeThree_leftRecord_probability_eq_pairDensity` and
+  `fourWireTimeThree_rightRecord_probability_eq_pairDensity` identify the two record marginals;
+- `fourWireTimeThree_jointRecord_probability_eq_pairDensity` identifies the joint paper-one event;
+- `fourWireTimeFour_comparison_probability_eq_unequal_pair_sum` first reduces the final comparison
+  to the structural unequal-pair basis sum; and
+- `fourWireTimeFour_comparison_probability_eq_pairDensity` identifies that result with the
+  two-qubit unequal-outcome probability.
 
-`Deutsch.Bell.Setting` is `Fin 3`. A `LocalAssignment` contains two Boolean response tables:
+## Direct Equations (40)–(46)
 
-- `aliceResponse assignment aliceSetting` accepts only Alice's setting;
-- `bobResponse assignment bobSetting` accepts only Bob's setting.
+`FiniteProbabilityWeight` supplies nonnegative normalized weights on a finite sample type.
+`ReproducesAngleEPRMoments` states the Equation (40) one-site means and Equation (41) joint
+paper-one moments for two Boolean response functions on arbitrary settings equipped with a real
+angle. Taking the setting type to be `ℝ` and the angle map to be the identity gives the
+all-real-angle presentation.
 
-A real `weight : LocalAssignment → ℝ` is required to be pointwise nonnegative and normalized.
-It has no setting argument, making measurement-setting independence explicit in this finite model.
-`HasPerfectEqualSettingSupport weight` says that every positive-weight assignment gives equal
-Alice/Bob values at equal settings. Zero-weight assignments are deliberately unconstrained.
-`perfectEqualSettingSupport_of_agreementProbability_one` derives this support statement from
-nonnegativity, normalization, and the observable probability-one equal-setting equations; the
-strongest contradiction therefore does not assume support equality separately.
-
-This is a distribution over deterministic counterfactual response tables. It directly models the
-paper's assumption that a single-valued result exists for each of the finitely many settings. A
-general theorem refining every stochastic factorizable response model into such deterministic
-tables is not part of this library, so the result should not be advertised as a formal
-equivalence with every formulation of Bell locality.
-
-## Pigeonhole inequality
-
-For every three-bit response table, at least one of the pairs `(0,1)`, `(1,2)`, or `(0,2)` agrees.
-`commonAssignment_indicator_sum_ge_one` proves this pointwise, and
-`local_three_setting_bell_inequality` averages it to
-
-```text
-1 ≤ P(A₀ = B₁) + P(A₁ = B₂) + P(A₀ = B₂).
-```
-
-The three EPR angles are `0`, `2π/3`, and `4π/3`. The quantum layer derives, rather than
-assumes, that each distinct pair has same-outcome probability `1/4`; it also proves perfect
-equal-setting agreement. Thus the right side required by the quantum predictions is `3/4`, which
-contradicts the local bound. `corrected_epr_three_settings_refute_local_assignments` is the
-reusable lower-level support-explicit theorem. The stronger
-`corrected_epr_three_settings_refute_normalized_local_model` has no perfect-support premise: from
-nonnegative normalized weights and reproduction of the complete quantum table, it derives
-probability-one equal-setting agreement and then equality on every positive-weight response
-table. Zero-weight tables remain unconstrained.
-`no_normalized_local_model_reproduces_corrected_epr_three_settings` is the strongest reusable
-negated form.
-
-The quantum special-angle proofs import the corrected EPR density/effect theorem but no
-hidden-variable definitions. Conversely, the finite inequality imports no quantum state API.
-`ReproducesThreeSettingQuantumAgreements` is the explicit bridge between those layers.
-
-## Direct Equations (42)--(46) expectation proof
-
-[`Deutsch.Bell.Moments`](../Deutsch/Bell/Moments.lean) formalizes the displayed source route
-independently of the agreement-counting theorem. `FiniteProbabilityWeight` supplies a nonnegative
-normalized weight on a finite sample type, and `ReproducesThreeSettingEPRMoments` states exactly
-the Equation (40) one-site means and Equation (41) joint paper-one moments for separate Alice and
-Bob response functions.
-
-The compiled chain is:
+The direct chain is:
 
 | Display | Production result |
 | --- | --- |
-| (42) | `equation42_mean_square_zero` expands the Boolean square and evaluates its mean as zero. |
-| (43) | `equation43_equal_on_positive_support` derives equal responses only at samples of strictly positive weight. |
-| (44) | `equation44_alice_joint_moment` replaces Bob's response inside an expectation on that positive support. |
-| (45) | `equation45_complementary_partition` uses the actual complement of the Boolean disjunction. |
-| (46) | `equation46_chain` proves every displayed equality and inequality; `equation46_contradiction` derives the contradiction. |
+| (42) | `angleEquation42_mean_square_zero` expands the Boolean square and evaluates its expectation as zero. |
+| (43) | `angleEquation43_equal_on_positive_support` derives equality at every sample of strictly positive weight. |
+| (44) | `angleEquation44_alice_joint_moment` substitutes the equal response inside the expectation. |
+| (45) | `equation45_complementary_partition` proves the pointwise complementary-event partition. |
+| (46) | `equation46_chain` proves the displayed equalities and inequalities, and `equation46_contradiction` derives `False`. |
 
-In the Equation (46) proof, the expanded mean is proved equal to
+`restrictRealAngleMomentsToThreeSettings` restricts one all-real-angle model along
+`threeSettingAngle`, so the same model that supplies Equations (42)–(44) supplies the
+three-setting premises of Equations (45)–(46).
+
+In the Equation (46) proof, the expanded mean is
 
 ```text
 3/8 - E[a(0) a(2π/3) a(4π/3)].
 ```
 
 The triple product is pointwise nonnegative, so the chain ends at `1/2 ≤ 3/8`.
-`Deutsch.Bell.Moments` imports the three-setting trigonometric facts but imports neither
-`Deutsch.Bell.Finite` nor `Deutsch.Bell.Contradiction`; the direct expectation and pigeonhole
-arguments therefore remain independently checkable.
+`Deutsch.Bell.Moments` imports neither `Deutsch.Bell.Finite` nor
+`Deutsch.Bell.Contradiction`; the direct expectation route therefore remains independent of the
+agreement-counting route.
 
-## What “locality” means here
+## Independent three-setting assignment route
 
-The Bell theorem's counterfactual locality assumption concerns simultaneous response tables whose
-Alice and Bob entries depend only on their respective settings, together with a setting-independent
-common distribution. It is not definitionally the same as:
+`Deutsch.Bell.Setting` is `Fin 3`. A `LocalAssignment` contains two Boolean response tables:
 
-- disjoint finite supports and commutation of operators;
+- `aliceResponse assignment aliceSetting` accepts only Alice's setting;
+- `bobResponse assignment bobSetting` accepts only Bob's setting.
+
+A real `weight : LocalAssignment → ℝ` is pointwise nonnegative and normalized. It has no setting
+argument, making measurement-setting independence explicit in this finite model.
+`HasPerfectEqualSettingSupport weight` says that every positive-weight assignment gives equal
+Alice and Bob values at equal settings; zero-weight assignments are deliberately unconstrained.
+`perfectEqualSettingSupport_of_agreementProbability_one` derives that support condition from the
+observable probability-one equal-setting equations.
+
+For every three-bit response table, at least one of the pairs `(0,1)`, `(1,2)`, or `(0,2)` agrees.
+`local_three_setting_bell_inequality` averages that fact:
+
+```text
+1 ≤ P(A₀ = B₁) + P(A₁ = B₂) + P(A₀ = B₂).
+```
+
+The quantum values make the right side `3/4`.
+`epr_three_settings_refute_normalized_local_model` derives the contradiction from nonnegative
+normalized weights and reproduction of the complete three-setting agreement table;
+`no_normalized_local_model_reproduces_epr_three_settings` is its reusable negated form.
+
+The finite inequality imports no quantum state API, while the special-angle quantum theorems
+import no hidden-variable definitions. `ReproducesThreeSettingQuantumAgreements` is the explicit
+bridge between the layers.
+
+## Scope of the conclusion
+
+The compiled conclusions reject the listed finite common-space, Boolean-response,
+setting-locality, setting-independent-weight, normalization, nonnegativity, and quantum-moment
+premises as a conjunction. They do not select one premise as uniquely responsible, choose an
+ontology, or turn matrix-valued descriptors into an interpretive conclusion.
+
+This response-table locality is distinct from:
+
+- commutation of operators with disjoint finite support;
 - Heisenberg invariance under a remote supported unitary;
-- preservation of a disjoint reduced density by a selected-subsystem channel;
-- ordinary operational no-signalling or local statistical independence.
+- preservation of a disjoint reduced density by a selected-subsystem channel; and
+- operational no-signalling or local statistical independence.
 
-The earlier library theorems establish those dynamical and operational properties under their own
-hypotheses. They neither construct nor refute the counterfactual assignment space assumed here.
+Import `Deutsch.Bell.AngleMoments` for all-setting Equations (42)–(44),
+`Deutsch.Bell.Moments` for the finite Equation (45)–(46) chain,
+`Deutsch.Bell.Finite` for the counting inequality, `Deutsch.Bell.Quantum` for the EPR
+probabilities, or `Deutsch.Bell` for both complete routes.
 
-## Interpretive boundary and reuse
-
-The compiled conclusion is only that the listed normalized-weight, deterministic local-response,
-setting-independent-distribution, and corrected quantum-reproduction assumptions are
-inconsistent. Perfect agreement is one independently derived part of the reproduced quantum
-table. The theorem does not
-prove that a particular premise is uniquely responsible, select a single-outcome or many-worlds
-ontology, or turn matrix-valued descriptors into a philosophical conclusion.
-
-Import `Deutsch.Bell.Moments` for the displayed expectation chain, `Deutsch.Bell.Finite` for the
-agreement-counting inequality, `Deutsch.Bell.Quantum` for the EPR probabilities, or
-`Deutsch.Bell` for both integrated contradictions.
+For the separate comparison with the original typesetting, see
+[Printed-form comparison](errata.md).

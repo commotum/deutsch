@@ -5,8 +5,7 @@ the [named four-qubit circuit](../Deutsch/EPR/Circuit.lean), its
 [two-qubit density/effect statistics](../Deutsch/EPR/Statistics.lean), the
 [literal record statistics](../Deutsch/EPR/RecordStatistics.lean), and
 [preparation provenance](../Deutsch/EPR/Provenance.lean). Focused regression theorems are in
-[`DeutschTests.EPR`](../DeutschTests/EPR.lean). The source equations and their correction lifecycle
-are tracked in the [source audit ledger](../goal-1/1-SOURCE-AUDIT.md).
+[`DeutschTests.EPR`](../DeutschTests/EPR.lean).
 
 This page uses the paper-bit, tensor, and chronology choices fixed in
 [Global Conventions](conventions.md), the rotation and CNOT definitions from
@@ -76,7 +75,7 @@ cos((theta - phi)/2),       i sin((theta - phi)/2),
 
 respectively.
 
-## Corrected Equations (25) and (27)
+## Equations (25) and (27)
 
 The four-wire descriptor surface consists of `timeOneDescriptors`, `timeTwoDescriptors`, and
 `timeThreeDescriptors`. `equation23_q2` and `equation23_q3` give the two exact inverse-Bell
@@ -90,9 +89,9 @@ Y ↦ cos(a) Y - sin(a) Z,
 Z ↦ sin(a) Y + cos(a) Z.
 ```
 
-Equations (25)'s printed sine signs are opposite to these identities. The six component theorems
-`timeTwo_q2_x/y/z` and `timeTwo_q3_x/y/z`, bundled by `equation25_q2` and `equation25_q3`, compile
-the corrected triples. For example, the `q2` components are
+The six component theorems `timeTwo_q2_x/y/z` and `timeTwo_q3_x/y/z`, bundled by
+`equation25_q2` and `equation25_q3`, derive the two Equation (25) triples. For example, the `q2`
+components are
 
 ```text
 x = X₂
@@ -100,16 +99,11 @@ y = cos(theta) [-Y₂ X₃] - sin(theta) [-Z₂ X₃]
 z = sin(theta) [-Y₂ X₃] + cos(theta) [-Z₂ X₃].
 ```
 
-At `theta = pi/2`, this gives `y = +Z₂ X₃`; the focused theorem
-`equation25_printed_q2_y_sign_fails_at_pi_half` proves inequality with the source's printed
-`-Z₂ X₃` result.
-
 Equation (27) is compiled as twelve component theorems `timeThree_q1_x` through
 `timeThree_q4_z`, bundled by `equation27_q1` through `equation27_q4`. Each bundle factors the two
-recording CNOTs through `timeTwoDescriptors`, so its expanded sine terms inherit the corrected
-Equation (25) signs instead of reusing the inconsistent printed expansion. The gates are coherent
-unitaries; calling them records describes their circuit role and does not add measurement or
-decoherence semantics.
+recording CNOTs through `timeTwoDescriptors`, so every expanded term follows from the already
+proved time-two descriptor identities. The gates are coherent unitaries; calling them records
+describes their circuit role and does not add measurement or decoherence semantics.
 
 ## Maximally mixed marginals and all-effect independence
 

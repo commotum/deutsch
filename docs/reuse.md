@@ -97,13 +97,13 @@ this example still detects the secret. See
 [Density States and Information Dependence](information.md) for density/effect duality, channels,
 recovery, and the distinctions among the information predicates.
 
-## Corrected Bell predictions and contradiction
+## Bell predictions and contradiction
 
-`DeutschTests.Examples.corrected_three_setting_quantum_probability` consumes the quantum half of
-the corrected Bell API:
+`DeutschTests.Examples.three_setting_quantum_probability` consumes the quantum half of the Bell
+API:
 
 ```lean
-theorem corrected_three_setting_quantum_probability
+theorem three_setting_quantum_probability
     (i j : Setting) (hij : i ≠ j) :
     sameOutcomeProbability (threeSettingAngle i) (threeSettingAngle j) =
       (1 / 4 : ℝ) :=
@@ -111,22 +111,23 @@ theorem corrected_three_setting_quantum_probability
 ```
 
 The strongest integrated wrapper in the example file is
-`DeutschTests.Examples.corrected_quantum_table_refutes_normalized_local_model`:
+`DeutschTests.Examples.quantum_table_refutes_normalized_local_model`:
 
 ```lean
-theorem corrected_quantum_table_refutes_normalized_local_model
+theorem quantum_table_refutes_normalized_local_model
     (weight : LocalAssignment → ℝ)
     (weight_nonnegative : ∀ assignment, 0 ≤ weight assignment)
     (weight_normalized : ∑ assignment, weight assignment = 1) :
     ¬ ReproducesThreeSettingQuantumAgreements weight :=
-  no_normalized_local_model_reproduces_corrected_epr_three_settings
+  no_normalized_local_model_reproduces_epr_three_settings
     weight weight_nonnegative weight_normalized
 ```
 
 The conclusion is limited to the displayed finite deterministic response-table model. The theorem
 derives equal-setting agreement on positive-weight support from probability-one reproduction;
 zero-weight tables remain unconstrained. It is neither the dynamical locality theorem above nor an
-ontological conclusion. See [Corrected Finite Bell Audit](bell.md) for the full assumption audit.
+ontological conclusion. See [Finite Bell derivations](bell.md) for the full assumption audit and
+the independent direct Equation-(40)–(46) route.
 
 ## Compile the examples
 

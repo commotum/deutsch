@@ -130,9 +130,9 @@ Rₓ(π/2)† Y Rₓ(π/2) = -Z,
 Rₓ(π/2)† Z Rₓ(π/2) =  Y.
 ```
 
-These signs were computed rather than imported from a rotation mnemonic. The public symbolic
-theorems now prove the corresponding formulas for every real angle and show by executable
-`pi/2` inequalities that equation (18) prints the opposite sine signs; see
+These signs are computed from the matrices rather than imported from a rotation mnemonic. The
+public symbolic theorems prove the corresponding formulas for every real angle. The arbitrary-axis
+layer derives the same specialization from the matrix exponential and the Rodrigues formula; see
 [Gates, Rotations, and Bell Chronology](gates.md).
 
 ## Hadamard and Bell chronology
@@ -164,5 +164,5 @@ proof limits are recorded in [Finite Registers, Embeddings, and Pure States](reg
 limits are recorded in [Finite-Support Locality](locality.md). Descriptor validity, algebraic
 completeness, and the separation of conjugacy from equality are recorded in
 [Descriptor Triples and Algebraic Completeness](descriptors.md).
-Exact gate matrices, phases, corrected rotation signs, and Bell chronology are recorded in
+Exact gate matrices, phases, rotation signs, and Bell chronology are recorded in
 [Gates, Rotations, and Bell Chronology](gates.md).

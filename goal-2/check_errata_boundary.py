@@ -107,6 +107,35 @@ ALLOWED_ERRATA_IMPORT_PREFIXES = (
     "Mathlib.",
 )
 
+HISTORICAL_PRODUCTION_PATTERN = re.compile(
+    r"\bprinted\b|\bcorrected\b|source\s*correction|source\s*defect|"
+    r"\berrata?\b|\bbookkeeping\b|\btypo\b|\binconsistent\b|"
+    r"sign[-\s]+correction|typed\s+correction",
+    flags=re.IGNORECASE,
+)
+
+SUPERSEDED_MAIN_NAMES = (
+    "Deutsch.Bell.SourceCorrection",
+    "equation35CorrectedEffect",
+    "equation35_corrected_effect_op",
+    "corrected_epr_three_settings_refute_local_assignments",
+    "no_local_assignments_reproduce_corrected_epr_three_settings",
+    "corrected_epr_three_settings_refute_normalized_local_model",
+    "no_normalized_local_model_reproduces_corrected_epr_three_settings",
+    "rotationX_heisenberg_y_pi_div_two_ne_printed",
+    "rotationX_heisenberg_z_pi_div_two_ne_printed",
+    "equation28_printed_equal_angle_counterexample",
+    "equation41_printed_equal_angle_counterexample",
+    "equation29_q1_y_pi_div_two_ne_printed",
+    "equation31_q1_y_pi_div_two_ne_printed",
+    "equation32_q2_y_pi_div_two_ne_printed",
+    "equation34_q5_y_pi_div_two_ne_printed",
+    "equation37_q5_z_pi_div_four_ne_printed",
+    "equation35PrintedMinusSineAtPiOverTwo",
+    "equation35_printed_minus_sine_at_pi_div_two_op",
+    "equation35_printed_minus_sine_probability_zero_at_pi_div_two",
+)
+
 
 def sha256(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
@@ -173,16 +202,56 @@ def main() -> None:
                 f"expected={expected}, actual={actual}"
             )
 
+    production_files = [
+        ROOT / "Deutsch.lean",
+        *sorted((ROOT / "Deutsch").rglob("*.lean")),
+    ]
     reverse_edges = [
         str(path.relative_to(ROOT))
-        for path in sorted((ROOT / "Deutsch").rglob("*.lean"))
+        for path in production_files
         if any(name.startswith("DeutschErrata") for name in imports(path))
     ]
-    root_file = ROOT / "Deutsch.lean"
-    if any(name.startswith("DeutschErrata") for name in imports(root_file)):
-        reverse_edges.insert(0, "Deutsch.lean")
     if reverse_edges:
         fail("Deutsch imports DeutschErrata in " + ", ".join(reverse_edges))
+
+    main_test_files = [
+        ROOT / "DeutschTests.lean",
+        *sorted((ROOT / "DeutschTests").rglob("*.lean")),
+    ]
+    main_test_errata_edges = [
+        str(path.relative_to(ROOT))
+        for path in main_test_files
+        if any(name.startswith("DeutschErrata") for name in imports(path))
+    ]
+    if main_test_errata_edges:
+        fail(
+            "DeutschTests imports DeutschErrata in "
+            + ", ".join(main_test_errata_edges)
+        )
+
+    historical_production_files = [
+        str(path.relative_to(ROOT))
+        for path in production_files
+        if HISTORICAL_PRODUCTION_PATTERN.search(path.read_text(encoding="utf-8"))
+    ]
+    if historical_production_files:
+        fail(
+            "editorial history remains in Deutsch production: "
+            + ", ".join(historical_production_files)
+        )
+
+    main_text = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in [*production_files, *main_test_files]
+    )
+    surviving_superseded_names = [
+        name for name in SUPERSEDED_MAIN_NAMES if name in main_text
+    ]
+    if surviving_superseded_names:
+        fail(
+            "superseded main-library names remain: "
+            + ", ".join(surviving_superseded_names)
+        )
 
     errata_root = ROOT / "DeutschErrata.lean"
     if not errata_root.is_file():
@@ -285,6 +354,9 @@ def main() -> None:
 
     print("Errata boundary/provenance audit passed")
     print(f"  Deutsch production reverse imports: {len(reverse_edges)}")
+    print(f"  DeutschTests Errata imports: {len(main_test_errata_edges)}")
+    print("  Deutsch production editorial-history tokens: none")
+    print("  Superseded main-library names: none")
     print(f"  Errata production modules: {len(errata_files)}")
     print(f"  Lake public/test targets: {len(observed_libraries)}")
     print(

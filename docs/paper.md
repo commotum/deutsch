@@ -17,8 +17,10 @@ import Deutsch.Paper
 The names are zero-padded through `equation09` and continue as `equation10` through
 `equation46`. An entry may be a definition, a theorem schema, or a theorem that bundles several
 components of one displayed equation. The façade keeps the sequence and shape of the numbered
-presentation visible while its definitions and proofs use the same finite-dimensional
-constructions as the rest of the library.
+presentation visible while deriving every entry from the same finite-dimensional constructions
+as the rest of the library. In particular, the Bell façade states Equations (42)–(44) over an
+all-real-angle response model and restricts that same model to the three settings used by
+Equations (45)–(46).
 
 The declarations are grouped as follows:
 

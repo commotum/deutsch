@@ -847,8 +847,8 @@ REQUIRED_EPR_ORACLES = (
     "equation23_q2_descriptor_is_exact",
     "equation23_q3_descriptor_is_exact",
     "equation24_remote_descriptors_are_untouched",
-    "equation25_q2_uses_corrected_sine_signs",
-    "equation25_q3_uses_corrected_sine_signs",
+    "equation25_q2_sine_components",
+    "equation25_q3_sine_components",
     "equation27_q1_record_is_factored_through_time_two",
     "equation27_q2_record_is_factored_through_time_two",
     "equation27_q3_record_is_factored_through_time_two",
@@ -865,15 +865,13 @@ REQUIRED_EPR_ORACLES = (
     "relative_pi_is_a_four_wire_boundary",
     "both_pair_marginals_are_maximally_mixed",
     "every_singleton_effect_is_setting_independent",
-    "equation28_has_corrected_sine_square_probability",
+    "equation28_has_sine_square_probability",
     "equation40_marginals_are_one_half",
-    "equation41_has_corrected_cosine_square_probability",
-    "equal_settings_expose_both_printed_probability_errors",
+    "equation41_has_cosine_square_probability",
     "pi_separated_settings_force_different_outcomes",
-    "source_resource_zz_correlation_is_nonproduct",
+    "epr_resource_zz_correlation_is_nonproduct",
     "finite_setting_family_is_local_but_jointly_detectable",
     "equation39_routes_have_equal_density_but_distinct_histories",
-    "equation25_printed_q2_y_sign_fails_at_pi_half",
 )
 
 REQUIRED_EPR_PUBLIC_DECLARATIONS = {
@@ -913,8 +911,6 @@ REQUIRED_EPR_PUBLIC_DECLARATIONS = {
         "pairDensity_different_equal_settings",
         "pairDensity_jointPaperOne_equal_settings",
         "pairDensity_different_pi_zero",
-        "equation28_printed_equal_angle_counterexample",
-        "equation41_printed_equal_angle_counterexample",
         "pairSettingFamily_locallyStatisticsIndependent",
         "pairSettingFamily_statisticallyDetectable",
         "pairDensity_z_expectation",
@@ -962,17 +958,12 @@ REQUIRED_EPR_AUDIT_TARGETS = tuple(
 REQUIRED_TELEPORTATION_ORACLES = (
     "all_five_wire_boundaries_are_unitary",
     "all_five_wire_boundaries_have_explicit_finite_support",
-    "equation29_uses_the_corrected_rotation_signs",
-    "equation29_printed_sign_fails_at_pi_half",
+    "equation29_rotation_components",
     "equation30_resource_descriptor_is_exact",
-    "equation31_input_descriptor_propagates_corrected_signs",
-    "equation32_record_descriptor_propagates_corrected_signs",
-    "equation31_printed_sign_fails_at_pi_half",
-    "equation32_printed_sign_fails_at_pi_half",
-    "equation34_receiver_descriptor_is_corrected",
-    "equation34_printed_sign_fails_at_pi_half",
-    "equation37_final_observable_has_corrected_middle_sign",
-    "equation37_printed_sign_fails_at_pi_quarter",
+    "equation31_input_descriptor_components",
+    "equation32_record_descriptor_components",
+    "equation34_receiver_descriptor",
+    "equation37_final_observable",
     "equation33_checks_all_nine_generators",
     "correction_branch_matrices_are_explicit",
     "every_complex_amplitude_pair_factorizes",
@@ -989,11 +980,10 @@ REQUIRED_TELEPORTATION_ORACLES = (
     "supplied_protocol_history_is_nonconstant",
     "supplied_protocol_history_names_alice_to_bob",
     "equation36_is_receiver_density_equality",
-    "equation36_has_the_corrected_bloch_vector",
+    "equation36_has_receiver_bloch_vector",
     "equation36_is_all_effect_prediction_equality",
-    "equation35_corrected_rank_one_effect_is_certain",
+    "equation35_rank_one_effect_is_certain",
     "equation35_receiver_is_explicitly_pure",
-    "equation35_printed_sign_fails_at_pi_half",
     "final_inverse_rotation_verifies_paper_zero",
     "final_verification_effect_is_the_paper_zero_projector",
     "evolved_five_wire_output_verifies_paper_zero",
@@ -1010,14 +1000,11 @@ REQUIRED_TELEPORTATION_PUBLIC_DECLARATIONS = {
         "timeThreeUnitary_isSupportedOn",
         "recordingGates_commute",
         "equation29_q1",
-        "equation29_q1_y_pi_div_two_ne_printed",
         "equation30_q4",
         "equation30_q5",
         "equation31_q1",
-        "equation31_q1_y_pi_div_two_ne_printed",
         "equation31_q4",
         "equation32_q2",
-        "equation32_q2_y_pi_div_two_ne_printed",
         "equation32_q3",
     ),
     "Deutsch/Teleportation/Correction.lean": (
@@ -1040,11 +1027,9 @@ REQUIRED_TELEPORTATION_PUBLIC_DECLARATIONS = {
     ),
     "Deutsch/Teleportation/Descriptors.lean": (
         "equation34_q5",
-        "equation34_q5_y_pi_div_two_ne_printed",
         "teleportCorrectionGate_isSupportedOn",
         "timeFourUnitary_isSupportedOn",
         "timeFive_q5_z",
-        "equation37_q5_z_pi_div_four_ne_printed",
         "verificationRotation_isSupportedOn",
         "timeFiveUnitary_isSupportedOn",
     ),
@@ -1085,10 +1070,10 @@ REQUIRED_TELEPORTATION_PUBLIC_DECLARATIONS = {
         "equation36_receiver_bloch_vector",
         "equation36_receiver_density",
         "equation36_receiver_all_effects",
-        "equation35_corrected_effect_op",
+        "equation35Effect",
+        "equation35_effect_op",
         "equation35_receiver_purity",
         "equation35_teleported_probability_one",
-        "equation35_printed_minus_sine_probability_zero_at_pi_div_two",
         "receiverPaperZeroEffect_op_eq_projector",
         "u02_paperZero_heisenberg",
         "u02_paperZero_probability_one",
@@ -1183,32 +1168,23 @@ REQUIRED_BELL_ORACLES = (
     "direct_equation46_all_displayed_comparisons",
     "direct_equation46_reaches_the_impossible_bound",
     "zero_weight_sample_can_disagree_despite_zero_mean_square",
-    "equation45_printed_identity_is_false_at_the_recorded_counterexample",
-    "equation45_corrected_partition_holds_for_every_assignment",
     "every_three_bit_assignment_has_an_agreeing_pair",
     "every_common_assignment_distribution_obeys_the_bell_bound",
     "every_explicit_two_party_local_model_obeys_the_bell_bound",
     "probability_one_equal_settings_force_positive_support_agreement",
     "three_quarter_agreements_are_impossible_for_the_local_model",
     "raw_to_paper_relabeling_preserves_outcome_agreement",
-    "corrected_same_outcome_probability_is_cosine_squared",
+    "same_outcome_probability_is_cosine_squared",
     "all_distinct_three_setting_pairs_have_probability_one_quarter",
     "all_equal_three_setting_pairs_agree_certainly",
-    "corrected_epr_predictions_refute_the_explicit_local_model",
-    "no_explicit_local_model_reproduces_the_corrected_epr_family",
-    "corrected_epr_probabilities_alone_refute_the_normalized_local_model",
-    "no_normalized_local_model_reproduces_the_corrected_epr_family",
+    "epr_predictions_refute_the_explicit_local_model",
+    "no_explicit_local_model_reproduces_the_epr_family",
+    "epr_probabilities_alone_refute_the_normalized_local_model",
+    "no_normalized_local_model_reproduces_the_epr_family",
     "both_finite_bell_routes_reject_their_named_contracts",
 )
 
 REQUIRED_BELL_PUBLIC_DECLARATIONS = {
-    "Deutsch/Bell/SourceCorrection.lean": (
-        "numericOr_eq_boolValue_or",
-        "equation45_printed_counterexample_values",
-        "equation45_printed_fails_at_one_zero_one",
-        "equation45_corrected_complementary_partition",
-        "equation45_corrected_partition_for_assignment",
-    ),
     "Deutsch/Bell/Finite.lean": (
         "commonAssignment_has_agreeing_pair",
         "commonAssignment_indicator_sum_ge_one",
@@ -1259,10 +1235,10 @@ REQUIRED_BELL_PUBLIC_DECLARATIONS = {
     "Deutsch/Bell/Contradiction.lean": (
         "reproducesThreeSettingQuantumAgreements_quarters",
         "reproducesThreeSettingQuantumAgreements_equal_setting",
-        "corrected_epr_three_settings_refute_local_assignments",
-        "no_local_assignments_reproduce_corrected_epr_three_settings",
-        "corrected_epr_three_settings_refute_normalized_local_model",
-        "no_normalized_local_model_reproduces_corrected_epr_three_settings",
+        "epr_three_settings_refute_local_assignments",
+        "no_local_assignments_reproduce_epr_three_settings",
+        "epr_three_settings_refute_normalized_local_model",
+        "no_normalized_local_model_reproduces_epr_three_settings",
     ),
     "Deutsch/Bell/AngleMoments.lean": (
         "angleEquation42_mean_square_zero",
@@ -1273,9 +1249,7 @@ REQUIRED_BELL_PUBLIC_DECLARATIONS = {
 }
 
 REQUIRED_BELL_AUDIT_TARGETS = tuple(
-    ("Deutsch.Bell.SourceCorrection."
-      if path == "Deutsch/Bell/SourceCorrection.lean"
-      else "Deutsch.Bell.") + name
+    "Deutsch.Bell." + name
     for path, declarations in REQUIRED_BELL_PUBLIC_DECLARATIONS.items()
     for name in declarations
 )
@@ -1287,6 +1261,63 @@ FORBIDDEN = {
     "unsafe declaration": re.compile(r"(?m)^\s*(?:private\s+)?unsafe\b"),
     "opaque declaration": re.compile(r"(?m)^\s*(?:private\s+)?opaque\b"),
     "project axiom declaration": re.compile(r"(?m)^\s*(?:private\s+)?axiom\b"),
+}
+
+EDITORIAL_HISTORY_PATTERNS = {
+    "editorial token `printed`": re.compile(r"\bprinted\b", re.IGNORECASE),
+    "editorial token `corrected`": re.compile(r"\bcorrected\b", re.IGNORECASE),
+    "editorial token `errata`": re.compile(r"\berrata\b", re.IGNORECASE),
+    "editorial name `SourceCorrection`": re.compile(
+        r"\bsource(?:[ _-]?correction)\b", re.IGNORECASE
+    ),
+    "editorial source-error language": re.compile(
+        r"\bsource(?:[- ](?:defect|discrepancy|error|mistake))\b",
+        re.IGNORECASE,
+    ),
+    "editorial sign-correction language": re.compile(
+        r"\b(?:rotation[- ]?)?sign correction\b", re.IGNORECASE
+    ),
+    "editorial bookkeeping-error language": re.compile(
+        r"\bbookkeeping (?:error|mistake|slip)\b", re.IGNORECASE
+    ),
+    "editorial misprint/typo language": re.compile(
+        r"\b(?:misprint|typo(?:graphical)?(?: error)?)\b", re.IGNORECASE
+    ),
+}
+
+SUPERSEDED_DECLARATION_NAMES = (
+    "rotationX_heisenberg_y_pi_div_two_ne_printed",
+    "rotationX_heisenberg_z_pi_div_two_ne_printed",
+    "equation28_printed_equal_angle_counterexample",
+    "equation41_printed_equal_angle_counterexample",
+    "equation29_q1_y_pi_div_two",
+    "equation29_q1_y_pi_div_two_ne_printed",
+    "equation31_q1_y_pi_div_two_ne_printed",
+    "equation32_q2_y_pi_div_two_ne_printed",
+    "equation34_q5_y_pi_div_two_ne_printed",
+    "equation37_q5_z_pi_div_four_ne_printed",
+    "equation35CorrectedEffect",
+    "equation35_corrected_effect_op",
+    "equation35PrintedMinusSineAtPiOverTwo",
+    "equation35_printed_minus_sine_at_pi_div_two_op",
+    "equation35_printed_minus_sine_probability_zero_at_pi_div_two",
+    "corrected_epr_three_settings_refute_local_assignments",
+    "no_local_assignments_reproduce_corrected_epr_three_settings",
+    "corrected_epr_three_settings_refute_normalized_local_model",
+    "no_normalized_local_model_reproduces_corrected_epr_three_settings",
+)
+
+NEUTRAL_RENAME_TARGETS = {
+    "Deutsch/Teleportation/Statistics.lean": (
+        "equation35Effect",
+        "equation35_effect_op",
+    ),
+    "Deutsch/Bell/Contradiction.lean": (
+        "epr_three_settings_refute_local_assignments",
+        "no_local_assignments_reproduce_epr_three_settings",
+        "epr_three_settings_refute_normalized_local_model",
+        "no_normalized_local_model_reproduces_epr_three_settings",
+    ),
 }
 
 
@@ -1429,6 +1460,9 @@ def main() -> None:
     missing = [path for path in REQUIRED_FILES if not (ROOT / path).is_file()]
     if missing:
         fail(f"missing required files: {', '.join(missing)}")
+    superseded_module = ROOT / "Deutsch/Bell/SourceCorrection.lean"
+    if superseded_module.exists():
+        fail("superseded production module remains: Deutsch/Bell/SourceCorrection.lean")
 
     for relative_path, expected_imports in REQUIRED_PRODUCTION_IMPORT_CLOSURE.items():
         observed_imports = imported_modules(ROOT / relative_path)
@@ -1444,6 +1478,19 @@ def main() -> None:
             "DeutschTests.lean immediate imports differ from the focused-test closure: "
             f"expected {REQUIRED_TEST_ROOT_IMPORTS!r}, found {test_root_imports!r}"
         )
+    separate_root_prefixes = {
+        "DeutschErrata.lean": "DeutschErrata.",
+        "DeutschErrataTests.lean": "DeutschErrataTests.",
+    }
+    for relative_path, expected_prefix in separate_root_prefixes.items():
+        observed_imports = imported_modules(ROOT / relative_path)
+        if not observed_imports or any(
+            not module.startswith(expected_prefix) for module in observed_imports
+        ):
+            fail(
+                f"{relative_path} is not a separate {expected_prefix[:-1]} root: "
+                f"found {observed_imports!r}"
+            )
 
     paper_equation_locations: dict[str, list[str]] = {}
     for path in sorted((ROOT / "Deutsch/Paper").glob("*.lean")):
@@ -1510,6 +1557,32 @@ def main() -> None:
     lakefile = (ROOT / "lakefile.toml").read_text(encoding="utf-8")
     if f'rev = "{EXPECTED_MATHLIB_TAG}"' not in lakefile:
         fail(f"lakefile.toml does not pin mathlib {EXPECTED_MATHLIB_TAG}")
+    default_targets_match = re.search(
+        r'(?m)^defaultTargets = \[([^]]*)\]$', lakefile
+    )
+    if default_targets_match is None:
+        fail("lakefile.toml has no literal defaultTargets list")
+    observed_default_targets = tuple(
+        re.findall(r'"([^"]+)"', default_targets_match.group(1))
+    )
+    if observed_default_targets != EXPECTED_DEFAULT_TARGETS:
+        fail(
+            "lakefile.toml default targets differ from the four-library cutover: "
+            f"expected {EXPECTED_DEFAULT_TARGETS!r}, "
+            f"found {observed_default_targets!r}"
+        )
+    observed_lake_libraries = tuple(
+        re.findall(
+            r'(?m)^\[\[lean_lib\]\]\s*\nname = "([^"]+)"$',
+            lakefile,
+        )
+    )
+    if observed_lake_libraries != EXPECTED_LAKE_LIBRARIES:
+        fail(
+            "lakefile.toml Lean libraries differ from the four separate roots: "
+            f"expected {EXPECTED_LAKE_LIBRARIES!r}, "
+            f"found {observed_lake_libraries!r}"
+        )
 
     manifest = json.loads((ROOT / "lake-manifest.json").read_text(encoding="utf-8"))
     mathlib = next((package for package in manifest["packages"] if package["name"] == "mathlib"), None)
@@ -1535,7 +1608,23 @@ def main() -> None:
     if violations:
         fail("forbidden Lean constructs:\n  " + "\n  ".join(violations))
 
-    public_files = [ROOT / "Deutsch.lean", *(ROOT / "Deutsch").rglob("*.lean")]
+    main_production_files = [
+        ROOT / "Deutsch.lean",
+        *sorted((ROOT / "Deutsch").rglob("*.lean")),
+    ]
+    main_test_files = [
+        ROOT / "DeutschTests.lean",
+        *sorted((ROOT / "DeutschTests").rglob("*.lean")),
+    ]
+    errata_production_files = [
+        ROOT / "DeutschErrata.lean",
+        *sorted((ROOT / "DeutschErrata").rglob("*.lean")),
+    ]
+    errata_test_files = [
+        ROOT / "DeutschErrataTests.lean",
+        *sorted((ROOT / "DeutschErrataTests").rglob("*.lean")),
+    ]
+    public_files = main_production_files + errata_production_files
     tactic_imports = [
         str(path.relative_to(ROOT))
         for path in public_files
@@ -1551,12 +1640,76 @@ def main() -> None:
         f"{path.relative_to(ROOT)}:{module}"
         for path in public_files
         for module in imported_modules(path)
-        if module == "DeutschTests" or module.startswith("DeutschTests.")
+        if module in {"DeutschTests", "DeutschErrataTests"}
+        or module.startswith(("DeutschTests.", "DeutschErrataTests."))
     ]
     if production_test_imports:
         fail(
             "production modules import verification modules: "
             + ", ".join(production_test_imports)
+        )
+    main_errata_imports = [
+        f"{path.relative_to(ROOT)}:{module}"
+        for path in main_production_files + main_test_files
+        for module in imported_modules(path)
+        if module in {"DeutschErrata", "DeutschErrataTests"}
+        or module.startswith(("DeutschErrata.", "DeutschErrataTests."))
+    ]
+    if main_errata_imports:
+        fail(
+            "Deutsch or DeutschTests imports the Errata layer: "
+            + ", ".join(main_errata_imports)
+        )
+    errata_main_test_imports = [
+        f"{path.relative_to(ROOT)}:{module}"
+        for path in errata_test_files
+        for module in imported_modules(path)
+        if module == "DeutschTests" or module.startswith("DeutschTests.")
+    ]
+    if errata_main_test_imports:
+        fail(
+            "DeutschErrataTests imports the main test library: "
+            + ", ".join(errata_main_test_imports)
+        )
+
+    historical_violations: list[str] = []
+    for path in main_production_files + main_test_files:
+        source = path.read_text(encoding="utf-8")
+        for label, pattern in EDITORIAL_HISTORY_PATTERNS.items():
+            for match in pattern.finditer(source):
+                line = source.count("\n", 0, match.start()) + 1
+                historical_violations.append(
+                    f"{path.relative_to(ROOT)}:{line}: {label}"
+                )
+    if historical_violations:
+        fail(
+            "editorial-history language remains in Deutsch/DeutschTests:\n  "
+            + "\n  ".join(historical_violations)
+        )
+
+    superseded_declarations = [
+        f"{path.relative_to(ROOT)}:{name}"
+        for path in lean_files
+        for name in sorted(
+            declared_names(path).intersection(SUPERSEDED_DECLARATION_NAMES)
+        )
+    ]
+    if superseded_declarations:
+        fail(
+            "superseded declarations or compatibility aliases remain: "
+            + ", ".join(superseded_declarations)
+        )
+
+    absent_neutral_renames = [
+        f"{relative_path}:{name}"
+        for relative_path, required_names in NEUTRAL_RENAME_TARGETS.items()
+        for name in required_names
+        if name not in declared_names(ROOT / relative_path)
+    ]
+    if absent_neutral_renames:
+        fail(
+            "missing neutral cutover declarations: "
+            + ", ".join(absent_neutral_renames)
         )
 
     foundation_oracles = set().union(
@@ -1909,10 +2062,21 @@ def main() -> None:
         )
 
     build = run([
-        "lake", "build", "DeutschTests.Audit", "DeutschTests.Register", "DeutschTests.Locality",
-        "DeutschTests.Descriptor", "DeutschTests.Gates", "DeutschTests.Information",
-        "DeutschTests.EPR", "DeutschTests.Teleportation", "DeutschTests.Decoherence",
-        "DeutschTests.Bell", "DeutschTests.Paper", "DeutschTests.Examples"
+        "lake", "build",
+        "DeutschTests.Audit",
+        "DeutschTests.Register",
+        "DeutschTests.Locality",
+        "DeutschTests.Descriptor",
+        "DeutschTests.Gates",
+        "DeutschTests.Information",
+        "DeutschTests.EPR",
+        "DeutschTests.Teleportation",
+        "DeutschTests.Decoherence",
+        "DeutschTests.Bell",
+        "DeutschTests.Paper",
+        "DeutschTests.Examples",
+        "DeutschErrata",
+        "DeutschErrataTests",
     ])
     if build.returncode:
         fail(f"axiom-audit and focused verification targets did not build:\n{build.stdout}")
@@ -1947,6 +2111,17 @@ def main() -> None:
     print(f"  Lean sources scanned: {len(lean_files)}")
     print("  Forbidden proof holes/declarations: none")
     print("  Production imports of verification modules: none")
+    print("  Deutsch/DeutschTests imports of DeutschErrata: none")
+    print("  Editorial-history language in Deutsch/DeutschTests: none")
+    print("  Superseded declarations/compatibility aliases: none")
+    print(
+        "  Lake libraries/default targets: "
+        f"{len(observed_lake_libraries)}/{len(observed_default_targets)}"
+    )
+    print(
+        "  Neutral production rename targets: "
+        f"{sum(len(names) for names in NEUTRAL_RENAME_TARGETS.values())}"
+    )
     print(f"  Toolchain: {EXPECTED_TOOLCHAIN}")
     print(f"  mathlib: {EXPECTED_MATHLIB_TAG} @ {EXPECTED_MATHLIB_COMMIT}")
     print(

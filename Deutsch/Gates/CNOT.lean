@@ -312,7 +312,7 @@ theorem pair_kronecker_eq_factor_product (A B : QubitMatrix) :
   rw [← Matrix.mul_kronecker_mul]
   simp [identity₂]
 
-/-- Typed correction of Equation (15) on the local `Fin 2` register. -/
+/-- Typed realization of Equation (15) on the local `Fin 2` register. -/
 theorem cnotLocal_eq_global_formula :
     cnotLocal = paperBitZeroProjectorAt (1 : Fin 2) +
       xAt (0 : Fin 2) * paperBitOneProjectorAt (1 : Fin 2) := by
