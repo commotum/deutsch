@@ -49,7 +49,8 @@ See
 [Reusing the Public Lean API](docs/reuse.md); the end-to-end scope, corrections, limits, and audit
 results are summarized in the [Final Project Report](docs/project-report.md). The
 [Equation-by-equation paper façade](docs/paper.md) maps the complete numbered presentation to the
-reusable topical APIs.
+reusable topical APIs; the separate [printed-form comparison](docs/errata.md) contains the concise
+historical checks.
 
 ## Build and audit
 

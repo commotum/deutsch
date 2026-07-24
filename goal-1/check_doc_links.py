@@ -24,6 +24,7 @@ EXPECTED_PUBLIC_DOCS = (
     Path("docs/decoherence.md"),
     Path("docs/bell.md"),
     Path("docs/paper.md"),
+    Path("docs/errata.md"),
     Path("docs/reuse.md"),
     Path("docs/project-report.md"),
 )

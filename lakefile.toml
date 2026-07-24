@@ -1,6 +1,6 @@
 name = "deutsch"
 version = "0.1.0"
-defaultTargets = ["Deutsch", "DeutschTests"]
+defaultTargets = ["Deutsch", "DeutschErrata", "DeutschTests", "DeutschErrataTests"]
 
 [[require]]
 name = "mathlib"
@@ -12,3 +12,9 @@ name = "Deutsch"
 
 [[lean_lib]]
 name = "DeutschTests"
+
+[[lean_lib]]
+name = "DeutschErrata"
+
+[[lean_lib]]
+name = "DeutschErrataTests"
