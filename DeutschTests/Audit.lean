@@ -14,6 +14,7 @@ import Deutsch.Teleportation
 import Deutsch.Decoherence
 import Deutsch.Bell
 import Deutsch.Paper
+import DeutschTests.Bell
 import DeutschTests.Teleportation
 
 /-!
@@ -584,6 +585,31 @@ this file and rejects `sorryAx` and project-defined axioms in the generated depe
 #print axioms Deutsch.Bell.angleEquation43_equal_on_positive_support
 #print axioms Deutsch.Bell.angleEquation44_alice_joint_moment
 #print axioms Deutsch.Bell.restrictRealAngleMomentsToThreeSettings
+
+-- Constructive finite stochastic-local refinement and probability preservation.
+#print axioms Deutsch.Bell.responseTableWeight_normalized
+#print axioms Deutsch.Bell.responseTableWeight_marginal
+#print axioms Deutsch.Bell.conditionalTableWeight_nonnegative
+#print axioms Deutsch.Bell.conditionalTableWeight_normalized
+#print axioms Deutsch.Bell.conditionalTableWeight_alice_marginal
+#print axioms Deutsch.Bell.conditionalTableWeight_bob_marginal
+#print axioms Deutsch.Bell.conditionalTableWeight_joint_marginal
+#print axioms Deutsch.Bell.refinedLocalWeight_nonnegative
+#print axioms Deutsch.Bell.refinedLocalWeight_normalized
+#print axioms Deutsch.Bell.stochasticJointOutcomeProbability_factorization
+#print axioms Deutsch.Bell.refinedLocalWeight_preserves_alice_outcome
+#print axioms Deutsch.Bell.refinedLocalWeight_preserves_bob_outcome
+#print axioms Deutsch.Bell.refinedLocalWeight_preserves_joint_outcome
+#print axioms Deutsch.Bell.refinedLocalWeight_preserves_agreement
+#print axioms Deutsch.Bell.refinedLocalWeight_reproduces_three_setting_agreements
+#print axioms Deutsch.Bell.epr_three_settings_refute_stochastic_local_model
+#print axioms Deutsch.Bell.no_stochastic_local_model_reproduces_epr_three_settings
+
+-- Concrete nondeterministic fair-kernel smoke test.
+#print axioms DeutschTests.BellVerification.fair_response_kernel_is_genuinely_nondeterministic
+#print axioms DeutschTests.BellVerification.boolean_response_kernel_normalizes
+#print axioms DeutschTests.BellVerification.fair_refined_table_distribution_normalizes
+#print axioms DeutschTests.BellVerification.fair_refined_table_joint_true_false_is_one_quarter
 
 /-! ## Exact paper-equation façade -/
 

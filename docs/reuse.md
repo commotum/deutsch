@@ -129,6 +129,31 @@ zero-weight tables remain unconstrained. It is neither the dynamical locality th
 ontological conclusion. See [Finite Bell derivations](bell.md) for the full assumption audit and
 the independent direct Equation-(40)–(46) route.
 
+For a finite stochastic model, use `StochasticLocalModel Ω`. Its hidden weight is normalized,
+nonnegative, and setting-independent; each party's normalized Boolean response kernel sees only
+that party's setting; and joint probabilities factor as the product of the two local kernels at a
+fixed hidden value. The public construction
+
+```lean
+refinedLocalWeight model : LocalAssignment → ℝ
+```
+
+forms a distribution on the six response coordinates
+`(A₀, A₁, A₂, B₀, B₁, B₂)`. It is proved nonnegative and normalized, and it preserves every
+Alice marginal, Bob marginal, Alice–Bob joint outcome, and agreement probability. The resulting
+top-level theorem requires no response table as an input:
+
+```lean
+theorem no_finite_stochastic_reproduction
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω) :
+    ¬ ReproducesThreeSettingStochasticAgreements model :=
+  no_stochastic_local_model_reproduces_epr_three_settings model
+```
+
+This theorem concerns the complete three-setting EPR agreement table. It reaches the existing
+deterministic counting contradiction through the constructive coupling; the direct
+Equation-(42)–(46) moment proof remains a separate route.
+
 ## Compile the examples
 
 From the repository root:

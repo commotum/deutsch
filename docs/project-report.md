@@ -31,7 +31,7 @@ downstream development wants fewer dependencies:
 | `Deutsch.EPR` | Pair and four-wire circuit descriptors, densities, statistics, and provenance |
 | `Deutsch.Teleportation` | Coherent circuit, conditional correction, correctness, protocol, and statistics |
 | `Deutsch.Decoherence` | Named dephasing consequences, record errors, EPR stability, correlation boundary |
-| `Deutsch.Bell` | All-setting moments, finite assignment inequality, quantum bridge, and contradictions |
+| `Deutsch.Bell` | All-setting moments, finite assignment inequality, stochastic refinement, quantum bridge, and contradictions |
 | `Deutsch.Paper` | Canonical `equation01`–`equation46` façade over the topical APIs |
 
 The [reuse guide](reuse.md) gives examples compiled against the public root, and the
@@ -85,6 +85,14 @@ the representation and theorem boundaries in more detail:
   nonnegative distributions over deterministic setting-local response tables. The EPR agreement
   probabilities at `0`, `2π/3`, and `4π/3` contradict that finite model; equality on
   positive-weight equal-setting responses is derived from probability one rather than assumed.
+- A finite stochastic extension starts from a normalized nonnegative setting-independent hidden
+  weight and normalized nonnegative Boolean kernels that depend only on the hidden value and the
+  corresponding party's setting. Joint outcomes factor into the two local kernel probabilities.
+  A constructive product coupling on the six coordinates `(A₀,A₁,A₂,B₀,B₁,B₂)` yields a
+  normalized nonnegative deterministic-table distribution while preserving every one-party
+  marginal, every joint outcome probability, and every agreement probability. Reproduction of
+  the complete three-setting EPR table therefore contradicts the independently proved table
+  bound without assuming a response table or perfect-support condition.
 
 ## Conventions and proof boundaries
 
@@ -128,9 +136,10 @@ These distinctions appear in theorem statements and hypotheses, not only in pros
   yet treats a circuit input entangled with an arbitrary reference. The separate semantic channel
   is the identity on every one-qubit density, and no theorem equates it with dephasing and
   reduction of the five-wire circuit.
-- The Bell assignment theorem is stated for finite deterministic response tables with a
-  setting-independent distribution. A fully packaged equivalence with every stochastic
-  factorizable presentation is a separate theorem obligation.
+- The stochastic Bell theorem is finite: it covers a finite hidden type, the three named
+  measurement settings, Boolean outcomes, normalized real-valued response kernels, a
+  setting-independent hidden distribution, and factorization conditioned on the hidden value. It
+  is not a measure-theoretic theorem for arbitrary setting spaces or continuous hidden variables.
 - Communication capacities, entanglement necessity, the cited “nonlocality without entanglement”
   task, and philosophical claims about actual outcomes or many worlds are not conclusions of the
   proved finite models.

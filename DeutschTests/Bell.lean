@@ -45,6 +45,121 @@ theorem fair_response_kernel_is_genuinely_nondeterministic :
       fairResponseKernel.probability true = (1 / 2 : ℝ) := by
   norm_num [fairResponseKernel]
 
+theorem boolean_response_kernel_normalizes (kernel : BoolResponseKernel) :
+    ∑ outcome : Bool, kernel.probability outcome = 1 :=
+  kernel.normalized
+
+theorem complete_response_table_distribution_normalizes
+    (kernel : Setting → BoolResponseKernel) :
+    ∑ table : Setting → Bool, responseTableWeight kernel table = 1 :=
+  responseTableWeight_normalized kernel
+
+theorem selected_response_table_marginal_is_the_kernel_probability
+    (kernel : Setting → BoolResponseKernel)
+    (setting : Setting) (outcome : Bool) :
+    (∑ table : Setting → Bool,
+        responseTableWeight kernel table *
+          responseOutcomeIndicator (table setting) outcome) =
+      (kernel setting).probability outcome :=
+  responseTableWeight_marginal kernel setting outcome
+
+theorem conditional_local_table_distribution_normalizes
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (hidden : Ω) :
+    ∑ assignment : LocalAssignment,
+      conditionalTableWeight model hidden assignment = 1 :=
+  conditionalTableWeight_normalized model hidden
+
+theorem refined_local_table_distribution_is_nonnegative
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (assignment : LocalAssignment) :
+    0 ≤ refinedLocalWeight model assignment :=
+  refinedLocalWeight_nonnegative model assignment
+
+theorem refined_local_table_distribution_normalizes
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω) :
+    ∑ assignment : LocalAssignment, refinedLocalWeight model assignment = 1 :=
+  refinedLocalWeight_normalized model
+
+theorem fair_refined_table_distribution_normalizes :
+    ∑ assignment : LocalAssignment,
+      refinedLocalWeight fairStochasticModel assignment = 1 :=
+  refinedLocalWeight_normalized fairStochasticModel
+
+theorem fair_stochastic_joint_outcome_is_one_quarter
+    (aliceSetting bobSetting : Setting) (aliceOutcome bobOutcome : Bool) :
+    stochasticJointOutcomeProbability fairStochasticModel
+      aliceSetting bobSetting aliceOutcome bobOutcome = (1 / 4 : ℝ) := by
+  norm_num [stochasticJointOutcomeProbability, fairStochasticModel,
+    fairResponseKernel]
+
+theorem stochastic_joint_outcomes_have_the_explicit_factorization
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (aliceSetting bobSetting : Setting) (aliceOutcome bobOutcome : Bool) :
+    stochasticJointOutcomeProbability model
+        aliceSetting bobSetting aliceOutcome bobOutcome =
+      ∑ hidden,
+        model.hiddenWeight hidden *
+          ((model.aliceKernel hidden aliceSetting).probability aliceOutcome *
+            (model.bobKernel hidden bobSetting).probability bobOutcome) :=
+  stochasticJointOutcomeProbability_factorization
+    model aliceSetting bobSetting aliceOutcome bobOutcome
+
+theorem refined_table_preserves_alice_marginals
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (setting : Setting) (outcome : Bool) :
+    tableAliceOutcomeProbability (refinedLocalWeight model) setting outcome =
+      stochasticAliceOutcomeProbability model setting outcome :=
+  refinedLocalWeight_preserves_alice_outcome model setting outcome
+
+theorem refined_table_preserves_bob_marginals
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (setting : Setting) (outcome : Bool) :
+    tableBobOutcomeProbability (refinedLocalWeight model) setting outcome =
+      stochasticBobOutcomeProbability model setting outcome :=
+  refinedLocalWeight_preserves_bob_outcome model setting outcome
+
+theorem refined_table_preserves_every_joint_outcome
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (aliceSetting bobSetting : Setting) (aliceOutcome bobOutcome : Bool) :
+    tableJointOutcomeProbability (refinedLocalWeight model)
+        aliceSetting bobSetting aliceOutcome bobOutcome =
+      stochasticJointOutcomeProbability model
+        aliceSetting bobSetting aliceOutcome bobOutcome :=
+  refinedLocalWeight_preserves_joint_outcome
+    model aliceSetting bobSetting aliceOutcome bobOutcome
+
+theorem refined_table_preserves_every_agreement_probability
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (aliceSetting bobSetting : Setting) :
+    crossPartyAgreementProbability (refinedLocalWeight model)
+        aliceSetting bobSetting =
+      stochasticAgreementProbability model aliceSetting bobSetting :=
+  refinedLocalWeight_preserves_agreement model aliceSetting bobSetting
+
+theorem stochastic_reproduction_transfers_to_the_refined_table
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (reproduces : ReproducesThreeSettingStochasticAgreements model) :
+    ReproducesThreeSettingQuantumAgreements (refinedLocalWeight model) :=
+  refinedLocalWeight_reproduces_three_setting_agreements model reproduces
+
+theorem epr_predictions_refute_every_finite_stochastic_local_model
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (reproduces : ReproducesThreeSettingStochasticAgreements model) :
+    False :=
+  epr_three_settings_refute_stochastic_local_model model reproduces
+
+theorem no_finite_stochastic_local_model_reproduces_the_epr_family
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω) :
+    ¬ ReproducesThreeSettingStochasticAgreements model :=
+  no_stochastic_local_model_reproduces_epr_three_settings model
+
+theorem fair_refined_table_joint_true_false_is_one_quarter :
+    tableJointOutcomeProbability (refinedLocalWeight fairStochasticModel)
+      0 1 true false = (1 / 4 : ℝ) := by
+  rw [refinedLocalWeight_preserves_joint_outcome]
+  exact fair_stochastic_joint_outcome_is_one_quarter 0 1 true false
+
 /-! ## Direct finite-moment route -/
 
 theorem direct_equation42_mean_square

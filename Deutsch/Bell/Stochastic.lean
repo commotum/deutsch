@@ -224,6 +224,356 @@ theorem refinedLocalWeight_normalized
       simp_rw [conditionalTableWeight_normalized]
       simpa using model.hiddenWeight_normalized
 
+/-! ## Observable probabilities -/
+
+/-- Alice's one-party outcome probability under a weight on complete local response tables. -/
+def tableAliceOutcomeProbability
+    (weight : LocalAssignment → ℝ) (setting : Setting) (outcome : Bool) : ℝ :=
+  ∑ assignment : LocalAssignment,
+    weight assignment *
+      responseOutcomeIndicator (aliceResponse assignment setting) outcome
+
+/-- Bob's one-party outcome probability under a weight on complete local response tables. -/
+def tableBobOutcomeProbability
+    (weight : LocalAssignment → ℝ) (setting : Setting) (outcome : Bool) : ℝ :=
+  ∑ assignment : LocalAssignment,
+    weight assignment *
+      responseOutcomeIndicator (bobResponse assignment setting) outcome
+
+/-- A specified Alice--Bob joint outcome probability under a complete-table weight. -/
+def tableJointOutcomeProbability
+    (weight : LocalAssignment → ℝ)
+    (aliceSetting bobSetting : Setting) (aliceOutcome bobOutcome : Bool) : ℝ :=
+  ∑ assignment : LocalAssignment,
+    weight assignment *
+      responseOutcomeIndicator (aliceResponse assignment aliceSetting) aliceOutcome *
+      responseOutcomeIndicator (bobResponse assignment bobSetting) bobOutcome
+
+/-- Alice's local stochastic outcome probability, averaged over the setting-free hidden weight. -/
+def stochasticAliceOutcomeProbability
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (setting : Setting) (outcome : Bool) : ℝ :=
+  ∑ hidden,
+    model.hiddenWeight hidden *
+      (model.aliceKernel hidden setting).probability outcome
+
+/-- Bob's local stochastic outcome probability, averaged over the setting-free hidden weight. -/
+def stochasticBobOutcomeProbability
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (setting : Setting) (outcome : Bool) : ℝ :=
+  ∑ hidden,
+    model.hiddenWeight hidden *
+      (model.bobKernel hidden setting).probability outcome
+
+/--
+The factorizable Alice--Bob joint outcome probability.  The same setting-independent hidden weight
+is averaged against the product of Alice's setting-local kernel and Bob's setting-local kernel.
+-/
+def stochasticJointOutcomeProbability
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (aliceSetting bobSetting : Setting) (aliceOutcome bobOutcome : Bool) : ℝ :=
+  ∑ hidden,
+    model.hiddenWeight hidden *
+      ((model.aliceKernel hidden aliceSetting).probability aliceOutcome *
+        (model.bobKernel hidden bobSetting).probability bobOutcome)
+
+/-- Explicit factorization formula for every pair of local settings and outcomes. -/
+theorem stochasticJointOutcomeProbability_factorization
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (aliceSetting bobSetting : Setting) (aliceOutcome bobOutcome : Bool) :
+    stochasticJointOutcomeProbability model
+        aliceSetting bobSetting aliceOutcome bobOutcome =
+      ∑ hidden,
+        model.hiddenWeight hidden *
+          ((model.aliceKernel hidden aliceSetting).probability aliceOutcome *
+            (model.bobKernel hidden bobSetting).probability bobOutcome) :=
+  rfl
+
+/--
+The stochastic probability that the parties agree, written directly as the hidden-weighted sum of
+the two diagonal products.
+-/
+def stochasticAgreementProbability
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (aliceSetting bobSetting : Setting) : ℝ :=
+  ∑ hidden,
+    model.hiddenWeight hidden *
+      (∑ outcome : Bool,
+        (model.aliceKernel hidden aliceSetting).probability outcome *
+          (model.bobKernel hidden bobSetting).probability outcome)
+
+private theorem refinedLocalWeight_sum_mul
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (value : LocalAssignment → ℝ) :
+    (∑ assignment : LocalAssignment,
+        refinedLocalWeight model assignment * value assignment) =
+      ∑ hidden,
+        model.hiddenWeight hidden *
+          (∑ assignment : LocalAssignment,
+            conditionalTableWeight model hidden assignment * value assignment) := by
+  unfold refinedLocalWeight
+  calc
+    ∑ assignment : LocalAssignment,
+        (∑ hidden,
+          model.hiddenWeight hidden *
+            conditionalTableWeight model hidden assignment) * value assignment =
+      ∑ assignment : LocalAssignment,
+        ∑ hidden,
+          model.hiddenWeight hidden *
+            (conditionalTableWeight model hidden assignment * value assignment) := by
+              apply Finset.sum_congr rfl
+              intro assignment _
+              rw [Finset.sum_mul]
+              apply Finset.sum_congr rfl
+              intro hidden _
+              ring
+    _ = ∑ hidden,
+        ∑ assignment : LocalAssignment,
+          model.hiddenWeight hidden *
+            (conditionalTableWeight model hidden assignment * value assignment) := by
+              rw [Finset.sum_comm]
+    _ = ∑ hidden,
+        model.hiddenWeight hidden *
+          (∑ assignment : LocalAssignment,
+            conditionalTableWeight model hidden assignment * value assignment) := by
+              apply Finset.sum_congr rfl
+              intro hidden _
+              rw [Finset.mul_sum]
+
+/-- Conditional table refinement preserves every Alice outcome probability. -/
+theorem conditionalTableWeight_alice_marginal
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω) (hidden : Ω)
+    (setting : Setting) (outcome : Bool) :
+    (∑ assignment : LocalAssignment,
+        conditionalTableWeight model hidden assignment *
+          responseOutcomeIndicator (aliceResponse assignment setting) outcome) =
+      (model.aliceKernel hidden setting).probability outcome := by
+  rw [Fintype.sum_prod_type]
+  simp only [conditionalTableWeight, aliceResponse]
+  calc
+    ∑ aliceTable : Setting → Bool,
+        ∑ bobTable : Setting → Bool,
+          (responseTableWeight (model.aliceKernel hidden) aliceTable *
+              responseTableWeight (model.bobKernel hidden) bobTable) *
+            responseOutcomeIndicator (aliceTable setting) outcome =
+      ∑ aliceTable : Setting → Bool,
+        (responseTableWeight (model.aliceKernel hidden) aliceTable *
+            responseOutcomeIndicator (aliceTable setting) outcome) *
+          (∑ bobTable : Setting → Bool,
+            responseTableWeight (model.bobKernel hidden) bobTable) := by
+              apply Finset.sum_congr rfl
+              intro aliceTable _
+              rw [Finset.mul_sum]
+              apply Finset.sum_congr rfl
+              intro bobTable _
+              ring
+    _ = (model.aliceKernel hidden setting).probability outcome := by
+      rw [responseTableWeight_normalized]
+      simp only [mul_one]
+      exact responseTableWeight_marginal _ setting outcome
+
+/-- Conditional table refinement preserves every Bob outcome probability. -/
+theorem conditionalTableWeight_bob_marginal
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω) (hidden : Ω)
+    (setting : Setting) (outcome : Bool) :
+    (∑ assignment : LocalAssignment,
+        conditionalTableWeight model hidden assignment *
+          responseOutcomeIndicator (bobResponse assignment setting) outcome) =
+      (model.bobKernel hidden setting).probability outcome := by
+  rw [Fintype.sum_prod_type]
+  simp only [conditionalTableWeight, bobResponse]
+  calc
+    ∑ aliceTable : Setting → Bool,
+        ∑ bobTable : Setting → Bool,
+          (responseTableWeight (model.aliceKernel hidden) aliceTable *
+              responseTableWeight (model.bobKernel hidden) bobTable) *
+            responseOutcomeIndicator (bobTable setting) outcome =
+      (∑ aliceTable : Setting → Bool,
+        responseTableWeight (model.aliceKernel hidden) aliceTable) *
+          (∑ bobTable : Setting → Bool,
+            responseTableWeight (model.bobKernel hidden) bobTable *
+              responseOutcomeIndicator (bobTable setting) outcome) := by
+                rw [Finset.sum_mul]
+                apply Finset.sum_congr rfl
+                intro aliceTable _
+                rw [Finset.mul_sum]
+                apply Finset.sum_congr rfl
+                intro bobTable _
+                ring
+    _ = (model.bobKernel hidden setting).probability outcome := by
+      rw [responseTableWeight_normalized, one_mul]
+      exact responseTableWeight_marginal _ setting outcome
+
+/-- Conditional table refinement preserves every specified pair of outcomes. -/
+theorem conditionalTableWeight_joint_marginal
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω) (hidden : Ω)
+    (aliceSetting bobSetting : Setting) (aliceOutcome bobOutcome : Bool) :
+    (∑ assignment : LocalAssignment,
+        conditionalTableWeight model hidden assignment *
+          responseOutcomeIndicator (aliceResponse assignment aliceSetting) aliceOutcome *
+          responseOutcomeIndicator (bobResponse assignment bobSetting) bobOutcome) =
+      (model.aliceKernel hidden aliceSetting).probability aliceOutcome *
+        (model.bobKernel hidden bobSetting).probability bobOutcome := by
+  rw [Fintype.sum_prod_type]
+  simp only [conditionalTableWeight, aliceResponse, bobResponse]
+  calc
+    ∑ aliceTable : Setting → Bool,
+        ∑ bobTable : Setting → Bool,
+          (responseTableWeight (model.aliceKernel hidden) aliceTable *
+              responseTableWeight (model.bobKernel hidden) bobTable) *
+            responseOutcomeIndicator (aliceTable aliceSetting) aliceOutcome *
+            responseOutcomeIndicator (bobTable bobSetting) bobOutcome =
+      (∑ aliceTable : Setting → Bool,
+        responseTableWeight (model.aliceKernel hidden) aliceTable *
+          responseOutcomeIndicator (aliceTable aliceSetting) aliceOutcome) *
+        (∑ bobTable : Setting → Bool,
+          responseTableWeight (model.bobKernel hidden) bobTable *
+            responseOutcomeIndicator (bobTable bobSetting) bobOutcome) := by
+              rw [Finset.sum_mul]
+              apply Finset.sum_congr rfl
+              intro aliceTable _
+              rw [Finset.mul_sum]
+              apply Finset.sum_congr rfl
+              intro bobTable _
+              ring
+    _ = (model.aliceKernel hidden aliceSetting).probability aliceOutcome *
+        (model.bobKernel hidden bobSetting).probability bobOutcome := by
+          rw [responseTableWeight_marginal, responseTableWeight_marginal]
+
+/-- The refined complete-table model preserves every Alice one-party outcome probability. -/
+theorem refinedLocalWeight_preserves_alice_outcome
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (setting : Setting) (outcome : Bool) :
+    tableAliceOutcomeProbability (refinedLocalWeight model) setting outcome =
+      stochasticAliceOutcomeProbability model setting outcome := by
+  unfold tableAliceOutcomeProbability stochasticAliceOutcomeProbability
+  rw [refinedLocalWeight_sum_mul]
+  apply Finset.sum_congr rfl
+  intro hidden _
+  rw [conditionalTableWeight_alice_marginal]
+
+/-- The refined complete-table model preserves every Bob one-party outcome probability. -/
+theorem refinedLocalWeight_preserves_bob_outcome
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (setting : Setting) (outcome : Bool) :
+    tableBobOutcomeProbability (refinedLocalWeight model) setting outcome =
+      stochasticBobOutcomeProbability model setting outcome := by
+  unfold tableBobOutcomeProbability stochasticBobOutcomeProbability
+  rw [refinedLocalWeight_sum_mul]
+  apply Finset.sum_congr rfl
+  intro hidden _
+  rw [conditionalTableWeight_bob_marginal]
+
+/-- The refined complete-table model preserves every joint outcome at every settings pair. -/
+theorem refinedLocalWeight_preserves_joint_outcome
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (aliceSetting bobSetting : Setting) (aliceOutcome bobOutcome : Bool) :
+    tableJointOutcomeProbability (refinedLocalWeight model)
+        aliceSetting bobSetting aliceOutcome bobOutcome =
+      stochasticJointOutcomeProbability model
+        aliceSetting bobSetting aliceOutcome bobOutcome := by
+  unfold tableJointOutcomeProbability stochasticJointOutcomeProbability
+  simp_rw [mul_assoc]
+  rw [refinedLocalWeight_sum_mul]
+  apply Finset.sum_congr rfl
+  intro hidden _
+  congr 1
+  simpa [mul_assoc] using
+    (conditionalTableWeight_joint_marginal model hidden
+      aliceSetting bobSetting aliceOutcome bobOutcome)
+
+/-- Complete-table agreement is the sum of its two diagonal joint-outcome probabilities. -/
+theorem crossPartyAgreementProbability_eq_joint_outcomes
+    (weight : LocalAssignment → ℝ) (aliceSetting bobSetting : Setting) :
+    crossPartyAgreementProbability weight aliceSetting bobSetting =
+      ∑ outcome : Bool,
+        tableJointOutcomeProbability weight
+          aliceSetting bobSetting outcome outcome := by
+  unfold crossPartyAgreementProbability tableJointOutcomeProbability
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro assignment _
+  cases hAlice : aliceResponse assignment aliceSetting <;>
+    cases hBob : bobResponse assignment bobSetting <;>
+      simp [crossPartyAgreementIndicator, hAlice, hBob,
+        responseOutcomeIndicator]
+
+/-- Stochastic agreement is the sum of its two factorizable diagonal joint probabilities. -/
+theorem stochasticAgreementProbability_eq_joint_outcomes
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (aliceSetting bobSetting : Setting) :
+    stochasticAgreementProbability model aliceSetting bobSetting =
+      ∑ outcome : Bool,
+        stochasticJointOutcomeProbability model
+          aliceSetting bobSetting outcome outcome := by
+  unfold stochasticAgreementProbability stochasticJointOutcomeProbability
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro hidden _
+  rw [Finset.mul_sum]
+
+/-- The refined deterministic-table distribution preserves every agreement probability. -/
+theorem refinedLocalWeight_preserves_agreement
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (aliceSetting bobSetting : Setting) :
+    crossPartyAgreementProbability (refinedLocalWeight model)
+        aliceSetting bobSetting =
+      stochasticAgreementProbability model aliceSetting bobSetting := by
+  rw [crossPartyAgreementProbability_eq_joint_outcomes,
+    stochasticAgreementProbability_eq_joint_outcomes]
+  apply Finset.sum_congr rfl
+  intro outcome _
+  exact refinedLocalWeight_preserves_joint_outcome
+    model aliceSetting bobSetting outcome outcome
+
+/-! ## Three-setting EPR contradiction -/
+
+/--
+A finite factorizable stochastic local model reproduces the EPR agreement family when its
+agreement probability equals the quantum prediction at every pair of the three settings.
+-/
+def ReproducesThreeSettingStochasticAgreements
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω) : Prop :=
+  ∀ aliceSetting bobSetting : Setting,
+    stochasticAgreementProbability model aliceSetting bobSetting =
+      sameOutcomeProbability
+        (threeSettingAngle aliceSetting) (threeSettingAngle bobSetting)
+
+/-- Agreement reproduction transfers constructively to the refined complete-table distribution. -/
+theorem refinedLocalWeight_reproduces_three_setting_agreements
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (reproduces : ReproducesThreeSettingStochasticAgreements model) :
+    ReproducesThreeSettingQuantumAgreements (refinedLocalWeight model) := by
+  intro aliceSetting bobSetting
+  exact (refinedLocalWeight_preserves_agreement
+    model aliceSetting bobSetting).trans (reproduces aliceSetting bobSetting)
+
+/--
+No finite, normalized, nonnegative, setting-independent hidden-variable model with normalized
+nonnegative local response kernels and factorizable joint responses reproduces the complete
+three-setting EPR agreement family.
+
+There is no deterministic response-table or perfect-support premise: the complete-table weight is
+constructed from the kernels, and equal-setting support is derived downstream from the reproduced
+probability-one predictions.
+-/
+theorem epr_three_settings_refute_stochastic_local_model
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω)
+    (reproduces : ReproducesThreeSettingStochasticAgreements model) :
+    False := by
+  exact epr_three_settings_refute_normalized_local_model
+    (refinedLocalWeight model)
+    (refinedLocalWeight_nonnegative model)
+    (refinedLocalWeight_normalized model)
+    (refinedLocalWeight_reproduces_three_setting_agreements model reproduces)
+
+/-- Negated packaging of `epr_three_settings_refute_stochastic_local_model`. -/
+theorem no_stochastic_local_model_reproduces_epr_three_settings
+    {Ω : Type*} [Fintype Ω] (model : StochasticLocalModel Ω) :
+    ¬ ReproducesThreeSettingStochasticAgreements model := by
+  intro reproduces
+  exact epr_three_settings_refute_stochastic_local_model model reproduces
+
 end
 
 end Bell
