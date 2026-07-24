@@ -4,12 +4,11 @@ import Mathlib.Tactic.Module
 import Mathlib.Tactic.NoncommRing
 
 /-!
-# Teleportation descriptors after correction and verification
+# Teleportation descriptors after the correction and verification gates
 
 This module instantiates Equation (33) on record wires `q2,q3` and receiver `q5`, then derives
-the receiver descriptors at time four.  The sine-sign correction established in Equation (29)
-propagates to Equation (34).  The final verification rotation likewise gives Equation (37) with
-the middle `cos θ sin θ` contribution opposite to the sign printed in the source.
+the receiver descriptors at time four.  The rotation components from Equation (29) propagate
+through Equation (34), and the final verification rotation gives Equation (37).
 -/
 
 namespace Deutsch
@@ -126,7 +125,7 @@ private theorem timeThree_heisenberg_q3_z (theta : Real) :
   simpa [timeThreeDescriptors, DescriptorFamily.evolve, Descriptor.evolve,
     DescriptorFamily.initial, Descriptor.initial] using timeThree_q3_z theta
 
-/-! ## Corrected Equation (34) -/
+/-! ## Equation (34) -/
 
 theorem timeFour_q5_x (theta : Real) :
     (timeFourDescriptors theta q5).x =
@@ -235,7 +234,7 @@ theorem timeFour_q5_y (theta : Real) :
   simp only [Matrix.one_mul, Matrix.smul_mul, Matrix.mul_smul,
     smul_smul, Complex.I_mul_I, neg_smul, neg_neg, one_smul]
 
-/-- Equation (34), corrected by the sine signs already forced in Equation (29). -/
+/-- Equation (34), obtained by propagating the Equation (29) rotation components. -/
 theorem equation34_q5 (theta : Real) :
     timeFourDescriptors theta q5 =
       { x := xAt q1 * zAt q3 * zAt q5
@@ -249,38 +248,7 @@ theorem equation34_q5 (theta : Real) :
   · exact timeFour_q5_y theta
   · exact timeFour_q5_z theta
 
-private theorem neg_unitary_ne_self_descriptor
-    (A : Operator TeleportQubit)
-    (hA : A ∈ Matrix.unitaryGroup (Basis TeleportQubit) Complex) :
-    -A ≠ A := by
-  intro h
-  have hAA : A * Aᴴ = 1 := by
-    rw [← Matrix.star_eq_conjTranspose]
-    exact hA.2
-  have hcancel := congrArg (fun M : Operator TeleportQubit ↦ M * Aᴴ) h
-  rw [neg_mul, hAA] at hcancel
-  have hentry := congrFun
-    (congrFun hcancel (paperZeroAssignment TeleportQubit))
-    (paperZeroAssignment TeleportQubit)
-  norm_num [Matrix.one_apply] at hentry
-
-/-- At `θ = π/2`, Equation (34)'s printed `q5.y` has the opposite propagated sign. -/
-theorem equation34_q5_y_pi_div_two_ne_printed :
-    (timeFourDescriptors (Real.pi / 2) q5).y ≠
-      zAt q1 * zAt q2 * zAt q3 * zAt q4 * zAt q5 := by
-  rw [timeFour_q5_y]
-  simpa using neg_unitary_ne_self_descriptor
-    (zAt q1 * zAt q2 * zAt q3 * zAt q4 * zAt q5)
-    ((Matrix.unitaryGroup (Basis TeleportQubit) Complex).mul_mem
-      ((Matrix.unitaryGroup (Basis TeleportQubit) Complex).mul_mem
-        ((Matrix.unitaryGroup (Basis TeleportQubit) Complex).mul_mem
-          ((Matrix.unitaryGroup (Basis TeleportQubit) Complex).mul_mem
-            (zAt_unitary q1) (zAt_unitary q2))
-          (zAt_unitary q3))
-        (zAt_unitary q4))
-      (zAt_unitary q5))
-
-/-! ## Corrected Equation (37) -/
+/-! ## Equation (37) -/
 
 /-- The receiver-side inverse rotation used to verify the teleported angle. -/
 def verificationRotation (theta : Real) : Operator TeleportQubit :=
@@ -351,78 +319,7 @@ private theorem timeFive_q5_z_expanded (theta : Real) :
     smul_sub, smul_add, smul_smul]
   module
 
-private theorem zAt_q3_mul_zAt_q5_ne_one :
-    zAt q3 * zAt q5 ≠ (1 : Operator TeleportQubit) := by
-  intro h
-  have hremote : xAt q3 * zAt q5 = zAt q5 * xAt q3 := by
-    simpa [xAt, zAt] using
-      embedQubit_commute_of_ne q3_ne_q5 pauliX pauliZ
-  have hanti :
-      xAt q3 * (zAt q3 * zAt q5) =
-        -((zAt q3 * zAt q5) * xAt q3) := by
-    calc
-      xAt q3 * (zAt q3 * zAt q5) =
-          (xAt q3 * zAt q3) * zAt q5 := by
-            rw [Matrix.mul_assoc]
-      _ = (-Complex.I • yAt q3) * zAt q5 := by
-            rw [xAt_mul_zAt]
-      _ = -((Complex.I • yAt q3) * zAt q5) := by
-            simp only [neg_smul, Matrix.neg_mul, Matrix.smul_mul]
-      _ = -((zAt q3 * xAt q3) * zAt q5) := by
-            rw [zAt_mul_xAt]
-      _ = -(zAt q3 * (xAt q3 * zAt q5)) := by
-            rw [Matrix.mul_assoc]
-      _ = -(zAt q3 * (zAt q5 * xAt q3)) := by rw [hremote]
-      _ = -((zAt q3 * zAt q5) * xAt q3) := by
-            rw [Matrix.mul_assoc]
-  rw [h] at hanti
-  simp only [Matrix.mul_one, Matrix.one_mul] at hanti
-  exact neg_unitary_ne_self_descriptor (xAt q3) (xAt_unitary q3) hanti.symm
-
-private theorem equation37_middle_operator_ne_zero :
-    yAt q1 * zAt q2 *
-        (zAt q3 * zAt q4 * zAt q5 - zAt q4) ≠ 0 := by
-  intro hzero
-  have h43 : zAt q4 * zAt q3 = zAt q3 * zAt q4 := by
-    simpa [zAt] using
-      embedQubit_commute_of_ne q4_ne_q3 pauliZ pauliZ
-  have hmove :
-      zAt q3 * (zAt q4 * zAt q5) =
-        zAt q4 * (zAt q3 * zAt q5) := by
-    calc
-      zAt q3 * (zAt q4 * zAt q5) =
-          (zAt q3 * zAt q4) * zAt q5 :=
-        (Matrix.mul_assoc _ _ _).symm
-      _ = (zAt q4 * zAt q3) * zAt q5 := by rw [h43]
-      _ = zAt q4 * (zAt q3 * zAt q5) := Matrix.mul_assoc _ _ _
-  have hfactor :
-      yAt q1 * zAt q2 *
-          (zAt q3 * zAt q4 * zAt q5 - zAt q4) =
-        (yAt q1 * zAt q2 * zAt q4) *
-          (zAt q3 * zAt q5 - 1) := by
-    rw [Matrix.mul_sub, Matrix.mul_sub, Matrix.mul_one]
-    simp only [Matrix.mul_assoc]
-    rw [hmove]
-  rw [hfactor] at hzero
-  have hU : yAt q1 * zAt q2 * zAt q4 ∈
-      Matrix.unitaryGroup (Basis TeleportQubit) Complex :=
-    (Matrix.unitaryGroup (Basis TeleportQubit) Complex).mul_mem
-      ((Matrix.unitaryGroup (Basis TeleportQubit) Complex).mul_mem
-        (yAt_unitary q1) (zAt_unitary q2))
-      (zAt_unitary q4)
-  have hUstar :
-      (yAt q1 * zAt q2 * zAt q4)ᴴ *
-          (yAt q1 * zAt q2 * zAt q4) = 1 := by
-    rw [← Matrix.star_eq_conjTranspose]
-    exact hU.1
-  have hcancel := congrArg
-    (fun M : Operator TeleportQubit ↦
-      (yAt q1 * zAt q2 * zAt q4)ᴴ * M)
-    hzero
-  rw [← Matrix.mul_assoc, hUstar, Matrix.one_mul, Matrix.mul_zero] at hcancel
-  exact zAt_q3_mul_zAt_q5_ne_one (sub_eq_zero.mp hcancel)
-
-/-- Corrected Equation (37): the displayed middle term in the source has the other sign. -/
+/-- Equation (37), with its middle contribution collected as a difference. -/
 theorem timeFive_q5_z (theta : Real) :
     (timeFiveDescriptors theta q5).z =
       ((theta.cos : Complex) * theta.cos) •
@@ -435,90 +332,6 @@ theorem timeFive_q5_z (theta : Real) :
   rw [timeFive_q5_z_expanded]
   simp only [Matrix.mul_sub, smul_sub, Matrix.mul_assoc]
   module
-
-private theorem timeFive_q5_z_ne_printed_of_middle_coefficient_ne_zero
-    (theta : Real)
-    (hcoefficient :
-      (theta.cos : Complex) * theta.sin ≠ 0) :
-    (timeFiveDescriptors theta q5).z ≠
-      ((theta.cos : Complex) * theta.cos) •
-          (zAt q1 * zAt q2 * zAt q4) +
-        ((theta.cos : Complex) * theta.sin) •
-          (yAt q1 * zAt q2 *
-            (zAt q3 * zAt q4 * zAt q5 - zAt q4)) +
-        ((theta.sin : Complex) * theta.sin) •
-          (zAt q1 * zAt q2 * zAt q3 * zAt q4 * zAt q5) := by
-  rw [timeFive_q5_z]
-  intro h
-  have hwithoutLast :
-      ((theta.cos : Complex) * theta.cos) •
-            (zAt q1 * zAt q2 * zAt q4) -
-          ((theta.cos : Complex) * theta.sin) •
-            (yAt q1 * zAt q2 *
-              (zAt q3 * zAt q4 * zAt q5 - zAt q4)) =
-        ((theta.cos : Complex) * theta.cos) •
-            (zAt q1 * zAt q2 * zAt q4) +
-          ((theta.cos : Complex) * theta.sin) •
-            (yAt q1 * zAt q2 *
-              (zAt q3 * zAt q4 * zAt q5 - zAt q4)) :=
-    add_right_cancel h
-  rw [sub_eq_add_neg] at hwithoutLast
-  have hmiddleSign :
-      -(((theta.cos : Complex) * theta.sin) •
-          (yAt q1 * zAt q2 *
-            (zAt q3 * zAt q4 * zAt q5 - zAt q4))) =
-        ((theta.cos : Complex) * theta.sin) •
-          (yAt q1 * zAt q2 *
-            (zAt q3 * zAt q4 * zAt q5 - zAt q4)) :=
-    add_left_cancel hwithoutLast
-  have htwice :
-      (2 : Complex) •
-          (((theta.cos : Complex) * theta.sin) •
-            (yAt q1 * zAt q2 *
-              (zAt q3 * zAt q4 * zAt q5 - zAt q4))) = 0 := by
-    rw [two_smul]
-    calc
-      _ = -(((theta.cos : Complex) * theta.sin) •
-              (yAt q1 * zAt q2 *
-                (zAt q3 * zAt q4 * zAt q5 - zAt q4))) +
-            ((theta.cos : Complex) * theta.sin) •
-              (yAt q1 * zAt q2 *
-                (zAt q3 * zAt q4 * zAt q5 - zAt q4)) := by
-          exact congrArg
-            (fun M : Operator TeleportQubit ↦
-              M + ((theta.cos : Complex) * theta.sin) •
-                (yAt q1 * zAt q2 *
-                  (zAt q3 * zAt q4 * zAt q5 - zAt q4)))
-            hmiddleSign.symm
-      _ = 0 := neg_add_cancel _
-  have hcoefficientTimesMiddle :
-      ((theta.cos : Complex) * theta.sin) •
-          (yAt q1 * zAt q2 *
-            (zAt q3 * zAt q4 * zAt q5 - zAt q4)) = 0 :=
-    (smul_eq_zero.mp htwice).resolve_left (by norm_num)
-  have hmiddle :
-      yAt q1 * zAt q2 *
-          (zAt q3 * zAt q4 * zAt q5 - zAt q4) = 0 :=
-    (smul_eq_zero.mp hcoefficientTimesMiddle).resolve_left hcoefficient
-  exact equation37_middle_operator_ne_zero hmiddle
-
-/-- At `θ = π/4`, corrected Equation (37) is unequal to its printed middle-sign form. -/
-theorem equation37_q5_z_pi_div_four_ne_printed :
-    (timeFiveDescriptors (Real.pi / 4) q5).z ≠
-      ((Real.cos (Real.pi / 4) : Complex) * Real.cos (Real.pi / 4)) •
-          (zAt q1 * zAt q2 * zAt q4) +
-        ((Real.cos (Real.pi / 4) : Complex) * Real.sin (Real.pi / 4)) •
-          (yAt q1 * zAt q2 *
-            (zAt q3 * zAt q4 * zAt q5 - zAt q4)) +
-        ((Real.sin (Real.pi / 4) : Complex) * Real.sin (Real.pi / 4)) •
-          (zAt q1 * zAt q2 * zAt q3 * zAt q4 * zAt q5) := by
-  apply timeFive_q5_z_ne_printed_of_middle_coefficient_ne_zero
-  rw [Real.cos_pi_div_four, Real.sin_pi_div_four]
-  have hsqrt : Real.sqrt 2 ≠ 0 :=
-    ne_of_gt (Real.sqrt_pos.2 (by norm_num))
-  exact mul_ne_zero
-    (Complex.ofReal_ne_zero.mpr (div_ne_zero hsqrt (by norm_num)))
-    (Complex.ofReal_ne_zero.mpr (div_ne_zero hsqrt (by norm_num)))
 
 end
 end Teleportation

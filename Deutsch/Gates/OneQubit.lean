@@ -14,8 +14,8 @@ register coordinates through `Register.embedQubit`.
 this sends `Y` to `cos theta Y - sin theta Z` and `Z` to
 `sin theta Y + cos theta Z`, the `X`-axis specialization of Equations (17)--(18).
 `paperSqrtNot` realizes the branch in Equation (14), which is opposite to
-`rotationX (pi/2)`; its chosen global
-phase makes its square exactly `X` rather than merely a phase multiple of `X`.
+`rotationX (pi/2)`; its chosen global phase makes its square exactly `X` rather
+than merely a phase multiple of `X`.
 -/
 
 namespace Deutsch

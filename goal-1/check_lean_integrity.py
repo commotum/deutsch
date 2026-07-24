@@ -15,6 +15,18 @@ EXPECTED_TOOLCHAIN = "leanprover/lean4:v4.32.0"
 EXPECTED_MATHLIB_TAG = "v4.32.0"
 EXPECTED_MATHLIB_COMMIT = "81a5d257c8e410db227a6665ed08f64fea08e997"
 ALLOWED_AXIOMS = {"propext", "Classical.choice", "Quot.sound"}
+EXPECTED_DEFAULT_TARGETS = (
+    "Deutsch",
+    "DeutschErrata",
+    "DeutschTests",
+    "DeutschErrataTests",
+)
+EXPECTED_LAKE_LIBRARIES = (
+    "Deutsch",
+    "DeutschTests",
+    "DeutschErrata",
+    "DeutschErrataTests",
+)
 
 REQUIRED_PUBLIC_ROOT_IMPORTS = (
     "Deutsch.Foundations",
@@ -89,7 +101,6 @@ REQUIRED_PRODUCTION_IMPORT_CLOSURE = {
         "Deutsch.Decoherence.Correlation",
     ),
     "Deutsch/Bell.lean": (
-        "Deutsch.Bell.SourceCorrection",
         "Deutsch.Bell.Finite",
         "Deutsch.Bell.Quantum",
         "Deutsch.Bell.Moments",
@@ -163,8 +174,8 @@ REQUIRED_EXAMPLE_DECLARATIONS = (
     "named_cnot_uses_target_control_placement",
     "local_x_fixes_remote_z",
     "one_time_pad_hides_secret_locally",
-    "corrected_three_setting_quantum_probability",
-    "corrected_quantum_table_refutes_normalized_local_model",
+    "three_setting_quantum_probability",
+    "quantum_table_refutes_normalized_local_model",
 )
 
 REQUIRED_PAPER_EQUATIONS = tuple(f"equation{index:02d}" for index in range(1, 47))
@@ -259,7 +270,6 @@ REQUIRED_FILES = (
     "Deutsch/Decoherence/EPR.lean",
     "Deutsch/Decoherence/Correlation.lean",
     "Deutsch/Bell.lean",
-    "Deutsch/Bell/SourceCorrection.lean",
     "Deutsch/Bell/Finite.lean",
     "Deutsch/Bell/Quantum.lean",
     "Deutsch/Bell/Moments.lean",
@@ -289,6 +299,15 @@ REQUIRED_FILES = (
     "DeutschTests/Decoherence.lean",
     "DeutschTests/Bell.lean",
     "DeutschTests/Examples.lean",
+    "DeutschErrata.lean",
+    "DeutschErrata/Rotation.lean",
+    "DeutschErrata/EPR.lean",
+    "DeutschErrata/Teleportation.lean",
+    "DeutschErrata/Equation45.lean",
+    "DeutschErrata/Bell.lean",
+    "DeutschErrataTests.lean",
+    "DeutschErrataTests/Comparisons.lean",
+    "DeutschErrataTests/Audit.lean",
     "docs/conventions.md",
     "docs/registers.md",
     "docs/locality.md",
@@ -300,6 +319,7 @@ REQUIRED_FILES = (
     "docs/decoherence.md",
     "docs/bell.md",
     "docs/paper.md",
+    "docs/errata.md",
     "docs/reuse.md",
     "docs/project-report.md",
     "docs/representation.md",
@@ -519,10 +539,8 @@ REQUIRED_GATE_ORACLES = (
     "not_swaps_paper_zero_to_one",
     "paper_sqrt_not_squares_exactly_to_not",
     "paper_sqrt_not_is_not_positive_pi_half_rotation",
-    "equation18_printed_y_sign_fails_at_pi_half",
-    "equation18_printed_z_sign_fails_at_pi_half",
-    "rotation_y_at_negative_pi_half_has_correct_sign",
-    "rotation_z_at_negative_pi_half_has_correct_sign",
+    "rotation_y_at_negative_pi_half_maps_to_positive_z",
+    "rotation_z_at_negative_pi_half_maps_to_negative_y",
     "diagonal_rotation_phase_cancels_on_y",
     "arbitrary_valid_descriptor_not_has_paper_map",
     "non_coordinate_axis_has_rodrigues_action",
@@ -573,8 +591,6 @@ REQUIRED_GATE_PUBLIC_DECLARATIONS = {
         "rotationX_heisenberg_z",
         "rotationX_heisenberg_y_neg_pi_div_two",
         "rotationX_heisenberg_z_neg_pi_div_two",
-        "rotationX_heisenberg_y_pi_div_two_ne_printed",
-        "rotationX_heisenberg_z_pi_div_two_ne_printed",
         "diagonalPiRotation_eq_globalPhase_hadamard",
         "diagonalPiRotation_heisenberg",
         "descriptorNot_evolve",

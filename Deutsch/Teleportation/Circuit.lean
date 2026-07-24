@@ -9,11 +9,10 @@ Schrödinger chronological: the rightmost factor acts first.  The time-one input
 resource preparation have disjoint support, as do the two time-three recording CNOTs, so their
 chosen written orders do not impose a physical ordering.
 
-The descriptor identities use the project's fixed `U† A U` Heisenberg convention.  Consequently,
-Equation (29) has the corrected rotation components `Y ↦ cos θ Y - sin θ Z` and
-`Z ↦ sin θ Y + cos θ Z`.  The same correction propagates to the `q1` components of
-Equation (31) and the `q2` components of Equation (32).  Equation (30), the `q4` half of
-Equation (31), and the `q3` half of Equation (32) agree with the source as printed.
+The descriptor identities use the project's fixed `U† A U` Heisenberg convention.  Thus
+Equation (29) has rotation components `Y ↦ cos θ Y - sin θ Z` and
+`Z ↦ sin θ Y + cos θ Z`.  These components propagate to the `q1` terms of
+Equation (31) and the `q2` terms of Equation (32).
 -/
 
 namespace Deutsch
@@ -228,7 +227,7 @@ private theorem inputRotation_fixes_q5 (theta : Real) (A : QubitMatrix) :
     (by decide) (inputRotation_unitary theta) (inputRotation_isSupportedOn theta)
     (embedQubit_isSupportedOn q5 A)
 
-/-! ## Corrected Equation (29) -/
+/-! ## Equation (29) -/
 
 theorem timeOne_q1_x (theta : Real) :
     (timeOneDescriptors theta q1).x = xAt q1 := by
@@ -261,7 +260,7 @@ theorem timeOne_q1_z (theta : Real) :
   rw [show heisenberg resourcePreparation (zAt q1) = zAt q1 by
     simpa [zAt] using resourcePreparation_fixes_q1 pauliZ]
 
-/-- Equation (29), corrected to the signs forced by Equation (17). -/
+/-- Equation (29), obtained from the rotation identities in Equation (17). -/
 theorem equation29_q1 (theta : Real) :
     timeOneDescriptors theta q1 =
       { x := xAt q1
@@ -274,7 +273,7 @@ theorem equation29_q1 (theta : Real) :
   · exact timeOne_q1_y theta
   · exact timeOne_q1_z theta
 
-/-! ## Equation (30), exact as printed -/
+/-! ## Equation (30) -/
 
 theorem timeOne_q4_x (theta : Real) :
     (timeOneDescriptors theta q4).x = xAt q4 := by
@@ -344,7 +343,7 @@ theorem equation30_q5 (theta : Real) :
   · exact timeOne_q5_y theta
   · exact timeOne_q5_z theta
 
-/-! ## Corrected Equation (31) -/
+/-! ## Equation (31) -/
 
 theorem timeTwo_q1_x (theta : Real) :
     (timeTwoDescriptors theta q1).x = xAt q1 := by
@@ -427,7 +426,7 @@ theorem timeTwo_q4_z (theta : Real) :
     simpa [timeOneDescriptors, DescriptorFamily.evolve, Descriptor.evolve,
       DescriptorFamily.initial, Descriptor.initial] using timeOne_q4_x theta]
 
-/-- Equation (31), with the corrected Equation (29) combinations propagated to `q1`. -/
+/-- The `q1` half of Equation (31). -/
 theorem equation31_q1 (theta : Real) :
     timeTwoDescriptors theta q1 =
       { x := xAt q1
@@ -440,7 +439,7 @@ theorem equation31_q1 (theta : Real) :
   · exact timeTwo_q1_y theta
   · exact timeTwo_q1_z theta
 
-/-- The `q4` half of Equation (31), exact as printed. -/
+/-- The `q4` half of Equation (31). -/
 theorem equation31_q4 (theta : Real) :
     timeTwoDescriptors theta q4 =
       { x := -(zAt q4 * xAt q5)
@@ -451,7 +450,7 @@ theorem equation31_q4 (theta : Real) :
   · exact timeTwo_q4_y theta
   · exact timeTwo_q4_z theta
 
-/-! ## Corrected Equation (32): coherent records -/
+/-! ## Equation (32): coherent records -/
 
 private theorem q4Recording_fixes_q2 (A : QubitMatrix) :
     heisenberg q4RecordingGate (embedQubit q2 A) = embedQubit q2 A := by
@@ -664,7 +663,7 @@ theorem timeThree_q3_z (theta : Real) :
   rw [show zAt q3 * xAt q1 = xAt q1 * zAt q3 by
     simpa [zAt, xAt] using embedQubit_commute_of_ne q3_ne_q1 pauliZ pauliX]
 
-/-- The `q2` half of Equation (32), with the corrected Equation (29) signs propagated. -/
+/-- The `q2` half of Equation (32). -/
 theorem equation32_q2 (theta : Real) :
     timeThreeDescriptors theta q2 =
       { x := xAt q2
@@ -679,7 +678,7 @@ theorem equation32_q2 (theta : Real) :
   · exact timeThree_q2_y theta
   · exact timeThree_q2_z theta
 
-/-- The `q3` half of Equation (32), exact as printed. -/
+/-- The `q3` half of Equation (32). -/
 theorem equation32_q3 (theta : Real) :
     timeThreeDescriptors theta q3 =
       { x := xAt q3
@@ -689,65 +688,6 @@ theorem equation32_q3 (theta : Real) :
   · exact timeThree_q3_x theta
   · exact timeThree_q3_y theta
   · exact timeThree_q3_z theta
-
-/-! ## Executable evidence for the source-sign discrepancy -/
-
-private theorem neg_unitary_ne_self
-    (A : Operator TeleportQubit)
-    (hA : A ∈ Matrix.unitaryGroup (Basis TeleportQubit) Complex) :
-    -A ≠ A := by
-  intro h
-  have hAA : A * Aᴴ = 1 := by
-    rw [← Matrix.star_eq_conjTranspose]
-    exact hA.2
-  have hcancel := congrArg (fun M : Operator TeleportQubit ↦ M * Aᴴ) h
-  rw [neg_mul, hAA] at hcancel
-  have hentry := congrFun
-    (congrFun hcancel (paperZeroAssignment TeleportQubit))
-    (paperZeroAssignment TeleportQubit)
-  norm_num [Matrix.one_apply] at hentry
-
-theorem equation29_q1_y_pi_div_two :
-    (timeOneDescriptors (Real.pi / 2) q1).y = -zAt q1 := by
-  simpa using timeOne_q1_y (Real.pi / 2)
-
-/-- At `θ = π/2`, Equation (29)'s printed `+Z` result is the opposite operator. -/
-theorem equation29_q1_y_pi_div_two_ne_printed :
-    (timeOneDescriptors (Real.pi / 2) q1).y ≠ zAt q1 := by
-  rw [equation29_q1_y_pi_div_two]
-  intro h
-  have himage :
-      embedQubit q1 ((-1 : Complex) • pauliZ) = embedQubit q1 pauliZ := by
-    rw [embedQubit_smul]
-    simpa only [neg_one_smul, zAt] using h
-  have hlocal := embedQubit_injective q1 himage
-  have h00 := congrFun (congrFun hlocal (0 : QubitIndex)) (0 : QubitIndex)
-  norm_num [pauliZ] at h00
-
-/-- At `θ = π/2`, Equation (31)'s printed `q1.y` has the opposite propagated sign. -/
-theorem equation31_q1_y_pi_div_two_ne_printed :
-    (timeTwoDescriptors (Real.pi / 2) q1).y ≠
-      zAt q1 * (zAt q4 * xAt q5) := by
-  rw [timeTwo_q1_y]
-  simpa using neg_unitary_ne_self
-    (zAt q1 * (zAt q4 * xAt q5))
-    ((Matrix.unitaryGroup (Basis TeleportQubit) Complex).mul_mem
-      (zAt_unitary q1)
-      ((Matrix.unitaryGroup (Basis TeleportQubit) Complex).mul_mem
-        (zAt_unitary q4) (xAt_unitary q5)))
-
-/-- At `θ = π/2`, Equation (32)'s printed `q2.y` has the opposite propagated sign. -/
-theorem equation32_q2_y_pi_div_two_ne_printed :
-    (timeThreeDescriptors (Real.pi / 2) q2).y ≠
-      yAt q1 * yAt q2 * (zAt q4 * xAt q5) := by
-  rw [timeThree_q2_y]
-  simpa using neg_unitary_ne_self
-    (yAt q1 * yAt q2 * (zAt q4 * xAt q5))
-    ((Matrix.unitaryGroup (Basis TeleportQubit) Complex).mul_mem
-      ((Matrix.unitaryGroup (Basis TeleportQubit) Complex).mul_mem
-        (yAt_unitary q1) (yAt_unitary q2))
-      ((Matrix.unitaryGroup (Basis TeleportQubit) Complex).mul_mem
-        (zAt_unitary q4) (xAt_unitary q5)))
 
 end
 end Teleportation

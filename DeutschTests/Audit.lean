@@ -20,7 +20,7 @@ import DeutschTests.Teleportation
 # Representative axiom audit
 
 Keep this list representative rather than exhaustive. `goal-1/check_lean_integrity.py` compiles
-this file and rejects `sorryAx` and project-defined axioms in the printed dependency report.
+this file and rejects `sorryAx` and project-defined axioms in the generated dependency report.
 -/
 
 #print axioms DeutschTests.Foundations.pauli_x_mul_y
@@ -140,7 +140,7 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Register.heisenberg_covariance
 #print axioms Deutsch.Register.embedAlong_embedQubit
 
--- Exact one-qubit gates, phase distinctions, and corrected rotation signs.
+-- Exact one-qubit gates, phase distinctions, and rotation orientation.
 #print axioms Deutsch.Gates.not_matrix_entry
 #print axioms Deutsch.Gates.paperSqrtNot_square
 #print axioms Deutsch.Gates.paperSqrtNot_heisenberg_twice
@@ -149,8 +149,6 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Gates.rotationX_heisenberg_z
 #print axioms Deutsch.Gates.rotationX_heisenberg_y_neg_pi_div_two
 #print axioms Deutsch.Gates.rotationX_heisenberg_z_neg_pi_div_two
-#print axioms Deutsch.Gates.rotationX_heisenberg_y_pi_div_two_ne_printed
-#print axioms Deutsch.Gates.rotationX_heisenberg_z_pi_div_two_ne_printed
 #print axioms Deutsch.Gates.diagonalPiRotation_eq_globalPhase_hadamard
 #print axioms Deutsch.Gates.diagonalPiRotation_heisenberg
 #print axioms Deutsch.Gates.descriptorNot_evolve
@@ -330,7 +328,7 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.EPR.pairCircuit_referenceKet_eq_four_coordinates
 #print axioms Deutsch.EPR.equation39_route_kets_eq
 
--- Named four-wire chronology, finite support, and corrected descriptor equations.
+-- Named four-wire chronology, finite support, and descriptor equations.
 #print axioms Deutsch.EPR.timeFourUnitary_unitary
 #print axioms Deutsch.EPR.timeOneUnitary_isSupportedOn
 #print axioms Deutsch.EPR.timeTwoUnitary_isSupportedOn
@@ -345,7 +343,7 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.EPR.equation27_q3
 #print axioms Deutsch.EPR.equation27_q4
 
--- Reduced states, corrected joint statistics, boundary counterexamples, and detectability.
+-- Reduced states, joint statistics, boundary cases, and detectability.
 #print axioms Deutsch.EPR.sameCoefficient_eq_cos_sub_half
 #print axioms Deutsch.EPR.crossCoefficient_eq_I_mul_sin_sub_half
 #print axioms Deutsch.EPR.equation38Ket_eq_globalPhase_pairPureState
@@ -358,8 +356,6 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.EPR.pairDensity_different_equal_settings
 #print axioms Deutsch.EPR.pairDensity_jointPaperOne_equal_settings
 #print axioms Deutsch.EPR.pairDensity_different_pi_zero
-#print axioms Deutsch.EPR.equation28_printed_equal_angle_counterexample
-#print axioms Deutsch.EPR.equation41_printed_equal_angle_counterexample
 #print axioms Deutsch.EPR.pairSettingFamily_locallyStatisticsIndependent
 #print axioms Deutsch.EPR.pairSettingFamily_statisticallyDetectable
 #print axioms Deutsch.EPR.pairDensity_z_expectation
@@ -398,7 +394,7 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 
 /-! ## Stage 9 public teleportation API -/
 
--- Five-wire chronology, support, and corrected source descriptors.
+-- Five-wire chronology, support, and descriptor equations.
 #print axioms Deutsch.Teleportation.inputRotation_unitary
 #print axioms Deutsch.Teleportation.timeThreeUnitary_unitary
 #print axioms Deutsch.Teleportation.inputRotation_isSupportedOn
@@ -407,14 +403,11 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Teleportation.timeThreeUnitary_isSupportedOn
 #print axioms Deutsch.Teleportation.recordingGates_commute
 #print axioms Deutsch.Teleportation.equation29_q1
-#print axioms Deutsch.Teleportation.equation29_q1_y_pi_div_two_ne_printed
 #print axioms Deutsch.Teleportation.equation30_q4
 #print axioms Deutsch.Teleportation.equation30_q5
 #print axioms Deutsch.Teleportation.equation31_q1
-#print axioms Deutsch.Teleportation.equation31_q1_y_pi_div_two_ne_printed
 #print axioms Deutsch.Teleportation.equation31_q4
 #print axioms Deutsch.Teleportation.equation32_q2
-#print axioms Deutsch.Teleportation.equation32_q2_y_pi_div_two_ne_printed
 #print axioms Deutsch.Teleportation.equation32_q3
 
 -- Explicit Equation (33) circuit, nine Pauli images, and four branch actions.
@@ -435,13 +428,11 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Teleportation.correctionGate_branch_paper10
 #print axioms Deutsch.Teleportation.correctionGate_branch_paper11
 
--- Corrected receiver descriptors and exact arbitrary-input circuit correctness.
+-- Receiver descriptors and exact arbitrary-input circuit correctness.
 #print axioms Deutsch.Teleportation.equation34_q5
-#print axioms Deutsch.Teleportation.equation34_q5_y_pi_div_two_ne_printed
 #print axioms Deutsch.Teleportation.teleportCorrectionGate_isSupportedOn
 #print axioms Deutsch.Teleportation.timeFourUnitary_isSupportedOn
 #print axioms Deutsch.Teleportation.timeFive_q5_z
-#print axioms Deutsch.Teleportation.equation37_q5_z_pi_div_four_ne_printed
 #print axioms Deutsch.Teleportation.verificationRotation_isSupportedOn
 #print axioms Deutsch.Teleportation.timeFiveUnitary_isSupportedOn
 #print axioms Deutsch.Teleportation.coherentProtocol_unitary
@@ -449,7 +440,7 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Teleportation.coherentProtocol_factorizes
 #print axioms Deutsch.Teleportation.teleportedDensity_reduce_receiver
 
--- Branch-derived operational encoder/decoder and source-family receiver statistics.
+-- Branch-derived operational encoder/decoder and parameterized receiver statistics.
 #print axioms Deutsch.Teleportation.protocolCorrectionGate_eq_branch_on_basis
 #print axioms Deutsch.Teleportation.protocolBranchCorrection_paper00
 #print axioms Deutsch.Teleportation.protocolBranchCorrection_paper01
@@ -478,10 +469,9 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Teleportation.equation36_receiver_bloch_vector
 #print axioms Deutsch.Teleportation.equation36_receiver_density
 #print axioms Deutsch.Teleportation.equation36_receiver_all_effects
-#print axioms Deutsch.Teleportation.equation35_corrected_effect_op
+#print axioms Deutsch.Teleportation.equation35_effect_op
 #print axioms Deutsch.Teleportation.equation35_receiver_purity
 #print axioms Deutsch.Teleportation.equation35_teleported_probability_one
-#print axioms Deutsch.Teleportation.equation35_printed_minus_sine_probability_zero_at_pi_div_two
 #print axioms Deutsch.Teleportation.receiverPaperZeroEffect_op_eq_projector
 #print axioms Deutsch.Teleportation.u02_paperZero_heisenberg
 #print axioms Deutsch.Teleportation.u02_paperZero_probability_one
@@ -531,14 +521,7 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Decoherence.classicallyCorrelatedDensity_correlation
 #print axioms Deutsch.Decoherence.classicallyCorrelatedDensity_ne_pairDensity_zero
 
-/-! ## Stage 11 public corrected-Bell API -/
-
--- Printed Equation (45) counterexample and corrected complementary partition.
-#print axioms Deutsch.Bell.SourceCorrection.numericOr_eq_boolValue_or
-#print axioms Deutsch.Bell.SourceCorrection.equation45_printed_counterexample_values
-#print axioms Deutsch.Bell.SourceCorrection.equation45_printed_fails_at_one_zero_one
-#print axioms Deutsch.Bell.SourceCorrection.equation45_corrected_complementary_partition
-#print axioms Deutsch.Bell.SourceCorrection.equation45_corrected_partition_for_assignment
+/-! ## Stage 11 public Bell API -/
 
 -- Common-assignment pigeonhole bound and explicit two-party local reduction.
 #print axioms Deutsch.Bell.commonAssignment_has_agreeing_pair
@@ -553,7 +536,7 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 #print axioms Deutsch.Bell.quarter_agreements_contradict_local_assignments_of_equal_setting_probability_one
 #print axioms Deutsch.Bell.no_local_assignment_has_three_quarter_agreements
 
--- Corrected EPR same-outcome probabilities and exact three-setting angles.
+-- EPR same-outcome probabilities and exact three-setting angles.
 #print axioms Deutsch.Bell.paperBits_equal_iff_rawBits_equal
 #print axioms Deutsch.Bell.sameOutcomeProbability_eq_cos_sq
 #print axioms Deutsch.Bell.sameOutcomeProbability_comm
@@ -590,10 +573,10 @@ this file and rejects `sorryAx` and project-defined axioms in the printed depend
 -- Explicit quantum/classical bridge and strongest normalized-local-model contradiction.
 #print axioms Deutsch.Bell.reproducesThreeSettingQuantumAgreements_quarters
 #print axioms Deutsch.Bell.reproducesThreeSettingQuantumAgreements_equal_setting
-#print axioms Deutsch.Bell.corrected_epr_three_settings_refute_local_assignments
-#print axioms Deutsch.Bell.no_local_assignments_reproduce_corrected_epr_three_settings
-#print axioms Deutsch.Bell.corrected_epr_three_settings_refute_normalized_local_model
-#print axioms Deutsch.Bell.no_normalized_local_model_reproduces_corrected_epr_three_settings
+#print axioms Deutsch.Bell.epr_three_settings_refute_local_assignments
+#print axioms Deutsch.Bell.no_local_assignments_reproduce_epr_three_settings
+#print axioms Deutsch.Bell.epr_three_settings_refute_normalized_local_model
+#print axioms Deutsch.Bell.no_normalized_local_model_reproduces_epr_three_settings
 
 -- Arbitrary real-angle moments and their restriction to the three-setting direct chain.
 #print axioms Deutsch.Bell.angleEquation42_mean_square_zero

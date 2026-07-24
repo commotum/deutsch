@@ -53,23 +53,23 @@ theorem one_time_pad_hides_secret_locally (q : Fin 2) :
     LocallyStatisticsIndependent ({q} : Finset (Fin 2)) oneTimePadDensity :=
   oneTimePad_locallyStatisticsIndependent q
 
-/-! ## Corrected finite Bell API -/
+/-! ## Finite Bell API -/
 
-/-- Every two distinct members of the corrected three-angle family agree with probability `1/4`. -/
-theorem corrected_three_setting_quantum_probability
+/-- Every two distinct members of the three-angle family agree with probability `1/4`. -/
+theorem three_setting_quantum_probability
     (i j : Setting) (hij : i ≠ j) :
     sameOutcomeProbability (threeSettingAngle i) (threeSettingAngle j) =
       (1 / 4 : ℝ) :=
   threeSetting_sameOutcomeProbability_of_ne i j hij
 
 /-- No normalized nonnegative distribution over the explicit local response tables reproduces
-the complete corrected three-setting quantum agreement table. -/
-theorem corrected_quantum_table_refutes_normalized_local_model
+the complete three-setting quantum agreement table. -/
+theorem quantum_table_refutes_normalized_local_model
     (weight : LocalAssignment → ℝ)
     (weight_nonnegative : ∀ assignment, 0 ≤ weight assignment)
     (weight_normalized : ∑ assignment, weight assignment = 1) :
     ¬ ReproducesThreeSettingQuantumAgreements weight :=
-  no_normalized_local_model_reproduces_corrected_epr_three_settings
+  no_normalized_local_model_reproduces_epr_three_settings
     weight weight_nonnegative weight_normalized
 
 end

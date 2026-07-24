@@ -6,7 +6,7 @@ import Mathlib.Tactic.NormNum
 /-!
 # Three-qubit teleportation correction
 
-This module gives an explicit Clifford circuit for the transformation printed as Equation (33).
+This module gives an explicit Clifford circuit for the transformation in Equation (33).
 The paper's reversed raw-bit convention makes the two terminal `Z` factors necessary for the
 displayed signs.  The three named coordinates remain generic, with pairwise distinctness supplied
 explicitly.

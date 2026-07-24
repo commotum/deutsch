@@ -2,9 +2,9 @@ import Deutsch.Teleportation.Descriptors
 import Deutsch.Teleportation.Correctness
 
 /-!
-# Teleportation statistics for the one-parameter source circuit
+# Teleportation statistics for the one-parameter circuit
 
-This module connects the source's `R_x(theta)` preparation to the coefficient-generic coherent
+This module connects the `R_x(theta)` input preparation to the coefficient-generic coherent
 correctness theorem.  Statistical claims are then stated for the actual receiver reduction,
 keeping the paper's reversed raw-bit convention explicit.
 -/
@@ -17,15 +17,15 @@ open scoped InnerProductSpace Matrix
 
 noncomputable section
 
-/-- Paper-zero amplitude prepared by the source's input rotation. -/
+/-- Paper-zero amplitude prepared by the input rotation. -/
 def inputAlpha (theta : Real) : Complex :=
   (Real.cos (theta / 2) : Complex)
 
-/-- Paper-one amplitude prepared by the source's input rotation. -/
+/-- Paper-one amplitude prepared by the input rotation. -/
 def inputBeta (theta : Real) : Complex :=
   -(Complex.I * (Real.sin (theta / 2) : Complex))
 
-/-- The source's sine/cosine amplitudes are normalized. -/
+/-- The sine/cosine input amplitudes are normalized. -/
 theorem inputAmplitudes_normalized (theta : Real) :
     InputAmplitudesNormalized (inputAlpha theta) (inputBeta theta) := by
   unfold InputAmplitudesNormalized inputAlpha inputBeta
@@ -102,7 +102,7 @@ theorem inputRotation_act_reference (theta : Real) :
   simp [rotationX, rotationCosHalf, rotationSinHalf, identity₂, pauliX,
     inputAlpha, inputBeta, teleportBits, q1, q2, q3, q4, q5, Pi.single]
 
-/-- The source circuit is the generic coherent protocol preceded by its input rotation. -/
+/-- The parameterized circuit is the generic coherent protocol preceded by its input rotation. -/
 theorem timeFourUnitary_eq_coherentProtocol_mul_inputRotation (theta : Real) :
     timeFourUnitary theta = coherentProtocol * inputRotation theta := by
   unfold timeFourUnitary teleportCorrectionGate timeThreeUnitary timeTwoUnitary
@@ -110,7 +110,7 @@ theorem timeFourUnitary_eq_coherentProtocol_mul_inputRotation (theta : Real) :
   rw [inputRotation_resourcePreparation_commute]
   simp only [Matrix.mul_assoc]
 
-/-- On the fixed reference ket, the source circuit and initialized generic circuit coincide. -/
+/-- On the fixed reference ket, the parameterized and initialized generic circuits coincide. -/
 theorem timeFour_act_reference_eq_coherentProtocol (theta : Real) :
     act (timeFourUnitary theta) (referenceKet TeleportQubit) =
       act coherentProtocol
@@ -226,8 +226,8 @@ private theorem input_cos_double_half (theta : Real) :
           simp only [Complex.ofReal_sub, Complex.ofReal_pow]
 
 /--
-The corrected Equation (36) in density-operator form.  Thus the receiver Bloch vector is
-`(0, +sin theta, -cos theta)` in the source's reversed raw-bit convention.
+Equation (36) in density-operator form.  Thus the receiver Bloch vector is
+`(0, +sin theta, -cos theta)` in the paper's reversed raw-bit convention.
 -/
 theorem equation36_receiver_bloch_operator (theta : Real) :
     (parameterizedReceiverDensity theta).op =
@@ -309,7 +309,7 @@ private theorem receiver_trace_z :
   rw [zAt, receiver_trace_embedQubit]
   norm_num [Matrix.trace, pauliZ]
 
-/-- Corrected Equation (36) as the three receiver Pauli moments. -/
+/-- Equation (36) as the three receiver Pauli moments. -/
 theorem equation36_receiver_bloch_vector (theta : Real) :
     densityExpectation (parameterizedReceiverDensity theta)
           (xAt receiverCoordinate) = 0 ∧
@@ -378,92 +378,59 @@ private theorem pureDensity_toEffect_probability_one
   rw [hidempotent, (pureDensity psi).trace_one]
   norm_num
 
-/-- The corrected rank-one receiver effect in Equation (35). -/
-def equation35CorrectedEffect (theta : Real) : Effect ReceiverQubit :=
+/-- The rank-one receiver effect in Equation (35). -/
+def equation35Effect (theta : Real) : Effect ReceiverQubit :=
   (parameterizedReceiverDensity theta).toEffect
 
-/-- Displayed corrected Equation (35): the sine coefficient is positive. -/
-theorem equation35_corrected_effect_op (theta : Real) :
-    (equation35CorrectedEffect theta).op =
+/-- Equation (35) in receiver-operator form. -/
+theorem equation35_effect_op (theta : Real) :
+    (equation35Effect theta).op =
       ((2 : Complex)⁻¹) •
         (1 + (Real.sin theta : Complex) • yAt receiverCoordinate -
           (Real.cos theta : Complex) • zAt receiverCoordinate) := by
   exact equation36_receiver_bloch_operator theta
 
-/-- The target receiver state passes the corrected rank-one Equation (35) effect with certainty. -/
+/-- The target receiver state passes the rank-one Equation (35) effect with certainty. -/
 theorem equation35_receiver_probability_one (theta : Real) :
     bornProbability (parameterizedReceiverDensity theta)
-        (equation35CorrectedEffect theta) = 1 := by
+        (equation35Effect theta) = 1 := by
   exact pureDensity_toEffect_probability_one
     (receiverInputPureState (inputAlpha theta) (inputBeta theta)
       (inputAmplitudes_normalized theta))
 
-/-- The corrected Equation (35) receiver state is explicitly pure, not merely certain for the
+/-- The Equation (35) receiver state is explicitly pure, not merely certain for the
 identity effect. -/
 theorem equation35_receiver_purity (theta : Real) :
     purity (parameterizedReceiverDensity theta) = 1 := by
   have h := equation35_receiver_probability_one theta
-  simpa [equation35CorrectedEffect, bornProbability, bornWeight, purity] using h
+  simpa [equation35Effect, bornProbability, bornWeight, purity] using h
 
 /-- The actual five-wire output passes the embedded Equation (35) receiver effect with certainty. -/
 theorem equation35_teleported_probability_one (theta : Real) :
     bornProbability (parameterizedTeleportedDensity theta)
-        ((equation35CorrectedEffect theta).embedSubsystem
+        ((equation35Effect theta).embedSubsystem
           ({q5} : Finset TeleportQubit)) = 1 := by
   rw [equation36_receiver_all_effects]
   exact equation35_receiver_probability_one theta
 
-/-- The source's printed minus-sine Equation (35), specialized at the decisive angle `pi/2`. -/
-def equation35PrintedMinusSineAtPiOverTwo : Effect ReceiverQubit :=
-  equation35CorrectedEffect (-Real.pi / 2)
-
-theorem equation35_printed_minus_sine_at_pi_div_two_op :
-    equation35PrintedMinusSineAtPiOverTwo.op =
-      ((2 : Complex)⁻¹) •
-        (1 - (Real.sin (Real.pi / 2) : Complex) • yAt receiverCoordinate -
-          (Real.cos (Real.pi / 2) : Complex) • zAt receiverCoordinate) := by
-  rw [equation35PrintedMinusSineAtPiOverTwo,
-    equation35_corrected_effect_op]
-  simp [neg_div]
-  module
-
-/-- At `pi/2`, the printed minus-sine effect is orthogonal to the actual receiver state. -/
-theorem equation35_printed_minus_sine_probability_zero_at_pi_div_two :
-    bornProbability (parameterizedReceiverDensity (Real.pi / 2))
-        equation35PrintedMinusSineAtPiOverTwo = 0 := by
-  change
-    (Matrix.trace
-      ((parameterizedReceiverDensity (Real.pi / 2)).op *
-        equation35PrintedMinusSineAtPiOverTwo.op)).re = 0
-  rw [equation36_receiver_bloch_operator,
-    equation35_printed_minus_sine_at_pi_div_two_op]
-  simp only [Real.sin_pi_div_two, Real.cos_pi_div_two, Complex.ofReal_one,
-    Complex.ofReal_zero, one_smul, zero_smul, sub_zero]
-  rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul]
-  have hzero :
-      (1 + yAt receiverCoordinate) * (1 - yAt receiverCoordinate) = 0 := by
-    noncomm_ring [yAt_mul_yAt receiverCoordinate]
-  rw [hzero]
-  simp
-
 /-- The receiver's paper-zero effect, expressed as the `theta = 0` rank-one target. -/
 def receiverPaperZeroEffect : Effect ReceiverQubit :=
-  equation35CorrectedEffect 0
+  equation35Effect 0
 
 theorem receiverPaperZeroEffect_op :
     receiverPaperZeroEffect.op =
       ((2 : Complex)⁻¹) • (1 - zAt receiverCoordinate) := by
-  rw [receiverPaperZeroEffect, equation35_corrected_effect_op]
+  rw [receiverPaperZeroEffect, equation35_effect_op]
   norm_num
 
-/-- This effect is exactly the source's reversed-index paper-zero projector. -/
+/-- This effect is exactly the reversed-index paper-zero projector. -/
 theorem receiverPaperZeroEffect_op_eq_projector :
     receiverPaperZeroEffect.op =
       paperBitZeroProjectorAt receiverCoordinate := by
   rw [receiverPaperZeroEffect_op,
     paperBitZeroProjectorAt_eq receiverCoordinate]
 
-/-- U02 on the receiver: undo the source's `R_x(theta)` before the paper-zero test. -/
+/-- U02 on the receiver: undo `R_x(theta)` before the paper-zero test. -/
 def u02ReceiverRotation (theta : Real) : Operator ReceiverQubit :=
   rotationXAt receiverCoordinate (-theta)
 
@@ -477,11 +444,11 @@ def u02ReceiverDensity (theta : Real) : Density ReceiverQubit :=
   (parameterizedReceiverDensity theta).evolve (u02ReceiverRotation theta)
     (u02ReceiverRotation_unitary theta)
 
-/-- Pulling the paper-zero U02 test backwards gives exactly the corrected Equation (35) effect. -/
+/-- Pulling the paper-zero U02 test backwards gives exactly the Equation (35) effect. -/
 theorem u02_paperZero_heisenberg (theta : Real) :
     heisenberg (u02ReceiverRotation theta) receiverPaperZeroEffect.op =
-      (equation35CorrectedEffect theta).op := by
-  rw [receiverPaperZeroEffect_op, equation35_corrected_effect_op,
+      (equation35Effect theta).op := by
+  rw [receiverPaperZeroEffect_op, equation35_effect_op,
     heisenberg_smul, heisenberg_sub,
     heisenberg_one_of_unitary _ (u02ReceiverRotation_unitary theta),
     u02ReceiverRotation, rotationXAt_heisenberg_z]
