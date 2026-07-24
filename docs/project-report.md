@@ -170,6 +170,7 @@ lake build
 python3 -B goal-1/check_source_audit.py
 python3 -B goal-1/check_lean_integrity.py
 python3 -B goal-1/check_doc_links.py
+python3 -B goal-2/check_errata_boundary.py
 ```
 
 The checkers verify source-map coverage, the production/test import boundary, the public
@@ -177,3 +178,11 @@ declaration registry, exact equation-façade cardinality, principal axiom report
 documentation links, and forbidden implementation shortcuts. The accepted foundational axioms
 are the standard mathlib set used by this development: `Classical.choice`, `Quot.sound`, and
 `propext`.
+
+The final clean-state audit removed this package's generated build directory while preserving the
+pinned dependency build, then rebuilt all four public/test targets in 3341 jobs. The integrity
+checker scanned 91 Lean sources and 595 representative axiom reports; the paper registry contained
+exactly 46 declarations, 46 compile checks, and 46 axiom targets. The documentation audit checked
+16 public Markdown files and 129 repository-local links. Source, PDF, figure, historical-object,
+Errata-boundary, reverse-import, production-neutrality, proof-hole, whitespace, and diff checks all
+passed.

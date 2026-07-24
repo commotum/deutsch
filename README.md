@@ -9,9 +9,10 @@ modules. The small `DeutschErrata` library is a separate comparison companion; s
 The public foundations pin Lean/mathlib; fix the bit, tensor, Heisenberg, rotation, CNOT, and Bell
 conventions; and provide finite named registers with exact subsystem embeddings, support
 witnesses, embedded Pauli/projector algebra, pure states, and fixed-reference prediction
-equivalence. The locality layer proves exact commutation and Heisenberg invariance for operations
-with disjoint finite supports, including arbitrary-ket expectation corollaries. The descriptor
-layer supplies valid global Pauli triples, complete cross-label relations, unitary preservation,
+equivalence. The locality layer proves exact commutation for operators with disjoint finite
+supports and exact Heisenberg invariance under a supported isometry or unitary acting disjointly
+from the observable. It also supplies arbitrary-ket expectation corollaries. The descriptor layer
+supplies valid global Pauli triples, complete cross-label relations, unitary preservation,
 constructive generation of the full operator algebra, and explicit initial/evolved Pauli-word
 bases.
 
@@ -32,11 +33,12 @@ and density-matrix proofs show that the actual circuit resource is entangled and
 every pair of local rotation settings. The teleportation layer implements the five-wire coherent
 chronology, realizes its physical correction gate, derives the full descriptor chain, and proves
 exact arbitrary-input receiver transfer at ket and reduced-density level. Literal matrix slices
-of the coherent circuit form a channel whose receiver partial trace is the reindexed identity on
-every operator and density and preserves every effect probability; that action agrees pointwise
-with the separately constructed decoder-after-encoder. The semantic encoder alone is not
-identified with a measurement/dephasing realization of the pre-correction circuit, and no
-arbitrary-reference tensor theorem is claimed.
+of the coherent circuit form a channel whose action is the reindexed identity on every operator
+and density and preserves every effect probability. That action equals the receiver partial trace
+of the explicitly initialized five-wire output and agrees pointwise with the separately
+constructed decoder-after-encoder. The semantic encoder alone is not identified with a
+measurement/dephasing realization of the pre-correction circuit, and no arbitrary-reference
+tensor theorem is claimed.
 
 The dephasing layer supplies computational-coordinate Kraus dephasing, a paper-zero CNOT
 environment realization, exact repeated-record stability, a record-bit-error failure,
@@ -51,8 +53,9 @@ moments. Its strongest theorem derives positive-support equal-setting agreement 
 probability-one predictions; zero-weight tables remain unconstrained. Counterfactual Bell
 locality is kept distinct from dynamical support locality and operational no-signalling. A
 separate constructive refinement expands finite factorizable stochastic response kernels into
-complete deterministic response tables while preserving all marginals and joint outcomes, then
-applies the same contradiction under the named finite stochastic assumptions.
+complete deterministic response tables while preserving every Alice and Bob one-party outcome
+probability and every selected Alice–Bob joint outcome, then applies the same contradiction under
+the named finite stochastic assumptions.
 
 See [Global Conventions](docs/conventions.md),
 [Representation Decision](docs/representation.md),
