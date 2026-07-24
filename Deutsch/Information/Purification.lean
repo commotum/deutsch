@@ -32,7 +32,7 @@ def purificationCopyPlacement (Q : Type*) : Q ↪ PurificationRegister Q :=
   ⟨Sum.inr, Sum.inr_injective⟩
 
 /-- The selected original-copy qubits in the enlarged register. -/
-def purificationOriginalQubits (Q : Type*) [Fintype Q] [DecidableEq Q] :
+abbrev purificationOriginalQubits (Q : Type*) [Fintype Q] [DecidableEq Q] :
     Finset (PurificationRegister Q) :=
   placementFinset (purificationOriginalPlacement Q)
 
@@ -46,6 +46,73 @@ def purificationBasisEquiv (Q : Type*) :
     funext q
     cases q <;> rfl
   right_inv bits := rfl
+
+theorem purificationCopy_not_mem_originalQubits (q : Q) :
+    Sum.inr q ∉ purificationOriginalQubits Q := by
+  rw [purificationOriginalQubits,
+    mem_placementFinset_iff (purificationOriginalPlacement Q)]
+  rintro ⟨q', h⟩
+  change Sum.inl q' = Sum.inr q at h
+  exact (Sum.inl_ne_inr : (Sum.inl q' : Sum Q Q) ≠ Sum.inr q) h
+
+/-- The second copy is exactly the complement of the selected first copy. -/
+def purificationCopyComplementEquiv (Q : Type*) [Fintype Q] [DecidableEq Q] :
+    Q ≃ {q : PurificationRegister Q // q ∉ purificationOriginalQubits Q} :=
+  Equiv.ofBijective
+    (fun q ↦ ⟨Sum.inr q, purificationCopy_not_mem_originalQubits q⟩)
+    ⟨by
+      intro q q' h
+      exact Sum.inr_injective (congrArg Subtype.val h),
+     by
+      intro q
+      cases hq : q.1 with
+      | inl x =>
+          exfalso
+          apply q.2
+          rw [mem_placementFinset_iff (purificationOriginalPlacement Q)]
+          exact ⟨x, hq.symm⟩
+      | inr x =>
+          refine ⟨x, ?_⟩
+          apply Subtype.ext
+          exact hq.symm⟩
+
+/-- Basis labels on the purifying complement, retaining the second copy's original labels. -/
+def purificationCopyBasisEquiv (Q : Type*) [Fintype Q] [DecidableEq Q] :
+    Basis Q ≃ ComplementBasis (purificationOriginalQubits Q) :=
+  Equiv.arrowCongr (purificationCopyComplementEquiv Q) (Equiv.refl QubitIndex)
+
+private theorem purificationReindex_posSemidef
+    (rho : Density Q) :
+    (Matrix.reindexAlgEquiv ℂ ℂ
+      (alongBasisEquiv (purificationOriginalPlacement Q)) rho.op).PosSemidef := by
+  apply (Matrix.posSemidef_submatrix_equiv
+    (alongBasisEquiv (purificationOriginalPlacement Q))).1
+  simpa [Matrix.reindexAlgEquiv] using rho.positive
+
+/--
+The supplied density with its qubit labels transported to the selected first-copy subsystem.
+-/
+def purificationOriginalDensity (rho : Density Q) :
+    Density {q : PurificationRegister Q // q ∈ purificationOriginalQubits Q} where
+  op := Matrix.reindexAlgEquiv ℂ ℂ
+    (alongBasisEquiv (purificationOriginalPlacement Q)) rho.op
+  positive := purificationReindex_posSemidef rho
+  trace_one := by
+    change (∑ i : SubsystemBasis (purificationOriginalQubits Q),
+      rho.op
+        ((alongBasisEquiv (purificationOriginalPlacement Q)).symm i)
+        ((alongBasisEquiv (purificationOriginalPlacement Q)).symm i)) = 1
+    rw [Equiv.sum_comp
+      (alongBasisEquiv (purificationOriginalPlacement Q)).symm
+      (fun i : Basis Q ↦ rho.op i i)]
+    exact rho.trace_one
+
+@[simp]
+theorem purificationOriginalDensity_op (rho : Density Q) :
+    (purificationOriginalDensity rho).op =
+      Matrix.reindexAlgEquiv ℂ ℂ
+        (alongBasisEquiv (purificationOriginalPlacement Q)) rho.op :=
+  rfl
 
 /-- The positive square root used in the canonical purification. -/
 def densitySquareRoot (rho : Density Q) : Operator Q :=
@@ -122,6 +189,76 @@ theorem purificationKet_norm (rho : Density Q) :
 def purificationPureState (rho : Density Q) : PureState (PurificationRegister Q) where
   ket := purificationKet rho
   norm_eq_one := purificationKet_norm rho
+
+private theorem purification_split_original
+    (i : SubsystemBasis (purificationOriginalQubits Q))
+    (k : ComplementBasis (purificationOriginalQubits Q)) :
+    (purificationBasisEquiv Q
+      ((splitBasis (purificationOriginalQubits Q)).symm (i, k))).1 =
+      (alongBasisEquiv (purificationOriginalPlacement Q)).symm i := by
+  funext q
+  have hin : Sum.inl q ∈ purificationOriginalQubits Q := by
+    rw [mem_placementFinset_iff (purificationOriginalPlacement Q)]
+    exact ⟨q, rfl⟩
+  dsimp [purificationBasisEquiv, splitBasis]
+  rw [Equiv.piEquivPiSubtypeProd_symm_apply, dif_pos hin]
+  simp only [alongBasisEquiv]
+  change i ⟨Sum.inl q, hin⟩ =
+    i ((placementEquiv (purificationOriginalPlacement Q)) q)
+  congr 1
+
+private theorem purification_split_copy
+    (i : SubsystemBasis (purificationOriginalQubits Q))
+    (k : ComplementBasis (purificationOriginalQubits Q)) :
+    (purificationBasisEquiv Q
+      ((splitBasis (purificationOriginalQubits Q)).symm (i, k))).2 =
+      (purificationCopyBasisEquiv Q).symm k := by
+  funext q
+  have hnot : Sum.inr q ∉ purificationOriginalQubits Q :=
+    purificationCopy_not_mem_originalQubits q
+  dsimp [purificationBasisEquiv, splitBasis]
+  rw [Equiv.piEquivPiSubtypeProd_symm_apply, dif_neg hnot]
+  simp only [purificationCopyBasisEquiv]
+  change k ⟨Sum.inr q, hnot⟩ =
+    k ((purificationCopyComplementEquiv Q) q)
+  congr 1
+
+/--
+Tracing out the explicit second copy returns exactly the supplied density, with the retained
+qubits canonically relabelled by the first-copy placement.
+-/
+theorem purification_reduce_original (rho : Density Q) :
+    (pureDensity (purificationPureState rho)).reduce
+        (purificationOriginalQubits Q) =
+      purificationOriginalDensity rho := by
+  apply Density.ext
+  ext i j
+  change (∑ k : ComplementBasis (purificationOriginalQubits Q),
+      purificationCoordinates rho
+          ((splitBasis (purificationOriginalQubits Q)).symm (i, k)) *
+        star (purificationCoordinates rho
+          ((splitBasis (purificationOriginalQubits Q)).symm (j, k)))) =
+    rho.op
+      ((alongBasisEquiv (purificationOriginalPlacement Q)).symm i)
+      ((alongBasisEquiv (purificationOriginalPlacement Q)).symm j)
+  simp_rw [purificationCoordinates, purification_split_original,
+    purification_split_copy]
+  rw [Equiv.sum_comp (purificationCopyBasisEquiv Q).symm
+    (fun k : Basis Q ↦
+      densitySquareRoot rho
+          ((alongBasisEquiv (purificationOriginalPlacement Q)).symm i) k *
+        star (densitySquareRoot rho
+          ((alongBasisEquiv (purificationOriginalPlacement Q)).symm j) k))]
+  change (densitySquareRoot rho * (densitySquareRoot rho)ᴴ)
+      ((alongBasisEquiv (purificationOriginalPlacement Q)).symm i)
+      ((alongBasisEquiv (purificationOriginalPlacement Q)).symm j) =
+    rho.op
+      ((alongBasisEquiv (purificationOriginalPlacement Q)).symm i)
+      ((alongBasisEquiv (purificationOriginalPlacement Q)).symm j)
+  have hsqrt :
+      (densitySquareRoot rho)ᴴ = densitySquareRoot rho :=
+    (densitySquareRoot_isHermitian rho).eq
+  rw [hsqrt, densitySquareRoot_mul_self]
 
 end
 end Information

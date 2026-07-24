@@ -258,6 +258,27 @@ theorem epr_resource_zz_correlation_is_nonproduct :
         densityExpectation (pairDensity 0 0) (zAt (1 : Fin 2)) :=
   pairDensity_zero_resource_correlation
 
+theorem product_operator_has_the_required_zero_minor
+    (A : Operator (Fin 2)) (hproduct : IsProductOperator A)
+    (columnLeft columnRight : QubitIndex) :
+    A (pairBits 0 0) (pairBits columnLeft columnRight) *
+        A (pairBits 1 1) (pairBits columnLeft columnRight) =
+      A (pairBits 0 1) (pairBits columnLeft columnRight) *
+        A (pairBits 1 0) (pairBits columnLeft columnRight) :=
+  hproduct.row_minor columnLeft columnRight
+
+theorem every_rotated_epr_circuit_ket_is_nonproduct (theta phi : ℝ) :
+    ¬ IsProductKet (pairPureState theta phi).ket :=
+  pairPureState_not_product theta phi
+
+theorem every_rotated_epr_circuit_density_is_nonproduct (theta phi : ℝ) :
+    ¬ IsProductDensity (pairDensity theta phi) :=
+  pairDensity_not_product theta phi
+
+theorem prepared_epr_resource_density_is_nonproduct :
+    ¬ IsProductDensity (pairDensity 0 0) :=
+  pairDensity_resource_not_product
+
 theorem finite_setting_family_is_local_but_jointly_detectable :
     LocallyStatisticsIndependent ({0} : Finset (Fin 2)) pairSettingFamily ∧
       LocallyStatisticsIndependent ({1} : Finset (Fin 2)) pairSettingFamily ∧
