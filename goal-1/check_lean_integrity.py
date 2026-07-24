@@ -106,9 +106,14 @@ REQUIRED_PRODUCTION_IMPORT_CLOSURE = {
         "Deutsch.Bell.Moments",
         "Deutsch.Bell.AngleMoments",
         "Deutsch.Bell.Contradiction",
+        "Deutsch.Bell.Stochastic",
     ),
     "Deutsch/Bell/AngleMoments.lean": (
         "Deutsch.Bell.Moments",
+    ),
+    "Deutsch/Bell/Stochastic.lean": (
+        "Deutsch.Bell.Contradiction",
+        "Mathlib.Algebra.BigOperators.Ring.Finset",
     ),
     "Deutsch/Paper.lean": (
         "Deutsch.Paper.QuantumTheory",
@@ -275,6 +280,7 @@ REQUIRED_FILES = (
     "Deutsch/Bell/Moments.lean",
     "Deutsch/Bell/AngleMoments.lean",
     "Deutsch/Bell/Contradiction.lean",
+    "Deutsch/Bell/Stochastic.lean",
     "Deutsch/Paper.lean",
     "Deutsch/Paper/QuantumTheory.lean",
     "Deutsch/Paper/Gates.lean",
@@ -1160,7 +1166,28 @@ REQUIRED_DECOHERENCE_AUDIT_TARGETS = tuple(
     for name in declarations
 )
 
-REQUIRED_BELL_ORACLES = (
+REQUIRED_STOCHASTIC_BELL_ORACLES = (
+    "fair_response_kernel_is_genuinely_nondeterministic",
+    "boolean_response_kernel_normalizes",
+    "complete_response_table_distribution_normalizes",
+    "selected_response_table_marginal_is_the_kernel_probability",
+    "conditional_local_table_distribution_normalizes",
+    "refined_local_table_distribution_is_nonnegative",
+    "refined_local_table_distribution_normalizes",
+    "fair_refined_table_distribution_normalizes",
+    "fair_stochastic_joint_outcome_is_one_quarter",
+    "stochastic_joint_outcomes_have_the_explicit_factorization",
+    "refined_table_preserves_alice_marginals",
+    "refined_table_preserves_bob_marginals",
+    "refined_table_preserves_every_joint_outcome",
+    "refined_table_preserves_every_agreement_probability",
+    "stochastic_reproduction_transfers_to_the_refined_table",
+    "epr_predictions_refute_every_finite_stochastic_local_model",
+    "no_finite_stochastic_local_model_reproduces_the_epr_family",
+    "fair_refined_table_joint_true_false_is_one_quarter",
+)
+
+REQUIRED_BELL_ORACLES = REQUIRED_STOCHASTIC_BELL_ORACLES + (
     "direct_equation42_mean_square",
     "direct_equation43_positive_support",
     "direct_equation44_alice_joint_moment",
@@ -1246,7 +1273,71 @@ REQUIRED_BELL_PUBLIC_DECLARATIONS = {
         "angleEquation44_alice_joint_moment",
         "restrictRealAngleMomentsToThreeSettings",
     ),
+    "Deutsch/Bell/Stochastic.lean": (
+        "responseTableWeight_normalized",
+        "responseTableWeight_marginal",
+        "conditionalTableWeight_nonnegative",
+        "conditionalTableWeight_normalized",
+        "conditionalTableWeight_alice_marginal",
+        "conditionalTableWeight_bob_marginal",
+        "conditionalTableWeight_joint_marginal",
+        "refinedLocalWeight_nonnegative",
+        "refinedLocalWeight_normalized",
+        "stochasticJointOutcomeProbability_factorization",
+        "refinedLocalWeight_preserves_alice_outcome",
+        "refinedLocalWeight_preserves_bob_outcome",
+        "refinedLocalWeight_preserves_joint_outcome",
+        "refinedLocalWeight_preserves_agreement",
+        "refinedLocalWeight_reproduces_three_setting_agreements",
+        "epr_three_settings_refute_stochastic_local_model",
+        "no_stochastic_local_model_reproduces_epr_three_settings",
+    ),
 }
+
+REQUIRED_STOCHASTIC_PUBLIC_DECLARATIONS = (
+    "BoolResponseKernel",
+    "StochasticLocalModel",
+    "responseTableWeight",
+    "responseTableWeight_normalized",
+    "responseOutcomeIndicator",
+    "responseOutcomeIndicator_self",
+    "responseOutcomeIndicator_nonnegative",
+    "responseTableWeight_marginal",
+    "conditionalTableWeight",
+    "conditionalTableWeight_nonnegative",
+    "conditionalTableWeight_normalized",
+    "refinedLocalWeight",
+    "refinedLocalWeight_nonnegative",
+    "refinedLocalWeight_normalized",
+    "tableAliceOutcomeProbability",
+    "tableBobOutcomeProbability",
+    "tableJointOutcomeProbability",
+    "stochasticAliceOutcomeProbability",
+    "stochasticBobOutcomeProbability",
+    "stochasticJointOutcomeProbability",
+    "stochasticJointOutcomeProbability_factorization",
+    "stochasticAgreementProbability",
+    "conditionalTableWeight_alice_marginal",
+    "conditionalTableWeight_bob_marginal",
+    "conditionalTableWeight_joint_marginal",
+    "refinedLocalWeight_preserves_alice_outcome",
+    "refinedLocalWeight_preserves_bob_outcome",
+    "refinedLocalWeight_preserves_joint_outcome",
+    "crossPartyAgreementProbability_eq_joint_outcomes",
+    "stochasticAgreementProbability_eq_joint_outcomes",
+    "refinedLocalWeight_preserves_agreement",
+    "ReproducesThreeSettingStochasticAgreements",
+    "refinedLocalWeight_reproduces_three_setting_agreements",
+    "epr_three_settings_refute_stochastic_local_model",
+    "no_stochastic_local_model_reproduces_epr_three_settings",
+)
+
+REQUIRED_STOCHASTIC_TEST_AUDIT_TARGETS = (
+    "DeutschTests.BellVerification.fair_response_kernel_is_genuinely_nondeterministic",
+    "DeutschTests.BellVerification.boolean_response_kernel_normalizes",
+    "DeutschTests.BellVerification.fair_refined_table_distribution_normalizes",
+    "DeutschTests.BellVerification.fair_refined_table_joint_true_false_is_one_quarter",
+)
 
 REQUIRED_BELL_AUDIT_TARGETS = tuple(
     "Deutsch.Bell." + name
@@ -1903,6 +1994,17 @@ def main() -> None:
             + ", ".join(absent_bell_declarations)
         )
 
+    stochastic_declarations = declared_names(ROOT / "Deutsch/Bell/Stochastic.lean")
+    absent_stochastic_declarations = [
+        name for name in REQUIRED_STOCHASTIC_PUBLIC_DECLARATIONS
+        if name not in stochastic_declarations
+    ]
+    if absent_stochastic_declarations:
+        fail(
+            "missing finite stochastic-refinement declarations: "
+            + ", ".join(absent_stochastic_declarations)
+        )
+
     absent_paper_declarations: list[str] = []
     for relative_path, required_names in REQUIRED_PAPER_PUBLIC_DECLARATIONS.items():
         present = declared_names(ROOT / relative_path)
@@ -2039,6 +2141,20 @@ def main() -> None:
             f"found {observed_bell_audit_targets!r}"
         )
 
+    observed_stochastic_test_audit_targets = tuple(
+        target for target in audit_targets
+        if target.startswith("DeutschTests.BellVerification.")
+    )
+    if (
+        observed_stochastic_test_audit_targets
+        != REQUIRED_STOCHASTIC_TEST_AUDIT_TARGETS
+    ):
+        fail(
+            "finite stochastic witness axiom targets differ from the focused set: "
+            f"expected {REQUIRED_STOCHASTIC_TEST_AUDIT_TARGETS!r}, "
+            f"found {observed_stochastic_test_audit_targets!r}"
+        )
+
     absent_paper_audit_targets = [
         target for target in REQUIRED_PAPER_AUDIT_TARGETS
         if target not in audit_targets
@@ -2168,6 +2284,12 @@ def main() -> None:
     print(
         "  Required Bell verification oracles: "
         f"{len(REQUIRED_BELL_ORACLES)}"
+    )
+    print(
+        "  Required finite stochastic public declarations/oracles/test axiom targets: "
+        f"{len(REQUIRED_STOCHASTIC_PUBLIC_DECLARATIONS)}/"
+        f"{len(REQUIRED_STOCHASTIC_BELL_ORACLES)}/"
+        f"{len(REQUIRED_STOCHASTIC_TEST_AUDIT_TARGETS)}"
     )
     print(
         "  Required Stage 11 public declarations: "

@@ -2,7 +2,7 @@
 
 ## Status
 
-- In progress.
+- Complete.
 
 ## Current Facts
 
@@ -87,4 +87,42 @@
 
 ## Stage Results
 
-- In progress.
+- Added `Deutsch.Bell.Stochastic` and exported it from `Deutsch.Bell`.
+- `BoolResponseKernel` packages a nonnegative normalized Boolean response law.
+  `StochasticLocalModel Ω` packages a finite normalized nonnegative hidden weight with no setting
+  argument and separate Alice/Bob kernels receiving only their own local setting.
+- `stochasticJointOutcomeProbability_factorization` exposes the conditional product law directly.
+  The joint model is not inferred from a response table.
+- For each hidden value, `conditionalTableWeight` assigns a complete six-response table the
+  product of its six local response probabilities. The implementation proves this distribution
+  nonnegative and normalized, then averages it into the explicit `refinedLocalWeight`.
+- The refinement proves, independently and for arbitrary settings/outcomes:
+  - Alice one-party marginal preservation;
+  - Bob one-party marginal preservation;
+  - every joint-outcome probability preservation; and
+  - every agreement-probability preservation.
+- `refinedLocalWeight_reproduces_three_setting_agreements` transfers the complete `3 × 3`
+  agreement table, including equal-setting probability one, into the existing deterministic-table
+  contract. The final `epr_three_settings_refute_stochastic_local_model` invokes
+  `epr_three_settings_refute_normalized_local_model`; neither a response-table weight nor a
+  perfect-support premise appears in its signature.
+- Added 18 focused stochastic wrappers and four concrete axiom-audited witness targets.
+  `fairResponseKernel` assigns both Boolean outcomes probability `1/2`; its refined distribution
+  normalizes and a specified cross-party joint outcome has probability `1/4`.
+- Updated Bell, reuse, and project-report documentation to state the finite factorizable scope,
+  explain that cross-setting independence is a freely constructed coupling of unobserved
+  coordinates, and keep this reduction separate from the direct Equations (42)--(46) proof.
+- Strengthened `goal-1/check_lean_integrity.py` to require the Stochastic module/import edge,
+  all 35 public declarations, 18 focused wrappers, 17 production axiom targets, and four witness
+  axiom targets.
+- Verification completed successfully:
+  - `lake build Deutsch.Bell.Stochastic DeutschTests.Bell` built 2725 jobs;
+  - `lake build Deutsch.Bell.Stochastic Deutsch.Bell Deutsch` built 2770 jobs;
+  - `lake build DeutschTests` built 3326 jobs;
+  - `lake build Deutsch DeutschTests DeutschErrata DeutschErrataTests` built 3338 jobs;
+  - `python3 goal-1/check_lean_integrity.py` scanned 88 Lean sources and 524 axiom reports;
+  - `python3 goal-1/check_source_audit.py`, `python3 goal-1/check_doc_links.py`, and
+    `python3 goal-2/check_errata_boundary.py` all passed;
+  - the production and test axiom reports contain only `Classical.choice`, `Quot.sound`, and
+    `propext`; and
+  - forbidden-token scans and `git diff --check` passed.

@@ -165,6 +165,16 @@ auditable source mapping.
   exact neutral declarations, absence of editorial-history tokens under `Deutsch` and
   `DeutschTests`, and the exact E01--E46 registry.  A 3337-job four-target build and both audits
   pass with only `Classical.choice`, `Quot.sound`, and `propext`.
+- `Deutsch.Bell.Stochastic` now gives the explicit finite factorizable refinement. It constructs a
+  six-coordinate product distribution over complete local response tables for each hidden value,
+  averages over a setting-independent normalized hidden weight, and preserves both one-party
+  marginals, every joint Boolean outcome, and every agreement probability.
+- The final stochastic contradiction takes only the stochastic model and reproduction of the full
+  three-setting EPR agreement table. The deterministic table, its normalization/nonnegativity, and
+  positive-support equal-setting property are derived rather than assumed. A genuinely
+  nondeterministic fair-kernel test verifies normalization and a `1/4` joint event.
+- The Stage 8 four-target build completed 3338 jobs. The strengthened integrity audit scanned 88
+  Lean sources and 524 axiom reports with only `Classical.choice`, `Quot.sound`, and `propext`.
 
 ## Current Assumptions to Test
 
@@ -476,7 +486,7 @@ architecture real.
 
 #### Status
 
-In progress. See `goal-2/8-STOCHASTIC.md`.
+Complete with recorded evidence in `goal-2/8-STOCHASTIC.md`.
 
 #### Big Picture Objective
 
@@ -506,6 +516,10 @@ stochastic premise.
 - Focused stochastic tests, full build, and axiom audit pass.
 
 ### 9-ANALYSIS
+
+#### Status
+
+In progress. See `goal-2/9-ANALYSIS.md`.
 
 #### Big Picture Objective
 
