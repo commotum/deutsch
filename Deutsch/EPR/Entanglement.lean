@@ -38,6 +38,10 @@ def IsProductKet (psi : Ket (Fin 2)) : Prop :=
       psi (pairBits leftBit rightBit) =
         left (oneQubitBits leftBit) * right (oneQubitBits rightBit)
 
+/-- Pure-state entanglement in this split: the normalized ket has no product factorization. -/
+def IsEntangledPureState (psi : PureState (Fin 2)) : Prop :=
+  ¬ IsProductKet psi.ket
+
 /-- Entrywise tensor product in the explicit coordinate-`0`/coordinate-`1` register split. -/
 def twoQubitProductOperator
     (left right : Operator (Fin 1)) : Operator (Fin 2) :=
@@ -144,6 +148,11 @@ theorem pairPureState_not_product (theta phi : ℝ) :
       _ = 0 := sub_eq_zero.mpr hminor
   rw [pairPureState_amplitude_determinant] at hzero
   norm_num at hzero
+
+/-- Every locally rotated circuit resource is entangled as a pure state. -/
+theorem pairPureState_isEntangled (theta phi : ℝ) :
+    IsEntangledPureState (pairPureState theta phi) :=
+  pairPureState_not_product theta phi
 
 /--
 The density produced by the exact EPR circuit is not a tensor product of two one-qubit densities,

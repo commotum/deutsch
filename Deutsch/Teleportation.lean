@@ -1,4 +1,5 @@
 import Deutsch.Teleportation.Circuit
+import Deutsch.Teleportation.ChannelBridge
 import Deutsch.Teleportation.Correction
 import Deutsch.Teleportation.Correctness
 import Deutsch.Teleportation.Descriptors

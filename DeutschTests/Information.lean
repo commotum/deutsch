@@ -139,6 +139,66 @@ theorem maximally_mixed_not_fixed_pure_reference
     maximallyMixedQubit.evolve U hU ≠ referenceDensity (Fin 1) :=
   maximallyMixedQubit_cannot_evolve_to_reference U hU
 
+/-! ## Enlarged-register purification -/
+
+theorem every_density_has_normalized_explicit_purification
+    {Q : Type*} [Fintype Q] [DecidableEq Q] (rho : Density Q) :
+    ‖(purificationPureState rho).ket‖ = 1 :=
+  purificationKet_norm rho
+
+theorem explicit_purification_reduces_to_original_copy
+    {Q : Type*} [Fintype Q] [DecidableEq Q] (rho : Density Q) :
+    (pureDensity (purificationPureState rho)).reduce
+        (purificationOriginalQubits Q) =
+      purificationOriginalDensity rho :=
+  purification_reduce_original rho
+
+theorem explicit_purification_reduces_exactly_on_original_labels
+    {Q : Type*} [Fintype Q] [DecidableEq Q] (rho : Density Q) :
+    purificationReducedDensity rho = rho :=
+  purificationReducedDensity_eq rho
+
+theorem explicit_purification_preserves_every_embedded_prediction
+    {Q : Type*} [Fintype Q] [DecidableEq Q]
+    (rho : Density Q) (A : Operator Q) :
+    Register.expectation (purificationPureState rho).ket
+        (embedAlong (purificationOriginalPlacement Q) A) =
+      densityExpectation rho A :=
+  purification_embedded_expectation rho A
+
+theorem every_density_has_enlarged_unitary_preparation
+    {Q : Type*} [Fintype Q] [DecidableEq Q] (rho : Density Q) :
+    ∃ U : Operator (PurificationRegister Q),
+      U ∈ Matrix.unitaryGroup (Basis (PurificationRegister Q)) ℂ ∧
+      act U (referenceKet (PurificationRegister Q)) =
+        (purificationPureState rho).ket :=
+  exists_unitary_preparation_purification rho
+
+theorem every_density_has_enlarged_fixed_reference_predictions
+    {Q : Type*} [Fintype Q] [DecidableEq Q] (rho : Density Q) :
+    ∃ U : Operator (PurificationRegister Q),
+      U ∈ Matrix.unitaryGroup (Basis (PurificationRegister Q)) ℂ ∧
+      act U (referenceKet (PurificationRegister Q)) =
+        (purificationPureState rho).ket ∧
+      ∀ A : Operator Q,
+        densityExpectation rho A =
+          Register.expectation (referenceKet (PurificationRegister Q))
+            (heisenberg U (embedAlong (purificationOriginalPlacement Q) A)) :=
+  exists_purification_fixed_reference_representation rho
+
+theorem maximally_mixed_has_enlarged_fixed_reference_predictions :
+    ∃ U : Operator (PurificationRegister (Fin 1)),
+      U ∈ Matrix.unitaryGroup (Basis (PurificationRegister (Fin 1))) ℂ ∧
+      act U (referenceKet (PurificationRegister (Fin 1))) =
+        (purificationPureState maximallyMixedQubit).ket ∧
+      ∀ A : Operator (Fin 1),
+        densityExpectation maximallyMixedQubit A =
+          Register.expectation
+            (referenceKet (PurificationRegister (Fin 1)))
+            (heisenberg U
+              (embedAlong (purificationOriginalPlacement (Fin 1)) A)) :=
+  exists_purification_fixed_reference_representation maximallyMixedQubit
+
 /-! ## Channels and data processing -/
 
 theorem identity_channel_fixes_every_density

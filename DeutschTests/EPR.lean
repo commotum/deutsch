@@ -271,6 +271,10 @@ theorem every_rotated_epr_circuit_ket_is_nonproduct (theta phi : ℝ) :
     ¬ IsProductKet (pairPureState theta phi).ket :=
   pairPureState_not_product theta phi
 
+theorem every_rotated_epr_circuit_pure_state_is_entangled (theta phi : ℝ) :
+    IsEntangledPureState (pairPureState theta phi) :=
+  pairPureState_isEntangled theta phi
+
 theorem every_rotated_epr_circuit_density_is_nonproduct (theta phi : ℝ) :
     ¬ IsProductDensity (pairDensity theta phi) :=
   pairDensity_not_product theta phi

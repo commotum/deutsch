@@ -168,6 +168,56 @@ theorem arbitrary_normalized_receiver_density (alpha beta : Complex)
       receiverInputDensity alpha beta hnorm :=
   teleportedDensity_reduce_receiver alpha beta hnorm
 
+/-! ## Literal coherent-circuit channel -/
+
+theorem literal_channel_kraus_is_a_coherentProtocol_matrix_slice
+    (junk : Basis JunkQubit) (receiver : Basis ReceiverQubit)
+    (input : Basis ProtocolMessage) :
+    coherentProtocolChannel.kraus junk receiver input =
+      coherentProtocol
+        (coherentProtocolOutputBasis junk receiver)
+        (coherentProtocolInputBasis input) := rfl
+
+theorem literal_channel_is_reindexed_identity_on_every_operator
+    (A : Operator ProtocolMessage) :
+    coherentProtocolChannel.mapOperator A =
+      reindexMessageOperator A :=
+  coherentProtocolChannel_mapOperator A
+
+theorem literal_channel_is_receiver_reduction_of_five_wire_output
+    (A : Operator ProtocolMessage) :
+    coherentProtocolChannel.mapOperator A =
+      partialTrace ({q5} : Finset TeleportQubit)
+        (coherentProtocolFiveWireOutputOperator A) :=
+  coherentProtocolChannel_mapOperator_eq_receiverPartialTrace A
+
+theorem literal_channel_is_reindexed_identity_on_every_density
+    (rho : Density ProtocolMessage) :
+    coherentProtocolChannel.mapDensity rho =
+      reindexMessageDensity rho :=
+  coherentProtocolChannel_mapDensity rho
+
+theorem literal_channel_preserves_every_effect_probability
+    (rho : Density ProtocolMessage) (effect : Effect ProtocolMessage) :
+    bornProbability (coherentProtocolChannel.mapDensity rho)
+        (reindexMessageEffect effect) =
+      bornProbability rho effect :=
+  coherentProtocolChannel_preserves_all_effects rho effect
+
+theorem literal_and_semantic_channels_agree_on_every_operator
+    (A : Operator ProtocolMessage) :
+    coherentProtocolChannel.mapOperator A =
+      reindexMessageOperator
+        (protocolDecoder.mapOperator (protocolEncoder.mapOperator A)) :=
+  coherentProtocolChannel_eq_protocolDecoder_encoder_mapOperator A
+
+theorem literal_and_semantic_channels_agree_on_every_density
+    (rho : Density ProtocolMessage) :
+    coherentProtocolChannel.mapDensity rho =
+      reindexMessageDensity
+        (protocolDecoder.mapDensity (protocolEncoder.mapDensity rho)) :=
+  coherentProtocolChannel_eq_protocolDecoder_encoder_mapDensity rho
+
 /-! ## Operational recovery and parameterized-family statistics -/
 
 theorem decoder_after_encoder_is_identity_on_every_operator

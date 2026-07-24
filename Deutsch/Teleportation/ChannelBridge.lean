@@ -18,7 +18,7 @@ namespace Deutsch
 namespace Teleportation
 
 open Foundations Information Register
-open scoped BigOperators Matrix
+open scoped BigOperators ComplexOrder Matrix MatrixOrder
 
 noncomputable section
 
@@ -64,7 +64,7 @@ theorem messageReceiverIsometry_conjTranspose :
   simp only [messageReceiverIsometry, Matrix.conjTranspose_apply,
     PEquiv.toMatrix_apply]
   split_ifs with hleft hright <;>
-    simp_all [Equiv.symm_apply_eq, eq_comm]
+    simp_all [eq_comm]
 
 theorem messageReceiverIsometry_conjTranspose_mul :
     messageReceiverIsometryᴴ * messageReceiverIsometry =
@@ -174,6 +174,165 @@ def coherentProtocolChannel :
       messageReceiverIsometry_conjTranspose_mul]
     rw [← Finset.sum_smul, fixedJunkKet_probability_normalized]
     simp
+
+/-- The literal circuit channel is the identity after message-to-receiver basis reindexing. -/
+theorem coherentProtocolChannel_mapOperator (A : Operator ProtocolMessage) :
+    coherentProtocolChannel.mapOperator A = reindexMessageOperator A := by
+  simp only [coherentProtocolChannel, KrausChannel.mapOperator]
+  simp_rw [coherentProtocolKraus_eq, Matrix.conjTranspose_smul,
+    Matrix.smul_mul, Matrix.mul_smul, smul_smul,
+    messageReceiverIsometry_mapOperator]
+  rw [← Finset.sum_smul]
+  rw [show (∑ junk : Basis JunkQubit,
+      fixedJunkKet junk * star (fixedJunkKet junk)) = 1 by
+        simpa only [mul_comm] using fixedJunkKet_probability_normalized]
+  simp
+
+/-- Reindexing preserves positive semidefiniteness. -/
+theorem reindexMessageOperator_posSemidef
+    {A : Operator ProtocolMessage} (hA : A.PosSemidef) :
+    (reindexMessageOperator A).PosSemidef := by
+  simpa [reindexMessageOperator, Matrix.reindexRingEquiv] using
+    hA.submatrix messageReceiverBasisEquiv.symm
+
+/-- Reindexing preserves the matrix trace. -/
+theorem reindexMessageOperator_trace (A : Operator ProtocolMessage) :
+    Matrix.trace (reindexMessageOperator A) = Matrix.trace A := by
+  unfold reindexMessageOperator Matrix.trace Matrix.diag
+  exact Equiv.sum_comp messageReceiverBasisEquiv.symm (fun input => A input input)
+
+/-- Explicit transport of a message density to the physical receiver singleton. -/
+def reindexMessageDensity (rho : Density ProtocolMessage) : Density ReceiverQubit where
+  op := reindexMessageOperator rho.op
+  positive := reindexMessageOperator_posSemidef rho.positive
+  trace_one := by rw [reindexMessageOperator_trace, rho.trace_one]
+
+/-- Exact all-density action of the channel induced by the literal coherent circuit. -/
+theorem coherentProtocolChannel_mapDensity (rho : Density ProtocolMessage) :
+    coherentProtocolChannel.mapDensity rho = reindexMessageDensity rho := by
+  apply Density.ext
+  exact coherentProtocolChannel_mapOperator rho.op
+
+/-- Explicit transport of a message effect to the physical receiver singleton. -/
+def reindexMessageEffect (effect : Effect ProtocolMessage) : Effect ReceiverQubit where
+  op := reindexMessageOperator effect.op
+  positive := reindexMessageOperator_posSemidef effect.positive
+  complement_positive := by
+    have h := reindexMessageOperator_posSemidef effect.complement_positive
+    have heq :
+        reindexMessageOperator (1 - effect.op) =
+          1 - reindexMessageOperator effect.op := by
+      unfold reindexMessageOperator
+      rw [map_sub, map_one]
+    rw [← heq]
+    exact h
+
+@[simp]
+theorem reindexMessageDensity_op (rho : Density ProtocolMessage) :
+    (reindexMessageDensity rho).op = reindexMessageOperator rho.op := rfl
+
+@[simp]
+theorem reindexMessageEffect_op (effect : Effect ProtocolMessage) :
+    (reindexMessageEffect effect).op = reindexMessageOperator effect.op := rfl
+
+/-- Reindexing both a state and an effect preserves its complex Born weight. -/
+theorem bornWeight_reindexMessage (rho : Density ProtocolMessage)
+    (effect : Effect ProtocolMessage) :
+    bornWeight (reindexMessageDensity rho) (reindexMessageEffect effect) =
+      bornWeight rho effect := by
+  unfold bornWeight
+  rw [reindexMessageDensity_op, reindexMessageEffect_op]
+  have hmul :
+      reindexMessageOperator rho.op * reindexMessageOperator effect.op =
+        reindexMessageOperator (rho.op * effect.op) := by
+    exact (map_mul
+      (Matrix.reindexRingEquiv ℂ messageReceiverBasisEquiv)
+      rho.op effect.op).symm
+  rw [hmul, reindexMessageOperator_trace]
+
+/-- Every one-qubit effect has the same probability after literal coherent teleportation. -/
+theorem coherentProtocolChannel_preserves_all_effects
+    (rho : Density ProtocolMessage) (effect : Effect ProtocolMessage) :
+    bornProbability (coherentProtocolChannel.mapDensity rho)
+        (reindexMessageEffect effect) =
+      bornProbability rho effect := by
+  rw [coherentProtocolChannel_mapDensity]
+  exact congrArg Complex.re (bornWeight_reindexMessage rho effect)
+
+/--
+The literal five-wire circuit channel and the semantic decoder-after-encoder construction agree
+on every operator, after the canonical output reindexing.
+-/
+theorem coherentProtocolChannel_eq_protocolDecoder_encoder_mapOperator
+    (A : Operator ProtocolMessage) :
+    coherentProtocolChannel.mapOperator A =
+      reindexMessageOperator
+        (protocolDecoder.mapOperator (protocolEncoder.mapOperator A)) := by
+  rw [protocolDecoder_encoder_mapOperator]
+  exact coherentProtocolChannel_mapOperator A
+
+/-- Density-state form of the literal/semantic channel identification. -/
+theorem coherentProtocolChannel_eq_protocolDecoder_encoder_mapDensity
+    (rho : Density ProtocolMessage) :
+    coherentProtocolChannel.mapDensity rho =
+      reindexMessageDensity
+        (protocolDecoder.mapDensity (protocolEncoder.mapDensity rho)) := by
+  rw [protocolDecoder_encoder_mapDensity]
+  exact coherentProtocolChannel_mapDensity rho
+
+/--
+The five-wire output operator obtained by placing an arbitrary message operator on `q1`, fixing
+the other four input wires to paper zero, and conjugating by the literal coherent protocol.
+
+The displayed finite matrix sum is the entrywise form of that initialized conjugation.
+-/
+def coherentProtocolFiveWireOutputOperator
+    (A : Operator ProtocolMessage) : Operator TeleportQubit :=
+  fun output input =>
+    ∑ right : Basis ProtocolMessage,
+      (∑ left : Basis ProtocolMessage,
+        coherentProtocol output (coherentProtocolInputBasis left) * A left right) *
+        star (coherentProtocol input (coherentProtocolInputBasis right))
+
+private theorem channelBridgeComplementReceiver_ne_last
+    (q : {q : TeleportQubit // q ∉ ({q5} : Finset TeleportQubit)}) :
+    q.1 ≠ Fin.last 4 := by
+  have hq : q.1 ≠ q5 := by simpa using q.2
+  simpa [q5] using hq
+
+private theorem splitBasis_symm_coherentProtocolOutputBasis
+    (receiver : Basis ReceiverQubit) (junk : Basis JunkQubit) :
+    (splitBasis ({q5} : Finset TeleportQubit)).symm
+        (receiver, junkComplementBasisEquiv junk) =
+      coherentProtocolOutputBasis junk receiver := by
+  rw [← (singletonBasisEquiv q5).apply_symm_apply receiver]
+  generalize (singletonBasisEquiv q5).symm receiver = receiverBit
+  funext q
+  change (if h : q ∈ ({q5} : Finset TeleportQubit) then receiverBit
+    else junk
+      (Fin.castPred q
+        (channelBridgeComplementReceiver_ne_last ⟨q, h⟩))) =
+    coherentProtocolOutputBasis junk ((singletonBasisEquiv q5) receiverBit) q
+  fin_cases q <;>
+    simp [coherentProtocolOutputBasis, q5, teleportBits]
+  all_goals congr 1
+
+/--
+Discarding the first four wires of the initialized, coherently evolved five-wire operator is
+definitionally the Kraus-channel action above.
+-/
+theorem coherentProtocolChannel_mapOperator_eq_receiverPartialTrace
+    (A : Operator ProtocolMessage) :
+    coherentProtocolChannel.mapOperator A =
+      partialTrace ({q5} : Finset TeleportQubit)
+        (coherentProtocolFiveWireOutputOperator A) := by
+  ext receiver output
+  simp only [coherentProtocolChannel, KrausChannel.mapOperator,
+    Matrix.sum_apply, Matrix.mul_apply, Matrix.conjTranspose_apply,
+    partialTrace, splitOperator_apply, coherentProtocolFiveWireOutputOperator]
+  rw [← junkComplementBasisEquiv.sum_comp]
+  simp_rw [splitBasis_symm_coherentProtocolOutputBasis]
+  rfl
 
 end
 

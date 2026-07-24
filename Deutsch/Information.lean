@@ -1,5 +1,6 @@
 import Deutsch.Information.State
 import Deutsch.Information.Reduction
+import Deutsch.Information.Purification
 import Deutsch.Information.Channel
 import Deutsch.Information.LocalChannel
 import Deutsch.Information.Dependence
