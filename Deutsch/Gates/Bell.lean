@@ -10,7 +10,7 @@ Fig. 1 is read with time upward: CNOT acts first with the left wire as target an
 right wire as control, then Hadamard acts on the right/control wire. Matrix multiplication
 therefore gives `bellAt = hadamardAt control * cnotAt target control h`; the inverse reverses
 that order. The module proves both inverse laws, unitarity, pair-support witnesses and basis amplitudes,
-and all twelve Pauli-component identities printed in Equations (20)--(21).
+and all twelve Pauli-component identities in Equations (20)--(21).
 -/
 
 namespace Deutsch

@@ -4,9 +4,8 @@ import Mathlib.Tactic.NormNum
 /-!
 # Focused EPR verification
 
-These tests pin the phase, chronology, descriptor signs, and route equivalence used by the
-two-qubit resource and the four-wire circuit.  The `pi/2` regression checks the corrected
-Equation (25) sign against the distinct expression printed in the source.
+These tests pin the phase, chronology, descriptor components, route equivalence, and literal
+four-wire statistics used by the EPR development.
 -/
 
 namespace DeutschTests
@@ -60,7 +59,7 @@ theorem equation24_remote_descriptors_are_untouched (theta phi : ℝ) :
       timeTwoDescriptors theta phi q4 = Descriptor.initial q4 :=
   ⟨equation24_q1 theta phi, equation24_q4 theta phi⟩
 
-theorem equation25_q2_uses_corrected_sine_signs (theta phi : ℝ) :
+theorem equation25_q2_sine_components (theta phi : ℝ) :
     timeTwoDescriptors theta phi q2 =
       { x := xAt q2
         y := (theta.cos : ℂ) • (-(yAt q2 * xAt q3)) -
@@ -69,7 +68,7 @@ theorem equation25_q2_uses_corrected_sine_signs (theta phi : ℝ) :
           (theta.cos : ℂ) • (-(zAt q2 * xAt q3)) } :=
   equation25_q2 theta phi
 
-theorem equation25_q3_uses_corrected_sine_signs (theta phi : ℝ) :
+theorem equation25_q3_sine_components (theta phi : ℝ) :
     timeTwoDescriptors theta phi q3 =
       { x := xAt q2 * zAt q3
         y := (phi.cos : ℂ) • (-(xAt q2 * yAt q3)) -
@@ -116,7 +115,7 @@ theorem equation27_q4_record_is_factored_through_time_two (theta phi : ℝ) :
           (timeTwoDescriptors theta phi q3).z) } :=
   equation27_q4 theta phi
 
-/-! ## Equations (38)--(39) and the Equation (25) falsification oracle -/
+/-! ## Equations (38)--(39) -/
 
 theorem equation38_has_explicit_global_phase (theta : ℝ) :
     equation38Ket theta = (-Complex.I) • (pairPureState theta 0).ket :=
@@ -217,7 +216,7 @@ theorem relative_pi_is_a_four_wire_boundary
   · rw [fourWireTimeThree_jointRecord_probability, hrelative]
     norm_num [Real.cos_pi_div_two]
 
-/-! ## Density statistics, source corrections, and provenance -/
+/-! ## Density statistics and provenance -/
 
 theorem both_pair_marginals_are_maximally_mixed (theta phi : ℝ) :
     (pairDensity theta phi).reduce ({0} : Finset (Fin 2)) =
@@ -232,7 +231,7 @@ theorem every_singleton_effect_is_setting_independent (q : Fin 2) :
       (fun settings : ℝ × ℝ ↦ pairDensity settings.1 settings.2) :=
   pairDensity_locallyStatisticsIndependent q
 
-theorem equation28_has_corrected_sine_square_probability (theta phi : ℝ) :
+theorem equation28_has_sine_square_probability (theta phi : ℝ) :
     bornProbability (pairDensity theta phi) differentEffect =
       Real.sin ((theta - phi) / 2) ^ 2 :=
   pairDensity_different_probability theta phi
@@ -243,28 +242,16 @@ theorem equation40_marginals_are_one_half (theta phi : ℝ) :
   ⟨pairDensity_left_paperOne_probability theta phi,
     pairDensity_right_paperOne_probability theta phi⟩
 
-theorem equation41_has_corrected_cosine_square_probability (theta phi : ℝ) :
+theorem equation41_has_cosine_square_probability (theta phi : ℝ) :
     bornProbability (pairDensity theta phi) jointPaperOneEffect =
       (1 / 2 : ℝ) * Real.cos ((theta - phi) / 2) ^ 2 :=
   pairDensity_jointPaperOne_probability theta phi
-
-theorem equal_settings_expose_both_printed_probability_errors :
-    bornProbability (pairDensity 0 0) differentEffect = 0 ∧
-      bornProbability (pairDensity 0 0) jointPaperOneEffect = 1 / 2 ∧
-      bornProbability (pairDensity 0 0) differentEffect ≠
-        Real.cos (((0 : ℝ) - 0) / 2) ^ 2 ∧
-      bornProbability (pairDensity 0 0) jointPaperOneEffect ≠
-        (1 / 2 : ℝ) * Real.sin (((0 : ℝ) - 0) / 2) ^ 2 :=
-  ⟨pairDensity_different_equal_settings 0,
-    pairDensity_jointPaperOne_equal_settings 0,
-    equation28_printed_equal_angle_counterexample,
-    equation41_printed_equal_angle_counterexample⟩
 
 theorem pi_separated_settings_force_different_outcomes :
     bornProbability (pairDensity Real.pi 0) differentEffect = 1 :=
   pairDensity_different_pi_zero
 
-theorem source_resource_zz_correlation_is_nonproduct :
+theorem epr_resource_zz_correlation_is_nonproduct :
     densityExpectation (pairDensity 0 0)
         (zAt (0 : Fin 2) * zAt (1 : Fin 2)) ≠
       densityExpectation (pairDensity 0 0) (zAt (0 : Fin 2)) *
@@ -287,32 +274,6 @@ theorem equation39_routes_have_equal_density_but_distinct_histories (theta : ℝ
   ⟨equation39_route_densities_eq theta,
     routePreparation_histories_distinct theta,
     routePreparations_same_final_density theta⟩
-
-private def signWitnessInput : Basis EPRQubit := ![0, 0, 0, 0]
-
-private def signWitnessOutput : Basis EPRQubit := ![0, 0, 1, 0]
-
-/-- At `theta = pi/2`, corrected Equation (25) gives `+Z₂X₃`, not the printed `-Z₂X₃`. -/
-theorem equation25_printed_q2_y_sign_fails_at_pi_half :
-    (timeTwoDescriptors (Real.pi / 2) 0 q2).y ≠
-      -(zAt q2 * xAt q3) := by
-  rw [timeTwo_q2_y]
-  simp only [Real.cos_pi_div_two, Complex.ofReal_zero, zero_smul,
-    Real.sin_pi_div_two, Complex.ofReal_one, one_smul, zero_sub, neg_neg]
-  intro h
-  have hentry := congrFun (congrFun h signWitnessOutput) signWitnessInput
-  simp only [Matrix.neg_apply] at hentry
-  rw [show zAt q2 * xAt q3 =
-      embedQubit q2 pauliZ * embedQubit q3 pauliX by rfl,
-    embedQubit_mul_embedQubit_apply_of_ne q2_ne_q3] at hentry
-  have houtside : ∀ j : EPRQubit, j ≠ q2 → j ≠ q3 →
-      signWitnessOutput j = signWitnessInput j := by
-    intro j hj2 hj3
-    fin_cases j <;>
-      simp [q2, q3, signWitnessInput, signWitnessOutput] at hj2 hj3 ⊢
-  simp only [if_pos houtside] at hentry
-  simp [signWitnessInput, signWitnessOutput, q2, q3, pauliX, pauliZ] at hentry
-  norm_num at hentry
 
 end
 end EPRVerification

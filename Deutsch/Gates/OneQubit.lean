@@ -5,16 +5,16 @@ import Mathlib.Tactic.Ring
 /-!
 # One-qubit gates
 
-Concrete NOT, `X`-axis rotations, the square-root-of-NOT branch printed by
-Deutsch--Hayden, and Hadamard.  The local matrix identities are lifted to arbitrary named
+Concrete NOT, `X`-axis rotations, the square-root-of-NOT branch in Equation (14),
+and Hadamard.  The local matrix identities are lifted to arbitrary named
 register coordinates through `Register.embedQubit`.
 
 `rotationX theta` is the Schrödinger unitary
 `cos (theta/2) I - i sin (theta/2) X`.  Under the project's Heisenberg convention `Uᴴ A U`,
 this sends `Y` to `cos theta Y - sin theta Z` and `Z` to
-`sin theta Y + cos theta Z`.  Those signs follow from the exponential in the paper's Equation
-(17), but are opposite to the signs printed in Equation (18).  `paperSqrtNot` deliberately keeps
-the branch printed in Equation (14), which is opposite to `rotationX (pi/2)`; its chosen global
+`sin theta Y + cos theta Z`, the `X`-axis specialization of Equations (17)--(18).
+`paperSqrtNot` realizes the branch in Equation (14), which is opposite to
+`rotationX (pi/2)`; its chosen global
 phase makes its square exactly `X` rather than merely a phase multiple of `X`.
 -/
 
@@ -45,7 +45,7 @@ def rotationX (theta : Real) : QubitMatrix :=
     (Complex.I * rotationSinHalf theta) • pauliX
 
 /--
-An exact square root of NOT whose Heisenberg map is the branch printed in Equation (14):
+An exact square root of NOT whose Heisenberg map is the branch in Equation (14):
 `(X,Y,Z) -> (X,Z,-Y)`.  The selected phase makes `paperSqrtNot * paperSqrtNot = X` exactly.
 -/
 def paperSqrtNot : QubitMatrix :=
@@ -203,7 +203,7 @@ theorem rotationX_heisenberg_x (theta : Real) :
     ring_nf at ⊢
     exact h
 
-/-- Corrected `Y` component of Equation (18), forced by Equation (17) and `XY = iZ`. -/
+/-- The `Y` component of Equation (18), derived from Equation (17) and `XY = iZ`. -/
 theorem rotationX_heisenberg_y (theta : Real) :
     Foundations.heisenberg (rotationX theta) pauliY =
       (theta.cos : Complex) • pauliY - (theta.sin : Complex) • pauliZ := by
@@ -217,7 +217,7 @@ theorem rotationX_heisenberg_y (theta : Real) :
       pow_two, Complex.I_mul_I]
     ring_nf <;> norm_num [Complex.ext_iff, sub_eq_add_neg]
 
-/-- Corrected `Z` component of Equation (18), forced by Equation (17) and `XY = iZ`. -/
+/-- The `Z` component of Equation (18), derived from Equation (17) and `XY = iZ`. -/
 theorem rotationX_heisenberg_z (theta : Real) :
     Foundations.heisenberg (rotationX theta) pauliZ =
       (theta.sin : Complex) • pauliY + (theta.cos : Complex) • pauliZ := by
@@ -252,23 +252,6 @@ theorem rotationX_heisenberg_z_neg_pi_div_two :
     Foundations.heisenberg (rotationX (-Real.pi / 2)) pauliZ = -pauliY := by
   rw [rotationX_heisenberg_z]
   simp [neg_div]
-
-/-- The positive sine sign printed for `Y` in Equation (18) fails at `theta = pi/2`. -/
-theorem rotationX_heisenberg_y_pi_div_two_ne_printed :
-    Foundations.heisenberg (rotationX (Real.pi / 2)) pauliY ≠ pauliZ := by
-  rw [rotationX_heisenberg_y_pi_div_two]
-  intro h
-  have h00 := congrFun (congrFun h (0 : QubitIndex)) (0 : QubitIndex)
-  norm_num [pauliZ] at h00
-
-/-- The negative sine sign printed for `Z` in Equation (18) fails at `theta = pi/2`. -/
-theorem rotationX_heisenberg_z_pi_div_two_ne_printed :
-    Foundations.heisenberg (rotationX (Real.pi / 2)) pauliZ ≠ -pauliY := by
-  rw [rotationX_heisenberg_z_pi_div_two]
-  intro h
-  have h01 := congrFun (congrFun h (0 : QubitIndex)) (1 : QubitIndex)
-  have him := congrArg Complex.im h01
-  norm_num [pauliY] at him
 
 theorem rotationX_heisenberg_y_pi :
     Foundations.heisenberg (rotationX Real.pi) pauliY = -pauliY := by

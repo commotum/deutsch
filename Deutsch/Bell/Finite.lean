@@ -16,7 +16,7 @@ normalization hypotheses.
 
 For every assignment, at least one of the three setting-pairs agrees.  Averaging that pointwise
 fact proves that the sum of the three agreement probabilities is at least one.  Consequently no
-such weight can give agreement probability `1/4` to all three pairs, as predicted by the corrected
+such weight can give agreement probability `1/4` to all three pairs, as predicted by the
 EPR calculation for three settings separated pairwise by 120 degrees.
 -/
 
@@ -321,7 +321,7 @@ theorem local_three_setting_bell_inequality_of_equal_setting_probability_one
         weight weight_nonnegative weight_normalized equal_setting_probability_one)
 
 /--
-The corrected three `1/4` cross-party agreement predictions contradict the explicit local model
+The three `1/4` cross-party agreement predictions contradict the explicit local model
 assumptions.
 -/
 theorem quarter_agreements_contradict_local_assignments

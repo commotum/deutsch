@@ -4,9 +4,9 @@ import Mathlib.Tactic.NormNum
 /-!
 # Focused coherent-teleportation verification
 
-These tests pin the five-wire chronology, the corrected source signs, all nine Equation (33)
-generator images, all four record branches, arbitrary-amplitude factorization, receiver-density
-correctness, and the operational identity decoder.
+These tests pin the five-wire chronology, descriptor components, all nine Equation (33) generator
+images, all four record branches, arbitrary-amplitude factorization, receiver-density correctness,
+and the operational identity decoder.
 -/
 
 namespace DeutschTests
@@ -18,7 +18,7 @@ open scoped Matrix
 
 noncomputable section
 
-/-! ## Circuit chronology and corrected descriptors -/
+/-! ## Circuit chronology and descriptors -/
 
 theorem all_five_wire_boundaries_are_unitary (theta : Real) :
     inputRotation theta ∈ Matrix.unitaryGroup (Basis TeleportQubit) Complex ∧
@@ -50,7 +50,7 @@ theorem all_five_wire_boundaries_have_explicit_finite_support (theta : Real) :
     timeFourUnitary_isSupportedOn theta,
     timeFiveUnitary_isSupportedOn theta⟩
 
-theorem equation29_uses_the_corrected_rotation_signs (theta : Real) :
+theorem equation29_rotation_components (theta : Real) :
     timeOneDescriptors theta q1 =
       { x := xAt q1
         y := (theta.cos : Complex) • yAt q1 -
@@ -59,10 +59,6 @@ theorem equation29_uses_the_corrected_rotation_signs (theta : Real) :
           (theta.cos : Complex) • zAt q1 } :=
   equation29_q1 theta
 
-theorem equation29_printed_sign_fails_at_pi_half :
-    (timeOneDescriptors (Real.pi / 2) q1).y ≠ zAt q1 :=
-  equation29_q1_y_pi_div_two_ne_printed
-
 theorem equation30_resource_descriptor_is_exact (theta : Real) :
     timeOneDescriptors theta q4 =
       { x := xAt q4
@@ -70,7 +66,7 @@ theorem equation30_resource_descriptor_is_exact (theta : Real) :
         z := -(zAt q4 * xAt q5) } :=
   equation30_q4 theta
 
-theorem equation31_input_descriptor_propagates_corrected_signs (theta : Real) :
+theorem equation31_input_descriptor_components (theta : Real) :
     timeTwoDescriptors theta q1 =
       { x := xAt q1
         y := ((theta.cos : Complex) • yAt q1 -
@@ -79,7 +75,7 @@ theorem equation31_input_descriptor_propagates_corrected_signs (theta : Real) :
           (theta.cos : Complex) • zAt q1) * (zAt q4 * xAt q5) } :=
   equation31_q1 theta
 
-theorem equation32_record_descriptor_propagates_corrected_signs (theta : Real) :
+theorem equation32_record_descriptor_components (theta : Real) :
     timeThreeDescriptors theta q2 =
       { x := xAt q2
         y := (-((theta.sin : Complex) • yAt q1 +
@@ -90,17 +86,7 @@ theorem equation32_record_descriptor_propagates_corrected_signs (theta : Real) :
             (zAt q4 * xAt q5) } :=
   equation32_q2 theta
 
-theorem equation31_printed_sign_fails_at_pi_half :
-    (timeTwoDescriptors (Real.pi / 2) q1).y ≠
-      zAt q1 * (zAt q4 * xAt q5) :=
-  equation31_q1_y_pi_div_two_ne_printed
-
-theorem equation32_printed_sign_fails_at_pi_half :
-    (timeThreeDescriptors (Real.pi / 2) q2).y ≠
-      yAt q1 * yAt q2 * (zAt q4 * xAt q5) :=
-  equation32_q2_y_pi_div_two_ne_printed
-
-theorem equation34_receiver_descriptor_is_corrected (theta : Real) :
+theorem equation34_receiver_descriptor (theta : Real) :
     timeFourDescriptors theta q5 =
       { x := xAt q1 * zAt q3 * zAt q5
         y := ((theta.cos : Complex) • yAt q1 -
@@ -110,12 +96,7 @@ theorem equation34_receiver_descriptor_is_corrected (theta : Real) :
           (theta.cos : Complex) • zAt q1) * zAt q2 * zAt q4 } :=
   equation34_q5 theta
 
-theorem equation34_printed_sign_fails_at_pi_half :
-    (timeFourDescriptors (Real.pi / 2) q5).y ≠
-      zAt q1 * zAt q2 * zAt q3 * zAt q4 * zAt q5 :=
-  equation34_q5_y_pi_div_two_ne_printed
-
-theorem equation37_final_observable_has_corrected_middle_sign (theta : Real) :
+theorem equation37_final_observable (theta : Real) :
     (timeFiveDescriptors theta q5).z =
       ((theta.cos : Complex) * theta.cos) •
           (zAt q1 * zAt q2 * zAt q4) -
@@ -125,17 +106,6 @@ theorem equation37_final_observable_has_corrected_middle_sign (theta : Real) :
         ((theta.sin : Complex) * theta.sin) •
           (zAt q1 * zAt q2 * zAt q3 * zAt q4 * zAt q5) :=
   timeFive_q5_z theta
-
-theorem equation37_printed_sign_fails_at_pi_quarter :
-    (timeFiveDescriptors (Real.pi / 4) q5).z ≠
-      ((Real.cos (Real.pi / 4) : Complex) * Real.cos (Real.pi / 4)) •
-          (zAt q1 * zAt q2 * zAt q4) +
-        ((Real.cos (Real.pi / 4) : Complex) * Real.sin (Real.pi / 4)) •
-          (yAt q1 * zAt q2 *
-            (zAt q3 * zAt q4 * zAt q5 - zAt q4)) +
-        ((Real.sin (Real.pi / 4) : Complex) * Real.sin (Real.pi / 4)) •
-          (zAt q1 * zAt q2 * zAt q3 * zAt q4 * zAt q5) :=
-  equation37_q5_z_pi_div_four_ne_printed
 
 /-! ## Equation (33), all generators and all branches -/
 
@@ -198,7 +168,7 @@ theorem arbitrary_normalized_receiver_density (alpha beta : Complex)
       receiverInputDensity alpha beta hnorm :=
   teleportedDensity_reduce_receiver alpha beta hnorm
 
-/-! ## Operational recovery and source-family statistics -/
+/-! ## Operational recovery and parameterized-family statistics -/
 
 theorem decoder_after_encoder_is_identity_on_every_operator
     (A : Operator ProtocolMessage) :
@@ -254,7 +224,7 @@ theorem equation36_is_receiver_density_equality (theta : Real) :
       parameterizedReceiverDensity theta :=
   equation36_receiver_density theta
 
-theorem equation36_has_the_corrected_bloch_vector (theta : Real) :
+theorem equation36_has_receiver_bloch_vector (theta : Real) :
     densityExpectation (parameterizedReceiverDensity theta)
           (xAt receiverCoordinate) = 0 ∧
       densityExpectation (parameterizedReceiverDensity theta)
@@ -270,20 +240,15 @@ theorem equation36_is_all_effect_prediction_equality (theta : Real)
       bornProbability (parameterizedReceiverDensity theta) effect :=
   equation36_receiver_all_effects theta effect
 
-theorem equation35_corrected_rank_one_effect_is_certain (theta : Real) :
+theorem equation35_rank_one_effect_is_certain (theta : Real) :
     bornProbability (parameterizedTeleportedDensity theta)
-        ((equation35CorrectedEffect theta).embedSubsystem
+        ((equation35Effect theta).embedSubsystem
           ({q5} : Finset TeleportQubit)) = 1 :=
   equation35_teleported_probability_one theta
 
 theorem equation35_receiver_is_explicitly_pure (theta : Real) :
     purity (parameterizedReceiverDensity theta) = 1 :=
   equation35_receiver_purity theta
-
-theorem equation35_printed_sign_fails_at_pi_half :
-    bornProbability (parameterizedReceiverDensity (Real.pi / 2))
-        equation35PrintedMinusSineAtPiOverTwo = 0 :=
-  equation35_printed_minus_sine_probability_zero_at_pi_div_two
 
 theorem final_inverse_rotation_verifies_paper_zero (theta : Real) :
     bornProbability (u02ReceiverDensity theta) receiverPaperZeroEffect = 1 :=

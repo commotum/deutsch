@@ -235,7 +235,7 @@ theorem eprJointMoment_one_two :
   norm_num
 
 /--
-The source's Equations (40) and (41), stated as moments of two local Boolean response tables on one
+Equations (40) and (41), stated as moments of two local Boolean response tables on one
 finite weighted space.
 -/
 structure ReproducesThreeSettingEPRMoments

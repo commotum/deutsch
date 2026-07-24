@@ -2,7 +2,7 @@
 
 ## Status
 
-- In progress.
+- Complete.
 
 ## Current Facts
 
@@ -107,4 +107,77 @@
 
 ## Stage Results
 
-- In progress.
+- Added four Lake targets to the default build:
+  `Deutsch`, `DeutschErrata`, `DeutschTests`, and `DeutschErrataTests`.
+- Added the production companion:
+  - `DeutschErrata.Rotation` locally states the two printed Equation (18) components,
+    packages the genuine exponential, `x`-axis specialization, and derived component maps, and
+    proves both quarter-turn mismatches;
+  - `DeutschErrata.EPR` locally states the printed Equation (28)/(41) laws, packages the derived
+    literal four-wire laws and pair bridges, and proves the equal-setting `0` versus `1` and `1/2`
+    versus `0` comparisons;
+  - `DeutschErrata.Teleportation` locally states the printed Equation (35) receiver effect and
+    Equation (37) operator, proves actual five-wire probabilities `1` versus `0`, and proves the
+    final operators unequal at `pi/4`;
+  - the Mathlib-only `DeutschErrata.Equation45` computes the printed sides as `1` and `2` at
+    `(1,0,1)` and proves the complementary partition for all eight Boolean triples; and
+  - `DeutschErrata.Bell` connects that partition to the real indicator form and derives the
+    Equation (46) contradiction through `Deutsch.Bell.Moments`.
+- The Equation (37) module relocates only the private operator-nonzero comparison chain. It reuses
+  the neutral `timeFive_q5_z` theorem and contains no second circuit, chronology, or descriptor
+  derivation. The operator witness is necessary because the disputed middle term can disappear
+  under the following fixed-reference expectation.
+- Added `DeutschErrata.lean`, whose exact imports are the four topical comparison modules.
+  `Equation45` remains a narrow internal dependency of `Bell`.
+- Added `DeutschErrataTests.Comparisons` with 11 focused public-interface wrappers and
+  `DeutschErrataTests.Audit` with 26 axiom commands covering every public comparison theorem and
+  every printed fixture used by one.
+- Added `docs/errata.md`. It presents three root bookkeeping slips, treats the teleportation
+  displays as mechanical propagation, records the harmless `k`/`n` typo in prose, and records the
+  stable PDF, canonical Markdown, verified-transcription, and compact-transcription hashes.
+- Added `goal-2/check_errata_boundary.py`. It checks the exact Lake targets, exact Errata import DAG,
+  test registry, one-way dependency, absence of BQP runtime paths, canonical artifact hashes, and
+  historical Git-object hashes.
+
+### No-cheating evidence
+
+- Rotation routes through `exp_axisRotationGenerator` and the proved `x`-axis specialization; it
+  does not call the older production `*_ne_printed` declarations.
+- EPR uses `fourWireTimeFourDensity`, `fourWireTimeThreeDensity`, the actual comparison/record
+  effects, and explicit pair bridges.
+- The Equation (35) endpoint first uses `equation36_receiver_all_effects` to reduce the actual
+  five-wire density, then proves one-qubit orthogonality. The Equation (37) endpoint uses the actual
+  `timeFiveDescriptors`.
+- Equation (45)'s printed sides are concrete definitions and are evaluated at an explicit
+  assignment. Its complementary result is independently checked by Boolean cases.
+- Equation (46) imports and invokes `Deutsch.Bell.Moments.equation46_contradiction`; it does not
+  import or route through the agreement/pigeonhole module.
+
+### Verification evidence
+
+- `lake build DeutschErrata` passed: 2739 jobs.
+- `lake build DeutschErrataTests` passed: 2742 jobs.
+- `lake build` passed with all four default targets: 3338 jobs.
+- `lake env lean DeutschErrataTests/Audit.lean` emitted 26 reports. The elementary definitions use
+  no axioms; all other reports contain only `propext`, `Classical.choice`, and `Quot.sound`, with
+  no `sorryAx`.
+- `python3 goal-2/check_errata_boundary.py` passed:
+  - zero reverse production imports;
+  - five Errata production modules;
+  - four Lake targets;
+  - 11 focused comparison declarations and 26 exact axiom targets;
+  - two canonical file hashes and two historical Git-object hashes;
+  - no runtime BQP dependency.
+- `python3 goal-1/check_lean_integrity.py` passed after scanning 88 Lean sources; the 517 main
+  representative reports still contain only the accepted foundations.
+- Source audit passed with the protected Equation (35) prose and all provenance hashes unchanged.
+- Documentation audit passed with 16 expected/discovered files and 128 repository-local links.
+- `git diff --check` passed.
+
+### Result carried forward
+
+- The printed-form evidence is now independently available under `DeutschErrata`, so Stage 7 can
+  delete every historical production declaration and the entire
+  `Deutsch.Bell.SourceCorrection` module without aliases.
+- Stage 7 must also rename the remaining correction-oriented neutral APIs, tests, examples, and
+  documentation while keeping the Errata imports working against only the replacement names.

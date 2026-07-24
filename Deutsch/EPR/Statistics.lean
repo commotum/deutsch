@@ -12,7 +12,7 @@ import Mathlib.Tactic.Ring
 
 The state is the normalized pure output of the exact pair circuit.  Its one-qubit reductions are
 proved maximally mixed for every pair of settings, while a joint parity effect detects the relative
-setting.  The resulting joint formulas correct Equations (28) and (41) of the source.
+setting.  The resulting joint formulas establish Equations (28) and (41).
 -/
 
 namespace Deutsch
@@ -118,7 +118,7 @@ theorem crossCoefficient_eq_I_mul_sin_sub_half (theta phi : ℝ) :
   simp [crossCoefficient, rotationCosHalf, rotationSinHalf]
   ring
 
-/-- The printed Equation (38) is the exact circuit ket with the source's global phase `-i`. -/
+/-- The Equation (38) ket is the exact circuit ket with its explicit global phase `-i`. -/
 theorem equation38Ket_eq_globalPhase_pairPureState (theta : ℝ) :
     equation38Ket theta = (-Complex.I) • (pairPureState theta 0).ket := by
   rw [pairPureState_ket_eq_four_coordinates,
@@ -417,7 +417,7 @@ theorem differentEffect_op_eq_unequal_basis_sum :
       pairBits, Matrix.diagonal, Pi.single, Fin.add_def] <;>
     simp [paperOneZero, paperZeroOne, pairBits]
 
-/-- Corrected Equation (28): different outcomes occur with `sin²((theta-phi)/2)`. -/
+/-- Equation (28): different outcomes occur with `sin²((theta-phi)/2)`. -/
 theorem pairDensity_different_probability (theta phi : ℝ) :
     bornProbability (pairDensity theta phi) differentEffect =
       Real.sin ((theta - phi) / 2) ^ 2 := by
@@ -435,7 +435,7 @@ theorem pairDensity_different_probability (theta phi : ℝ) :
 def jointPaperOneEffect : Effect (Fin 2) :=
   basisEffect paperOneOne
 
-/-- Corrected Equation (41): the joint paper-one probability is `1/2 cos²`. -/
+/-- Equation (41): the joint paper-one probability is `1/2 cos²`. -/
 theorem pairDensity_jointPaperOne_probability (theta phi : ℝ) :
     bornProbability (pairDensity theta phi) jointPaperOneEffect =
       (1 / 2 : ℝ) * Real.cos ((theta - phi) / 2) ^ 2 := by
@@ -556,20 +556,6 @@ theorem pairDensity_jointPaperOne_equal_settings (theta : ℝ) :
 theorem pairDensity_different_pi_zero :
     bornProbability (pairDensity Real.pi 0) differentEffect = 1 := by
   rw [pairDensity_different_probability]
-  norm_num
-
-/-- At equal angles, the printed cosine-square Equation (28) predicts the wrong value. -/
-theorem equation28_printed_equal_angle_counterexample :
-    bornProbability (pairDensity 0 0) differentEffect ≠
-      Real.cos (((0 : ℝ) - 0) / 2) ^ 2 := by
-  rw [pairDensity_different_equal_settings]
-  norm_num
-
-/-- At equal angles, the printed sine-square Equation (41) predicts the wrong value. -/
-theorem equation41_printed_equal_angle_counterexample :
-    bornProbability (pairDensity 0 0) jointPaperOneEffect ≠
-      (1 / 2 : ℝ) * Real.sin (((0 : ℝ) - 0) / 2) ^ 2 := by
-  rw [pairDensity_jointPaperOne_equal_settings]
   norm_num
 
 /-- The finite setting family using the angle choices zero and `pi` with `phi = 0`. -/

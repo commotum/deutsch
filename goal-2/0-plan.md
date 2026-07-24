@@ -145,6 +145,18 @@ auditable source mapping.
 - A complete Stage 5 build finished 3327 jobs. The integrity audit scanned 79 Lean sources and
   checked 517 representative axiom reports; only `Classical.choice`, `Quot.sound`, and `propext`
   occurred. Source, provenance, documentation-link, whitespace, and diff checks also pass.
+- The package now has four Lake targets: `Deutsch`, `DeutschErrata`, `DeutschTests`, and
+  `DeutschErrataTests`. `DeutschErrata` consists of five small production modules with exact narrow
+  imports; no `Deutsch` source imports it.
+- The errata layer contains decisive checks for Equation (18)'s exponential-forced orientation,
+  literal four-wire Equations (28)/(41), the propagated Equation (35) probability and Equation
+  (37) operator endpoints, Equation (45)'s `(1,0,1)` Boolean values and universal complement, and
+  the direct moment-chain Equation (46) contradiction. It does not duplicate a circuit.
+- `DeutschErrataTests` has 11 focused wrappers and 26 axiom targets. The four-target build completed
+  3338 jobs; its axiom reports contain only `Classical.choice`, `Quot.sound`, and `propext`.
+- The errata boundary/provenance checker verifies the exact import DAG, absence of reverse imports
+  and BQP runtime paths, the canonical Markdown/PDF hashes, and both original-transcription Git
+  object hashes.
 
 ## Current Assumptions to Test
 
@@ -384,7 +396,7 @@ over reusable topical mathematics.
 
 #### Status
 
-In progress. See `goal-2/6-ERRATA.md`.
+Complete with recorded evidence in `goal-2/6-ERRATA.md`.
 
 #### Big Picture Objective
 
@@ -419,6 +431,10 @@ errors and that the corrected forms are the natural intended results.
 - Focused errata tests, its axiom audit, and the full build pass.
 
 ### 7-CUTOVER
+
+#### Status
+
+In progress. See `goal-2/7-CUTOVER.md`.
 
 #### Big Picture Objective
 

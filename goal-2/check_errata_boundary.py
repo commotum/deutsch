@@ -53,6 +53,54 @@ EXPECTED_DEFAULT_TARGETS = (
     "DeutschErrataTests",
 )
 
+EXPECTED_ERRATA_TEST_ROOT_IMPORTS = (
+    "DeutschErrataTests.Comparisons",
+    "DeutschErrataTests.Audit",
+)
+
+EXPECTED_COMPARISON_DECLARATIONS = (
+    "equation18_exponential_check",
+    "equation18_quarter_turn_comparison",
+    "equations28_and_41_four_wire_derivation",
+    "equations28_and_41_equal_setting_comparison",
+    "equation35_five_wire_endpoint",
+    "equation37_operator_comparison",
+    "equation45_value_fixture",
+    "equation45_failure_fixture",
+    "equation45_complementary_partition_check",
+    "equation45_real_partition_check",
+    "equation46_direct_moments_check",
+)
+
+EXPECTED_ERRATA_AUDIT_TARGETS = (
+    "DeutschErrata.Rotation.printedEquation18Y",
+    "DeutschErrata.Rotation.printedEquation18Z",
+    "DeutschErrata.Rotation.derivedEquation18",
+    "DeutschErrata.Rotation.equation18_pi_div_two_mismatch",
+    "DeutschErrata.EPR.printedEquation28Probability",
+    "DeutschErrata.EPR.printedEquation41Probability",
+    "DeutschErrata.EPR.derivedEquations28And41",
+    "DeutschErrata.EPR.equations28And41_equal_settings_mismatch",
+    "DeutschErrata.Teleportation.equation35PrintedEffectAtPiOverTwo",
+    "DeutschErrata.Teleportation.equation35PrintedEffectAtPiOverTwo_op",
+    "DeutschErrata.Teleportation.equation35_endpoint_probabilities_at_pi_div_two",
+    "DeutschErrata.Teleportation.equation37PrintedOperator",
+    "DeutschErrata.Teleportation.equation37_operator_ne_printed_at_pi_div_four",
+    "DeutschErrata.Equation45.boolValue",
+    "DeutschErrata.Equation45.boolValue_false",
+    "DeutschErrata.Equation45.boolValue_true",
+    "DeutschErrata.Equation45.numericOr",
+    "DeutschErrata.Equation45.numericOr_eq_boolValue_or",
+    "DeutschErrata.Equation45.equation45PrintedLeft",
+    "DeutschErrata.Equation45.equation45PrintedRight",
+    "DeutschErrata.Equation45.equation45ComplementaryRight",
+    "DeutschErrata.Equation45.equation45_printed_values_at_one_zero_one",
+    "DeutschErrata.Equation45.equation45_printed_form_fails_at_one_zero_one",
+    "DeutschErrata.Equation45.equation45_complementary_partition",
+    "DeutschErrata.Bell.equation45_derived_real_partition",
+    "DeutschErrata.Bell.equation46_derived_form_contradiction",
+)
+
 ALLOWED_ERRATA_IMPORT_PREFIXES = (
     "Deutsch.",
     "DeutschErrata.",
@@ -75,6 +123,25 @@ def imports(path: Path) -> tuple[str, ...]:
 
 def fail(message: str) -> None:
     raise SystemExit(f"Errata boundary/provenance audit FAILED: {message}")
+
+
+def declared_names(path: Path) -> tuple[str, ...]:
+    return tuple(
+        re.findall(
+            r"(?m)^\s*(?:def|theorem|abbrev|structure)\s+"
+            r"([A-Za-z_][A-Za-z0-9_']*)",
+            path.read_text(encoding="utf-8"),
+        )
+    )
+
+
+def axiom_targets(path: Path) -> tuple[str, ...]:
+    return tuple(
+        re.findall(
+            r"(?m)^\s*#print\s+axioms\s+([A-Za-z_][A-Za-z0-9_'.]*)\s*$",
+            path.read_text(encoding="utf-8"),
+        )
+    )
 
 
 def main() -> None:
@@ -171,6 +238,30 @@ def main() -> None:
             f"expected={EXPECTED_DEFAULT_TARGETS!r}, actual={observed_libraries!r}"
         )
 
+    errata_test_root = ROOT / "DeutschErrataTests.lean"
+    if imports(errata_test_root) != EXPECTED_ERRATA_TEST_ROOT_IMPORTS:
+        fail(
+            "DeutschErrataTests root import mismatch: "
+            f"expected={EXPECTED_ERRATA_TEST_ROOT_IMPORTS!r}, "
+            f"actual={imports(errata_test_root)!r}"
+        )
+    comparison_declarations = declared_names(
+        ROOT / "DeutschErrataTests/Comparisons.lean"
+    )
+    if comparison_declarations != EXPECTED_COMPARISON_DECLARATIONS:
+        fail(
+            "Errata focused-check declaration mismatch: "
+            f"expected={EXPECTED_COMPARISON_DECLARATIONS!r}, "
+            f"actual={comparison_declarations!r}"
+        )
+    observed_audit_targets = axiom_targets(ROOT / "DeutschErrataTests/Audit.lean")
+    if observed_audit_targets != EXPECTED_ERRATA_AUDIT_TARGETS:
+        fail(
+            "Errata axiom-target mismatch: "
+            f"expected={EXPECTED_ERRATA_AUDIT_TARGETS!r}, "
+            f"actual={observed_audit_targets!r}"
+        )
+
     inspected = [
         *errata_files,
         *sorted((ROOT / "DeutschErrataTests").rglob("*.lean")),
@@ -196,6 +287,10 @@ def main() -> None:
     print(f"  Deutsch production reverse imports: {len(reverse_edges)}")
     print(f"  Errata production modules: {len(errata_files)}")
     print(f"  Lake public/test targets: {len(observed_libraries)}")
+    print(
+        "  Focused comparison declarations / axiom targets: "
+        f"{len(comparison_declarations)}/{len(observed_audit_targets)}"
+    )
     print(f"  Canonical file hashes: {len(EXPECTED_FILE_SHA256)}")
     print(f"  Historical Git-object hashes: {len(EXPECTED_GIT_OBJECT_SHA256)}")
     print("  Runtime BQP dependencies: none")

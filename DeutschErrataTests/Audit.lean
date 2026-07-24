@@ -4,7 +4,8 @@ import DeutschErrata
 # Axiom audit for `DeutschErrata`
 
 The commands below cover every public theorem and each source-side definition used
-by a decisive comparison.  Their output is checked in CI for `sorryAx`.
+by a decisive comparison.  Their output is intended for an explicit `sorryAx` and
+axiom-dependency check.
 -/
 
 #print axioms DeutschErrata.Rotation.printedEquation18Y

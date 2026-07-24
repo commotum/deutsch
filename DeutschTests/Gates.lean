@@ -18,7 +18,7 @@ open scoped Matrix
 
 noncomputable section
 
-/-! ## One-qubit branches, phases, and source signs -/
+/-! ## One-qubit branches, phases, and rotation orientation -/
 
 theorem not_swaps_paper_one_to_zero : notGate.mulVec ketOne = ketZero :=
   not_mulVec_ketOne
@@ -43,19 +43,11 @@ theorem paper_sqrt_not_is_not_positive_pi_half_rotation :
   have h00 := congrFun (congrFun hy (0 : QubitIndex)) (0 : QubitIndex)
   norm_num [pauliZ] at h00
 
-theorem equation18_printed_y_sign_fails_at_pi_half :
-    Foundations.heisenberg (rotationX (Real.pi / 2)) pauliY ≠ pauliZ :=
-  rotationX_heisenberg_y_pi_div_two_ne_printed
-
-theorem equation18_printed_z_sign_fails_at_pi_half :
-    Foundations.heisenberg (rotationX (Real.pi / 2)) pauliZ ≠ -pauliY :=
-  rotationX_heisenberg_z_pi_div_two_ne_printed
-
-theorem rotation_y_at_negative_pi_half_has_correct_sign :
+theorem rotation_y_at_negative_pi_half_maps_to_positive_z :
     Foundations.heisenberg (rotationX (-Real.pi / 2)) pauliY = pauliZ :=
   rotationX_heisenberg_y_neg_pi_div_two
 
-theorem rotation_z_at_negative_pi_half_has_correct_sign :
+theorem rotation_z_at_negative_pi_half_maps_to_negative_y :
     Foundations.heisenberg (rotationX (-Real.pi / 2)) pauliZ = -pauliY :=
   rotationX_heisenberg_z_neg_pi_div_two
 

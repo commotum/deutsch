@@ -99,7 +99,7 @@ theorem pairKet_eq :
       bellInverseAt_apply, hadamard, invSqrtTwo, targetControlPlacement,
       flipRaw]
 
-/-- The printed Equation (22) differs from the exact library ket only by global phase `-i`. -/
+/-- The Equation (22) ket differs from the exact library ket only by global phase `-i`. -/
 theorem equation22Ket_eq_globalPhase :
     equation22Ket = (-Complex.I) • pairKet := by
   rw [pairKet_eq]

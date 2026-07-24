@@ -6,7 +6,7 @@ import Mathlib.Tactic.Ring
 /-!
 # Three-setting quantum predictions
 
-This module isolates the quantum input to the finite Bell argument.  It uses the corrected EPR
+This module isolates the quantum input to the finite Bell argument.  It uses the EPR
 probability theorem and makes no hidden-variable assumptions.
 
 The project's computational-basis indices reverse the paper labels on each wire: raw `0` is
@@ -35,12 +35,12 @@ theorem paperBits_equal_iff_rawBits_equal (left right : QubitIndex) :
     paperBitOfRaw left = paperBitOfRaw right ↔ left = right := by
   fin_cases left <;> fin_cases right <;> simp
 
-/-- The probability that the two EPR outcomes agree, defined as the complement of the corrected
+/-- The probability that the two EPR outcomes agree, defined as the complement of the
 different-outcome probability. -/
 def sameOutcomeProbability (theta phi : ℝ) : ℝ :=
   1 - bornProbability (pairDensity theta phi) differentEffect
 
-/-- The corrected quantum same-outcome prediction is `cos²((theta-phi)/2)`. -/
+/-- The quantum same-outcome prediction is `cos²((theta-phi)/2)`. -/
 theorem sameOutcomeProbability_eq_cos_sq (theta phi : ℝ) :
     sameOutcomeProbability theta phi =
       Real.cos ((theta - phi) / 2) ^ 2 := by

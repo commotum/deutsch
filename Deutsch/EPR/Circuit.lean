@@ -5,9 +5,8 @@ import Deutsch.Locality.Heisenberg
 # The named four-qubit EPR circuit
 
 This module fixes the four wire names and the Schrödinger chronology of Figure 2.  Descriptor
-identities are stated in the project's Heisenberg convention.  In particular, the sine signs in
-the time-two formulas follow the corrected `rotationX` identities proved in the gate layer rather
-than the inconsistent signs printed in Equations (18) and (25).
+identities are stated in the project's Heisenberg convention.  The time-two sine terms follow
+directly from the `rotationX` identities proved in the gate layer.
 -/
 
 namespace Deutsch
@@ -244,7 +243,7 @@ theorem equation24_q4 (theta phi : Real) :
       (by decide) (timeTwoUnitary_unitary theta phi)
       (timeTwoUnitary_isSupportedOn theta phi) (zAt_isSupportedOn q4)
 
-/-! ## Corrected Equation (25) -/
+/-! ## Equation (25) -/
 
 private theorem q3Rotation_fixes_q2 (phi : Real) (A : QubitMatrix) :
     heisenberg (rotationXAt q3 phi) (embedQubit q2 A) = embedQubit q2 A := by
@@ -628,7 +627,7 @@ theorem timeThree_q4_z (theta phi : Real) :
     recordingLayer_heisenberg_q4_z, heisenberg_neg,
     heisenberg_mul_of_unitary _ _ _ (timeTwoUnitary_unitary theta phi)]
 
-/-- Equation (27), left record, factored through the corrected time-two descriptors. -/
+/-- Equation (27), left record, factored through the time-two descriptors. -/
 theorem equation27_q1 (theta phi : Real) :
     timeThreeDescriptors theta phi q1 =
       { x := (timeTwoDescriptors theta phi q1).x
@@ -667,7 +666,7 @@ theorem equation27_q3 (theta phi : Real) :
   · exact timeThree_q3_y theta phi
   · exact timeThree_q3_z theta phi
 
-/-- Equation (27), right record, factored through the corrected time-two descriptors. -/
+/-- Equation (27), right record, factored through the time-two descriptors. -/
 theorem equation27_q4 (theta phi : Real) :
     timeThreeDescriptors theta phi q4 =
       { x := (timeTwoDescriptors theta phi q4).x
