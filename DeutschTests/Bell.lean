@@ -15,6 +15,36 @@ open scoped BigOperators
 
 noncomputable section
 
+/-! ## Genuinely stochastic response witness -/
+
+/-- A Boolean response that assigns equal positive probability to both outcomes. -/
+def fairResponseKernel : BoolResponseKernel where
+  probability _ := (1 / 2 : ℝ)
+  nonnegative := by
+    intro
+    norm_num
+  normalized := by
+    norm_num
+
+/--
+A one-point hidden space with independent fair responses at every local setting.  The hidden
+variable is deterministic, but neither party's response kernel is.
+-/
+def fairStochasticModel : StochasticLocalModel Unit where
+  hiddenWeight _ := 1
+  hiddenWeight_nonnegative := by
+    intro
+    norm_num
+  hiddenWeight_normalized := by
+    norm_num
+  aliceKernel _ _ := fairResponseKernel
+  bobKernel _ _ := fairResponseKernel
+
+theorem fair_response_kernel_is_genuinely_nondeterministic :
+    fairResponseKernel.probability false = (1 / 2 : ℝ) ∧
+      fairResponseKernel.probability true = (1 / 2 : ℝ) := by
+  norm_num [fairResponseKernel]
+
 /-! ## Direct finite-moment route -/
 
 theorem direct_equation42_mean_square
