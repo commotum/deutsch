@@ -259,6 +259,13 @@ theorem coherentProtocolChannel_preserves_all_effects
   rw [coherentProtocolChannel_mapDensity]
   exact congrArg Complex.re (bornWeight_reindexMessage rho effect)
 
+/-- Equivalent prediction form, quantified directly over every physical receiver effect. -/
+theorem coherentProtocolChannel_agrees_on_every_receiver_effect
+    (rho : Density ProtocolMessage) (effect : Effect ReceiverQubit) :
+    bornProbability (coherentProtocolChannel.mapDensity rho) effect =
+      bornProbability (reindexMessageDensity rho) effect := by
+  rw [coherentProtocolChannel_mapDensity]
+
 /--
 The literal five-wire circuit channel and the semantic decoder-after-encoder construction agree
 on every operator, after the canonical output reindexing.

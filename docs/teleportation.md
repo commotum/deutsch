@@ -4,6 +4,7 @@ The teleportation layer is split into the [five-wire circuit](../Deutsch/Telepor
 the explicit [three-qubit correction](../Deutsch/Teleportation/Correction.lean), the
 [Heisenberg descriptors](../Deutsch/Teleportation/Descriptors.lean), the
 [arbitrary-input correctness proof](../Deutsch/Teleportation/Correctness.lean), the
+[literal circuit channel](../Deutsch/Teleportation/ChannelBridge.lean), the
 [operational encoder and decoder](../Deutsch/Teleportation/Protocol.lean), and the
 [one-parameter source statistics](../Deutsch/Teleportation/Statistics.lean). Focused regression
 theorems live in [`DeutschTests.Teleportation`](../DeutschTests/Teleportation.lean).
@@ -109,9 +110,42 @@ not merely the three Pauli moments displayed by the source, has the input-state 
 
 The coherent factorization is proved for every pair of complex amplitudes; normalization is
 needed only when packaging those amplitudes as `PureState` and `Density`. No external reference
-system is included in this five-wire theorem. The separate semantic channel theorem below is an
-identity on every one-qubit operator and density, but the five-wire API does not claim a compiled
-`identity ⊗ id_reference` theorem for an arbitrary entangled reference.
+system is included in this five-wire theorem.
+
+## Channel induced by the literal coherent circuit
+
+`coherentProtocolKraus junk` is not an abstract decoder chosen to have the desired action. Each
+of its entries is a literal matrix entry of `coherentProtocol`, with the message basis state on
+`q1`, four paper-zero input ancillas, a receiver basis state on `q5`, and `junk` fixing the four
+discarded output wires. `coherentProtocolKraus_eq` derives every such slice from
+`coherentProtocol_factorizes`; `fixedJunkKet_probability_normalized` supplies the Kraus
+completeness equation.
+
+The resulting `coherentProtocolChannel` acts on every input operator, not only on pure states or
+three Bloch moments:
+
+```text
+coherentProtocolChannel.mapOperator A = reindexMessageOperator A.
+```
+
+`messageReceiverBasisEquiv` is the displayed relabelling from the semantic message qubit to the
+physical singleton receiver. `coherentProtocolChannel_mapDensity` gives the corresponding result
+for every density. `coherentProtocolChannel_preserves_all_effects` proves every reindexed input
+effect probability is unchanged, while
+`coherentProtocolChannel_agrees_on_every_receiver_effect` quantifies directly over every physical
+receiver effect.
+
+The discard operation is also exposed directly. `coherentProtocolFiveWireOutputOperator A` is
+the initialized five-wire operator evolved by the literal coherent circuit, written as an exact
+finite matrix sum. `coherentProtocolChannel_mapOperator_eq_receiverPartialTrace` proves that
+tracing its first four output wires gives exactly the Kraus-channel action above. Thus the
+operator identity is connected to initialization, literal evolution, and receiver reduction
+rather than merely inferred from selected input tests.
+
+No theorem in this module tensors the construction with an arbitrary external reference system.
+In particular, the library does not advertise a compiled
+`coherentProtocolChannel ⊗ identity_reference` statement for an input entangled with such a
+reference.
 
 ## Operational encoder, decoder, and information boundaries
 
@@ -144,10 +178,16 @@ route, and `protocolPreparation_provenanceNonconstant` proves that its input met
 Neither theorem infers a route or history from the final density operator.
 
 This semantic encoder is a separately constructed, uniformly weighted branch model used to state
-channel properties cleanly. Its branch corrections are tied to the explicit Equation (33) gate,
-but no theorem here identifies the whole encoder with the coherent five-wire pre-correction
-circuit followed by a dephasing/discard operation. The five-wire source circuit remains a
-coherent unitary model. Without an explicit bridge through a measurement/dephasing environment,
+channel properties cleanly. Its branch corrections are tied to the explicit Equation (33) gate.
+The pointwise theorems
+`coherentProtocolChannel_eq_protocolDecoder_encoder_mapOperator` and
+`coherentProtocolChannel_eq_protocolDecoder_encoder_mapDensity` now identify its
+decoder-after-encoder action with the reindexed literal coherent-circuit channel on every
+operator and density.
+
+This is not an identification of the semantic encoder alone with the five-wire pre-correction
+state, nor a measurement or dephasing construction. The five-wire source circuit remains a
+coherent unitary model; without an explicit bridge through a measurement/dephasing environment,
 the coherent record wires are not called measured or classical.
 
 ## Equations (35)--(36) and final verification
@@ -184,9 +224,9 @@ operator equality and a fixed-reference expectation.
 
 ## Exact scope and exclusions
 
-The layer establishes exact finite matrices, coherent state transfer, receiver reduction,
-all-effect equality, an explicit correction realization, and exact operational recovery in a
-finite channel model. It does not yet establish:
+The layer establishes exact finite matrices, coherent state transfer, a literal circuit-derived
+channel, receiver reduction, all-operator/density/effect equality, an explicit correction
+realization, and exact operational recovery in a finite channel model. It does not establish:
 
 - a measurement instrument, conditioned post-measurement state, collapse rule, or classical
   communication event;

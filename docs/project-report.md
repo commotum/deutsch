@@ -27,9 +27,9 @@ downstream development wants fewer dependencies:
 | `Deutsch.Locality` | Disjoint-support commutation and exact Heisenberg invariance |
 | `Deutsch.Descriptor` | Valid descriptor families, evolution, generation, Pauli-word reconstruction |
 | `Deutsch.Gates` | NOT, square-root NOT, arbitrary-axis rotations, Hadamard, CNOT, Bell and inverse Bell |
-| `Deutsch.Information` | Densities, effects, POVMs, reduction, Kraus channels, dependence and recovery |
-| `Deutsch.EPR` | Pair and four-wire circuit descriptors, densities, statistics, and provenance |
-| `Deutsch.Teleportation` | Coherent circuit, conditional correction, correctness, protocol, and statistics |
+| `Deutsch.Information` | Densities, effects, POVMs, reduction, purification, channels, dependence and recovery |
+| `Deutsch.EPR` | Pair and four-wire circuits, product structure, statistics, and provenance |
+| `Deutsch.Teleportation` | Coherent circuit, literal induced channel, correction, protocol, and statistics |
 | `Deutsch.Decoherence` | Named dephasing consequences, record errors, EPR stability, correlation boundary |
 | `Deutsch.Bell` | All-setting moments, finite assignment inequality, stochastic refinement, quantum bridge, and contradictions |
 | `Deutsch.Paper` | Canonical `equation01`–`equation46` façade over the topical APIs |
@@ -61,18 +61,26 @@ the representation and theorem boundaries in more detail:
   axis observable into an arbitrary current Heisenberg frame.
 - Density states, effects, finite POVMs, Born bounds and normalization, partial trace, finite
   Kraus channels, channel/effect duality, and selected-subsystem no-signalling are constructive
-  public APIs. Local statistics, joint detectability, recovery, descriptor dependence, and
-  supplied provenance are separate definitions.
+  public APIs. Every finite density also has an explicit positive-square-root purification on two
+  labelled copies, exact reduction to the original density, enlarged-register unitary preparation,
+  and fixed-reference Heisenberg predictions for every embedded original-system observable. Local
+  statistics, joint detectability, recovery, descriptor dependence, and supplied provenance are
+  separate definitions.
 - The EPR layer proves the named four-wire circuit, phase-aware state identities, descriptor
   evolution, maximally mixed singleton reductions, all-effect local independence, exact joint
   probabilities, joint detectability, and equal-final-state/distinct-history examples. Structural
   circuit-to-pair bridges connect the record and final comparison effects to the pair-density
-  calculation before the trigonometric evaluation.
+  calculation before the trigonometric evaluation. An explicit two-coordinate product predicate
+  and nonzero amplitude minor prove that the actual circuit pure state is entangled, and its
+  density is non-product, at every pair of local rotation settings.
 - The teleportation layer proves the five-wire coherent chronology, all conditional-correction
   branches, arbitrary-pure-input factorization, receiver-density equality, and the numbered
-  observable calculations. A separate uniform-branch encoder/decoder recovers every one-qubit
-  density and exposes local inaccessibility, joint detection, necessity examples for the named
-  correction operations, and supplied transport metadata.
+  observable calculations. Literal matrix slices of the coherent circuit form a Kraus channel
+  whose action is the reindexed identity on every one-qubit operator and density; direct receiver
+  partial trace and every-effect theorems connect that action to the initialized five-wire
+  evolution. It agrees pointwise with the uniform-branch decoder-after-encoder, which also exposes
+  local inaccessibility, joint detection, necessity examples for the named correction operations,
+  and supplied transport metadata.
 - Named coordinate dephasing has exact entry action, fixed points, idempotence, basis-state
   stability, complementary-basis disturbance, and a paper-zero CNOT environment realization.
   Record dephasing fixes the semantic teleportation encoder and preserves recovery, while a record
@@ -105,12 +113,14 @@ The implementation makes several distinctions explicit:
   arbitrary-axis exponential theorem.
 - The conventional Hadamard Bell preparation and source-shaped ket are related by an explicit
   global phase; prediction invariance is proved separately.
-- A same-register unitary cannot move an arbitrary mixed density to a fixed pure reference because
-  unitary conjugation preserves rank and spectrum. Density Schrödinger/Heisenberg duality is the
-  general finite substitute.
+- A same-register unitary cannot move the maximally mixed qubit to a fixed pure reference:
+  `purity_evolve` proves the invariant used by the compiled obstruction. The purification theorem
+  instead uses a doubled register, prepares a pure state there, and obtains the mixed density only
+  by discarding the copy.
 - The three named `Z` moments alone do not establish entanglement: an explicit mixture of product
   basis densities has the same moments and nonfactorizing correlation while differing from the
-  Bell density.
+  Bell density. The actual EPR entanglement theorem instead evaluates a nonzero minor of the exact
+  circuit ket and rejects a product factorization directly.
 
 The library also keeps apart:
 
@@ -132,10 +142,11 @@ These distinctions appear in theorem statements and hypotheses, not only in pros
   bounds, and supported Hamiltonian or channel hypotheses.
 - Outcome-conditioned instruments and posterior-state rules require an additional instrument API;
   the present dephasing channels are nonselective.
-- The coherent teleportation circuit is proved for arbitrary pure input, but no packaged theorem
-  yet treats a circuit input entangled with an arbitrary reference. The separate semantic channel
-  is the identity on every one-qubit density, and no theorem equates it with dephasing and
-  reduction of the five-wire circuit.
+- The coherent teleportation circuit induces the reindexed identity channel on every one-qubit
+  operator and density, but no packaged theorem tensors that construction with an arbitrary
+  external reference. The compiled receiver discard is a coherent partial trace; no theorem
+  equates the semantic encoder alone with a measurement/dephasing realization of the five-wire
+  pre-correction circuit.
 - The stochastic Bell theorem is finite: it covers a finite hidden type, the three named
   measurement settings, Boolean outcomes, normalized real-valued response kernels, a
   setting-independent hidden distribution, and factorization conditioned on the hidden value. It

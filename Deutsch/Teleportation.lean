@@ -10,5 +10,6 @@ import Deutsch.Teleportation.Statistics
 # Coherent teleportation
 
 Public root for the five-wire teleportation circuit, its exact Heisenberg descriptors,
-exact arbitrary-input state transfer, semantic recovery channel, and receiver statistics.
+exact arbitrary-input state transfer, literal and semantic identity channels, and receiver
+statistics.
 -/

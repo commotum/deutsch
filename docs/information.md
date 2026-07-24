@@ -3,6 +3,7 @@
 The public information layer is [`Deutsch.Information`](../Deutsch/Information.lean), split into
 [density states, effects, and POVMs](../Deutsch/Information/State.lean),
 [selected-subsystem reduction](../Deutsch/Information/Reduction.lean),
+[explicit finite-register purification](../Deutsch/Information/Purification.lean),
 [finite Kraus channels](../Deutsch/Information/Channel.lean),
 [channels on selected subsystems](../Deutsch/Information/LocalChannel.lean),
 [semantic dependence predicates](../Deutsch/Information/Dependence.lean),
@@ -43,7 +44,7 @@ Testing statistical equivalence against the two density operators then proves
 Schrödinger evolution is `rho.evolve U hU`; `densityExpectation_evolve` proves its exact duality
 with the project convention `U† A U`.
 
-## The mixed-state fixed-reference boundary
+## Explicit purification and the same-register boundary
 
 The pure fixed-reference theorem remains valid: every normalized finite-register ket has a
 unitary preparation from the paper-zero reference ket. It does not extend to arbitrary mixed
@@ -52,9 +53,31 @@ states by a same-register unitary. `purity_evolve` proves unitary invariance of
 counterexample: the maximally mixed qubit has purity `1/2`, and every computational-basis reference
 density has purity `1`.
 
-The valid density-level replacement is the trace-form evolution theorem
-`densityExpectation_evolve`. Purification or an enlarged environment may support other
-fixed-reference formulations, but this layer neither assumes nor formalizes one.
+The enlarged-register result is constructive. For any finite qubit-label type `Q`,
+`PurificationRegister Q = Sum Q Q` supplies labelled original and copy registers.
+`purificationKet rho` vectorizes the positive square root `CFC.sqrt rho.op`; its normalization
+follows from
+
+```text
+trace (sqrt(rho) * sqrt(rho)) = trace rho = 1.
+```
+
+`purification_reduce_original` then proves directly from the partial-trace sum that discarding the
+copy returns `rho` on the selected original subsystem. `purificationReducedDensity_eq` transports
+those labels back to `Q` and states the exact equality `purificationReducedDensity rho = rho`.
+No existential “assume a purification” premise is used.
+
+The operational bridges retain their quantifiers. `purification_embedded_expectation` proves that
+every operator `A : Operator Q` has the same expectation in `rho` as `A` embedded on the original
+copy has in the explicit pure state. `exists_unitary_preparation_purification` prepares that
+enlarged pure state from the enlarged paper-zero reference, and
+`exists_purification_fixed_reference_representation` packages one such unitary together with the
+fixed-reference Heisenberg prediction equality for every embedded `A`.
+
+This does not contradict the same-register obstruction: the preparation unitary acts on
+`PurificationRegister Q`, and the mixed state appears only after the second copy is discarded.
+For evolution that stays on `Q`, the general density-level statement remains
+`densityExpectation_evolve`.
 
 ## Selected-subsystem reduction and tomography
 
@@ -158,10 +181,11 @@ spatial information location from the symmetric final state.
 
 ## Scope
 
-This layer establishes finite density/effect/POVM semantics, selected-subsystem statistics,
-one-qubit tomography, typed finite channels, selected-subsystem no-signalling, and carefully
-separated information predicates. It does not define measurement instruments, post-measurement
-conditioning, entropy or capacities, perfect discrimination, continuum dynamics, generic
-decoherence, or provenance as an intrinsic property of a final density operator. Concrete EPR,
-teleportation, decoherence, and Bell claims are implemented in their separate public layers so
-their additional circuit, channel, and counterfactual assumptions remain visible.
+This layer establishes finite density/effect/POVM semantics, explicit doubled-register
+purification, selected-subsystem statistics, one-qubit tomography, typed finite channels,
+selected-subsystem no-signalling, and carefully separated information predicates. It does not
+define measurement instruments, post-measurement conditioning, entropy or capacities, perfect
+discrimination, continuum dynamics, generic decoherence, or provenance as an intrinsic property
+of a final density operator. Concrete EPR, teleportation, decoherence, and Bell claims are
+implemented in their separate public layers so their additional circuit, channel, and
+counterfactual assumptions remain visible.

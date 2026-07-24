@@ -204,6 +204,12 @@ theorem literal_channel_preserves_every_effect_probability
       bornProbability rho effect :=
   coherentProtocolChannel_preserves_all_effects rho effect
 
+theorem literal_channel_agrees_on_every_physical_receiver_effect
+    (rho : Density ProtocolMessage) (effect : Effect ReceiverQubit) :
+    bornProbability (coherentProtocolChannel.mapDensity rho) effect =
+      bornProbability (reindexMessageDensity rho) effect :=
+  coherentProtocolChannel_agrees_on_every_receiver_effect rho effect
+
 theorem literal_and_semantic_channels_agree_on_every_operator
     (A : Operator ProtocolMessage) :
     coherentProtocolChannel.mapOperator A =

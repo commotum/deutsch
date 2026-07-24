@@ -252,6 +252,37 @@ this file and rejects `sorryAx` and project-defined axioms in the generated depe
 #print axioms Deutsch.Information.Effect.embedAlong_op
 #print axioms Deutsch.Information.referenceDensity_expectation_embedAlong
 
+-- Explicit doubled-register purification and enlarged fixed-reference predictions.
+#print axioms Deutsch.Information.Density.reindex
+#print axioms Deutsch.Information.Density.reindex_op
+#print axioms Deutsch.Information.Density.reindex_symm_reindex
+#print axioms Deutsch.Information.densityExpectation_reindex
+#print axioms Deutsch.Information.PurificationRegister
+#print axioms Deutsch.Information.purificationOriginalPlacement
+#print axioms Deutsch.Information.purificationCopyPlacement
+#print axioms Deutsch.Information.purificationOriginalQubits
+#print axioms Deutsch.Information.purificationBasisEquiv
+#print axioms Deutsch.Information.purificationCopy_not_mem_originalQubits
+#print axioms Deutsch.Information.purificationCopyComplementEquiv
+#print axioms Deutsch.Information.purificationCopyBasisEquiv
+#print axioms Deutsch.Information.purificationOriginalDensity
+#print axioms Deutsch.Information.purificationOriginalDensity_op
+#print axioms Deutsch.Information.densitySquareRoot
+#print axioms Deutsch.Information.densitySquareRoot_posSemidef
+#print axioms Deutsch.Information.densitySquareRoot_isHermitian
+#print axioms Deutsch.Information.densitySquareRoot_mul_self
+#print axioms Deutsch.Information.purificationCoordinates
+#print axioms Deutsch.Information.purificationCoordinates_dot_star
+#print axioms Deutsch.Information.purificationKet
+#print axioms Deutsch.Information.purificationKet_norm
+#print axioms Deutsch.Information.purificationPureState
+#print axioms Deutsch.Information.purification_reduce_original
+#print axioms Deutsch.Information.purificationReducedDensity
+#print axioms Deutsch.Information.purificationReducedDensity_eq
+#print axioms Deutsch.Information.purification_embedded_expectation
+#print axioms Deutsch.Information.exists_unitary_preparation_purification
+#print axioms Deutsch.Information.exists_purification_fixed_reference_representation
+
 -- Finite Kraus channels, dual effects, and composition.
 #print axioms Deutsch.Information.KrausChannel.mapOperator_add
 #print axioms Deutsch.Information.KrausChannel.mapOperator_smul
@@ -363,6 +394,23 @@ this file and rejects `sorryAx` and project-defined axioms in the generated depe
 #print axioms Deutsch.EPR.pairDensity_equal_settings_zz_expectation
 #print axioms Deutsch.EPR.pairDensity_zero_resource_correlation
 
+-- Explicit product split and all-setting non-product/entanglement results.
+#print axioms Deutsch.EPR.oneQubitBits
+#print axioms Deutsch.EPR.IsProductKet
+#print axioms Deutsch.EPR.IsEntangledPureState
+#print axioms Deutsch.EPR.twoQubitProductOperator
+#print axioms Deutsch.EPR.IsProductOperator
+#print axioms Deutsch.EPR.IsProductDensity
+#print axioms Deutsch.EPR.IsProductDensity.isProductOperator
+#print axioms Deutsch.EPR.IsProductKet.amplitude_minor
+#print axioms Deutsch.EPR.IsProductOperator.row_minor
+#print axioms Deutsch.EPR.IsProductDensity.row_minor
+#print axioms Deutsch.EPR.pairPureState_amplitude_determinant
+#print axioms Deutsch.EPR.pairPureState_not_product
+#print axioms Deutsch.EPR.pairPureState_isEntangled
+#print axioms Deutsch.EPR.pairDensity_not_product
+#print axioms Deutsch.EPR.pairDensity_resource_not_product
+
 -- Literal Figure 2 state evolution, record effects, and pair-statistics bridges.
 #print axioms Deutsch.EPR.timeTwoUnitary_eq_embedAlong_pairCircuit
 #print axioms Deutsch.EPR.timeTwoPureKet_eq_liftPair
@@ -440,6 +488,35 @@ this file and rejects `sorryAx` and project-defined axioms in the generated depe
 #print axioms Deutsch.Teleportation.coherentPreCorrection_exact
 #print axioms Deutsch.Teleportation.coherentProtocol_factorizes
 #print axioms Deutsch.Teleportation.teleportedDensity_reduce_receiver
+
+-- Channel sliced from the literal coherent circuit and its exact receiver action.
+#print axioms Deutsch.Teleportation.messageReceiverBasisEquiv
+#print axioms Deutsch.Teleportation.reindexMessageOperator
+#print axioms Deutsch.Teleportation.coherentProtocolInputBasis
+#print axioms Deutsch.Teleportation.coherentProtocolOutputBasis
+#print axioms Deutsch.Teleportation.coherentProtocolKraus
+#print axioms Deutsch.Teleportation.messageReceiverIsometry
+#print axioms Deutsch.Teleportation.messageReceiverIsometry_conjTranspose
+#print axioms Deutsch.Teleportation.messageReceiverIsometry_conjTranspose_mul
+#print axioms Deutsch.Teleportation.messageReceiverIsometry_mapOperator
+#print axioms Deutsch.Teleportation.coherentProtocolKraus_eq
+#print axioms Deutsch.Teleportation.fixedJunkKet_probability_normalized
+#print axioms Deutsch.Teleportation.coherentProtocolChannel
+#print axioms Deutsch.Teleportation.coherentProtocolChannel_mapOperator
+#print axioms Deutsch.Teleportation.reindexMessageOperator_posSemidef
+#print axioms Deutsch.Teleportation.reindexMessageOperator_trace
+#print axioms Deutsch.Teleportation.reindexMessageDensity
+#print axioms Deutsch.Teleportation.coherentProtocolChannel_mapDensity
+#print axioms Deutsch.Teleportation.reindexMessageEffect
+#print axioms Deutsch.Teleportation.reindexMessageDensity_op
+#print axioms Deutsch.Teleportation.reindexMessageEffect_op
+#print axioms Deutsch.Teleportation.bornWeight_reindexMessage
+#print axioms Deutsch.Teleportation.coherentProtocolChannel_preserves_all_effects
+#print axioms Deutsch.Teleportation.coherentProtocolChannel_agrees_on_every_receiver_effect
+#print axioms Deutsch.Teleportation.coherentProtocolChannel_eq_protocolDecoder_encoder_mapOperator
+#print axioms Deutsch.Teleportation.coherentProtocolChannel_eq_protocolDecoder_encoder_mapDensity
+#print axioms Deutsch.Teleportation.coherentProtocolFiveWireOutputOperator
+#print axioms Deutsch.Teleportation.coherentProtocolChannel_mapOperator_eq_receiverPartialTrace
 
 -- Branch-derived operational encoder/decoder and parameterized receiver statistics.
 #print axioms Deutsch.Teleportation.protocolCorrectionGate_eq_branch_on_basis

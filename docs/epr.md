@@ -3,6 +3,7 @@
 The finite EPR layer is split into the phase-sensitive [two-qubit pair](../Deutsch/EPR/Pair.lean),
 the [named four-qubit circuit](../Deutsch/EPR/Circuit.lean), its
 [two-qubit density/effect statistics](../Deutsch/EPR/Statistics.lean), the
+[product-structure analysis](../Deutsch/EPR/Entanglement.lean), the
 [literal record statistics](../Deutsch/EPR/RecordStatistics.lean), and
 [preparation provenance](../Deutsch/EPR/Provenance.lean). Focused regression theorems are in
 [`DeutschTests.EPR`](../DeutschTests/EPR.lean).
@@ -124,6 +125,34 @@ probability for every two pairs of settings. The concrete effects `paperOneMargi
 the pair-level `1/2` marginal identities used for Equation (40)'s numerical values; they do not
 define a measurement instrument on the later four-wire record state.
 
+## Product structure and pure-state entanglement
+
+The coordinate split is explicit. `IsProductKet` requires the four amplitudes of a ket on
+`Fin 2` to factor into one-qubit left and right amplitudes.
+`twoQubitProductOperator left right` is the corresponding entrywise tensor product, and
+`IsProductDensity rho` requires `rho.op` to equal one such product of two genuine normalized
+one-qubit densities. This last predicate means a single tensor product, not an arbitrary convex
+mixture of products.
+
+For every pair of local rotation settings, `pairPureState_amplitude_determinant` computes the
+two-by-two amplitude determinant of the literal circuit ket:
+
+```text
+psi(00) psi(11) - psi(01) psi(10) = -1/2.
+```
+
+Every product ket has determinant zero, so `pairPureState_not_product theta phi` and
+`pairPureState_isEntangled theta phi` prove that the actual normalized circuit pure state is
+entangled for all `theta` and `phi`.
+
+The density claim is also tied directly to the circuit-produced matrix.
+`IsProductOperator.row_minor` derives a vanishing row minor from any tensor-product operator;
+`pairDensity_not_product theta phi` evaluates suitable entries of `pairDensity theta phi` and
+contradicts that condition. Thus the exact EPR density is not a product of two one-qubit densities
+at any settings, with `pairDensity_resource_not_product` exposing the prepared `theta = phi = 0`
+resource. This proof does not promote the separate three-`Z`-moment correlation check into a
+general entanglement criterion.
+
 ## Equations (28), (40), and (41): pair and literal-record routes
 
 `differentEffect` is the joint effect selecting paper outcomes `(1,0)` and `(0,1)`.
@@ -202,6 +231,7 @@ The EPR layer uses different evidence for different kinds of dependence:
 | Evidence | What it establishes | What it does not establish |
 | --- | --- | --- |
 | `equation25_q2/q3` and `equation27_q1`--`equation27_q4` | exact parameter-dependent descriptor operators | local statistical access or intrinsic location |
+| `pairPureState_isEntangled` | the exact circuit pure state has no product-ket factorization | a general mixed-state separability criterion |
 | `pairDensity_locallyStatisticsIndependent` | independence of every effect statistic on either singleton | independence of joint effects on the pair |
 | `pairSettingFamily_statisticallyDetectable` | a joint effect distinguishes two finite setting choices | which preparation route occurred |
 | `RouteHistory` and the two `Preparation` values | explicitly supplied construction history | recovery of that history from the final density |
@@ -256,8 +286,8 @@ density operator or make history an intrinsic state property.
 ## Exact scope and exclusions
 
 The compiled EPR results concern exact matrices on finite two- and four-qubit registers, exact
-descriptor identities, finite density operators, and finite effects. In particular, this layer
-does not establish:
+descriptor identities, finite density operators and effects, and product structure under the
+displayed two-coordinate split. In particular, this layer does not establish:
 
 - a measurement instrument, collapse, post-measurement conditioning, or repeated-record theorem;
 - an environment interaction, decoherence channel, pointer basis, or robustness under decoherence;
