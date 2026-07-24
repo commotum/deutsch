@@ -2,7 +2,7 @@
 
 ## Status
 
-- In progress.
+- Complete.
 
 ## Current Facts
 
@@ -117,4 +117,68 @@
 
 ## Stage Results
 
-- In progress.
+- Added `Deutsch/Information/Purification.lean` and exported it through
+  `Deutsch.Information`.  For every finite `Density Q`, the module:
+  - vectorizes the positive CFC square root on `Sum Q Q`;
+  - proves the resulting ket has norm one;
+  - proves the standard partial trace over the second copy is the supplied density, first with
+    explicit retained labels and then reindexed literally back to `Q`;
+  - proves equality of expectations for every original-system operator embedded on the first
+    copy; and
+  - obtains an actual unitary on the doubled register whose fixed-reference Heisenberg predictions
+    agree for every embedded operator.
+  The existing maximally mixed same-register purity obstruction remains compiled and is presented
+  beside the enlarged construction.
+- Added `Deutsch/EPR/Entanglement.lean` and exported it through `Deutsch.EPR`.  The module defines
+  explicit product-ket, product-operator, and product-density predicates for the two coordinates
+  of `Fin 2`.  It computes the exact circuit ket's amplitude determinant as `-1/2` for every
+  `theta` and `phi`, proves the normalized ket is entangled at every setting, and directly refutes
+  a tensor product of two genuine one-qubit densities for the actual `pairDensity theta phi`.
+  The density proof uses exact matrix entries and the zero-minor condition forced by a product
+  operator, not the separate three-moment correlation witness.
+- Added `Deutsch/Teleportation/ChannelBridge.lean` and exported it through
+  `Deutsch.Teleportation`.  Each Kraus entry is a literal matrix slice of `coherentProtocol` with
+  `q1` carrying the message, `q2`--`q5` initialized to raw `1` (paper zero), `q1`--`q4` discarded,
+  and `q5` retained.  The compiled results prove:
+  - Kraus completeness from the normalized, input-independent junk state;
+  - the canonical receiver reindex on every operator and density;
+  - preservation of every transported message effect and equality for every physical receiver
+    effect;
+  - equality with the partial trace of an explicitly initialized and coherently evolved
+    five-wire operator; and
+  - pointwise agreement with the independently defined semantic decoder-after-encoder action.
+- No arbitrary-reference tensor-extension theorem was added.  Ordinary all-operator identity
+  action does not by itself satisfy the stage's direct tensor-equality requirement, so
+  `docs/teleportation.md` and `docs/project-report.md` state this limitation explicitly.
+- Added seven focused Information wrappers, five EPR product/entanglement wrappers, eight literal
+  teleportation-channel wrappers, and exact production axiom targets.  The integrity verifier now
+  requires all three module paths and import edges, all focused wrappers, 29 purification
+  declarations, 15 EPR product/entanglement declarations, and 27 channel-bridge declarations.
+- Updated `docs/information.md`, `docs/epr.md`, `docs/teleportation.md`, and
+  `docs/project-report.md`.  No canonical-paper source prose or equation was changed in this stage.
+- Focused verification passed:
+  - `lake build Deutsch.Information.Purification DeutschTests.Information` (3252 jobs);
+  - `lake build Deutsch.EPR.Entanglement DeutschTests.EPR` (2724 jobs); and
+  - `lake build Deutsch.Teleportation.ChannelBridge DeutschTests.Teleportation` (2725 jobs).
+- The stage-boundary command
+  `lake build Deutsch DeutschTests DeutschErrata DeutschErrataTests` passed with 3341 jobs.
+- `python3 goal-1/check_lean_integrity.py` passed over 91 Lean sources and 595 representative axiom
+  reports.  It found no proof hole, project axiom, unsafe/opaque escape, verification import,
+  reverse Errata import, editorial-history production language, superseded name, or compatibility
+  alias.  The only observed dependency axioms were `Classical.choice`, `Quot.sound`, and
+  `propext`.
+- Both `lake env lean DeutschTests/Audit.lean` and
+  `lake env lean DeutschErrataTests/Audit.lean` passed with only the accepted foundations.
+  `python3 goal-2/check_errata_boundary.py`, `python3 goal-1/check_source_audit.py`,
+  `python3 goal-1/check_doc_links.py`, and `git diff --check` also passed.  The documentation audit
+  checked 16 public Markdown files and 129 repository-local links.
+- Two independent read-only cross-reviews found no mathematical or no-cheating defect:
+  - the purification review checked square-root orientation, normalization, subsystem/complement
+    labels, partial trace, reindexing, all-operator expectations, and enlarged unitary scope; and
+  - the teleportation review checked the paper-zero convention, wire ordering, literal matrix
+    provenance, Kraus completeness, every-operator/density/effect statements, receiver partial
+    trace, semantic dependency direction, and the absent arbitrary-reference claim.
+- Stage 9 therefore closes all three required supporting gaps at the strongest scope actually
+  compiled.  The only intentionally unadvertised strengthening is arbitrary-reference
+  teleportation, which is not required for the proved one-qubit identity-channel contract and
+  remains stated as a limitation rather than inferred.

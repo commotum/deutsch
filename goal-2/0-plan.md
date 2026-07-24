@@ -175,6 +175,22 @@ auditable source mapping.
   nondeterministic fair-kernel test verifies normalization and a `1/4` joint event.
 - The Stage 8 four-target build completed 3338 jobs. The strengthened integrity audit scanned 88
   Lean sources and 524 axiom reports with only `Classical.choice`, `Quot.sound`, and `propext`.
+- `Deutsch.Information.Purification` now explicitly vectorizes the positive square root of every
+  finite density on a doubled register, proves normalization and exact reduction, and supplies an
+  enlarged unitary fixed-reference representation for every embedded original-system operator.
+  The same-register maximally mixed purity obstruction remains compiled beside it.
+- `Deutsch.EPR.Entanglement` now proves directly from the exact circuit amplitudes and density
+  entries that `pairPureState theta phi` is entangled and `pairDensity theta phi` is not a tensor
+  product of two one-qubit densities for every pair of settings.
+- `Deutsch.Teleportation.ChannelBridge` constructs Kraus matrices as literal
+  `coherentProtocol` slices, identifies their action with receiver partial trace of the initialized
+  five-wire output, proves the reindexed identity on every operator and density and equality for
+  every effect, and connects that result to the semantic decoder-after-encoder. No
+  arbitrary-reference tensor theorem is claimed.
+- The Stage 9 four-target build completed 3341 jobs. The integrity audit scanned 91 Lean sources
+  and 595 axiom reports with only `Classical.choice`, `Quot.sound`, and `propext`; focused builds,
+  both axiom audits, boundary/source/doc audits, two independent proof cross-reviews, and diff
+  checks also passed.
 
 ## Current Assumptions to Test
 
@@ -519,7 +535,7 @@ stochastic premise.
 
 #### Status
 
-In progress. See `goal-2/9-ANALYSIS.md`.
+Complete with recorded evidence in `goal-2/9-ANALYSIS.md`.
 
 #### Big Picture Objective
 
