@@ -169,6 +169,10 @@ fourWireTimeFour_comparison_probability:
   P(q1 records 1 after comparison) = sin²((theta - phi)/2).
 ```
 
+`fourWireTimeFour_comparison_probability_eq_unequal_pair_sum` first rewrites this probability as
+the sum of the two unequal pair-basis probabilities. This is the structural comparison-CNOT
+step, before any trigonometric simplification.
+
 The `*_eq_pairDensity` theorems first prove that each four-wire probability equals the independently
 defined pair probability; only then are the trigonometric pair formulas reused. This is equality of
 the relevant computational-record statistics, not equality between the record reduced density and

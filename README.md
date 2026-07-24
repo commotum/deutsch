@@ -3,7 +3,7 @@
 This repository contains a finite-dimensional Lean 4 formalization of David Deutsch and Patrick
 Hayden's *Information Flow in Entangled Quantum Systems*. The `Deutsch` library exposes the
 complete numbered presentation through `Deutsch.Paper` and reusable results through topical
-modules. The small `DeutschErrata` library is an independent comparison companion; see the
+modules. The small `DeutschErrata` library is a separate comparison companion; see the
 [errata companion](docs/errata.md).
 
 The public foundations pin Lean/mathlib; fix the bit, tensor, Heisenberg, rotation, CNOT, and Bell
@@ -90,5 +90,3 @@ lake env lean DeutschTests/Examples.lean
 lake env lean DeutschTests/Audit.lean
 lake env lean DeutschErrataTests/Audit.lean
 ```
-
-The staged implementation and verification record is in [`goal-2`](goal-2/0-plan.md).

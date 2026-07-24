@@ -157,6 +157,14 @@ auditable source mapping.
 - The errata boundary/provenance checker verifies the exact import DAG, absence of reverse imports
   and BQP runtime paths, the canonical Markdown/PDF hashes, and both original-transcription Git
   object hashes.
+- The Stage 7 cutover is complete. `Deutsch/Bell/SourceCorrection.lean` and all embedded
+  original-form comparisons are gone from `Deutsch`; all six reusable APIs have neutral names
+  with no compatibility aliases, and the main tests and public documentation use only those
+  names.
+- The strengthened integrity and boundary audits enforce all four Lake roots, one-way imports,
+  exact neutral declarations, absence of editorial-history tokens under `Deutsch` and
+  `DeutschTests`, and the exact E01--E46 registry.  A 3337-job four-target build and both audits
+  pass with only `Classical.choice`, `Quot.sound`, and `propext`.
 
 ## Current Assumptions to Test
 
@@ -434,7 +442,7 @@ errors and that the corrected forms are the natural intended results.
 
 #### Status
 
-In progress. See `goal-2/7-CUTOVER.md`.
+Complete with recorded evidence in `goal-2/7-CUTOVER.md`.
 
 #### Big Picture Objective
 
@@ -465,6 +473,10 @@ architecture real.
 - Production examples compile using only neutral APIs.
 
 ### 8-STOCHASTIC
+
+#### Status
+
+In progress. See `goal-2/8-STOCHASTIC.md`.
 
 #### Big Picture Objective
 

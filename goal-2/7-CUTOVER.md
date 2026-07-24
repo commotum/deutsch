@@ -2,7 +2,7 @@
 
 ## Status
 
-- In progress.
+- Complete.
 
 ## Current Facts
 
@@ -100,4 +100,35 @@
 
 ## Stage Results
 
-- In progress.
+- Removed `Deutsch/Bell/SourceCorrection.lean` and its production-root import.  No file under
+  `Deutsch` or `DeutschTests` imports `DeutschErrata`.
+- Removed all comparison-only gate, EPR, and teleportation declarations from `Deutsch`; the
+  decisive original-form fixtures remain available only through the five-module
+  `DeutschErrata` root.
+- Renamed the six reusable public APIs without compatibility aliases:
+  - `equation35Effect`;
+  - `equation35_effect_op`;
+  - `epr_three_settings_refute_local_assignments`;
+  - `no_local_assignments_reproduce_epr_three_settings`;
+  - `epr_three_settings_refute_normalized_local_model`; and
+  - `no_normalized_local_model_reproduces_epr_three_settings`.
+- Reworked `DeutschTests`, examples, axiom targets, public documentation, and the live source map
+  around the neutral APIs.  Physical `Correction`, `correctionGate`, and branch-correction names
+  remain because they describe the teleportation protocol.
+- Strengthened `goal-1/check_lean_integrity.py` and `goal-2/check_errata_boundary.py` to reject
+  reverse imports, historical production vocabulary, superseded names, and compatibility aliases
+  while checking all four Lake roots.
+- Verification completed successfully:
+  - `lake build Deutsch DeutschTests DeutschErrata DeutschErrataTests` built 3337 jobs;
+  - `python3 goal-1/check_lean_integrity.py` scanned 87 Lean sources, checked the exact
+    46/46/46 paper registry and 503 axiom reports, and observed only `Classical.choice`,
+    `Quot.sound`, and `propext`;
+  - `python3 goal-2/check_errata_boundary.py` found zero reverse imports, zero main-test Errata
+    imports, no production history tokens, no superseded names, and no BQP runtime dependency;
+  - `python3 goal-1/check_source_audit.py` passed all 46 equations, 47 display blocks, source
+    guards, and canonical provenance hashes;
+  - `python3 goal-1/check_doc_links.py` passed all 16 public Markdown files and 126 local links;
+  - focused forbidden-token and superseded-name scans were empty; and
+  - `git diff --check` passed.
+- The exact E01--E46 façade, literal four-wire EPR bridge, arbitrary-axis exponential result, and
+  direct moment-chain Bell route were unchanged by the cutover and rebuilt successfully.

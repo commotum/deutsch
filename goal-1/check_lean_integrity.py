@@ -1690,9 +1690,8 @@ def main() -> None:
     superseded_declarations = [
         f"{path.relative_to(ROOT)}:{name}"
         for path in lean_files
-        for name in sorted(
-            declared_names(path).intersection(SUPERSEDED_DECLARATION_NAMES)
-        )
+        for name in sorted(declared_names(path))
+        if name.rsplit(".", 1)[-1] in SUPERSEDED_DECLARATION_NAMES
     ]
     if superseded_declarations:
         fail(

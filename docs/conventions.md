@@ -2,8 +2,8 @@
 
 This document fixes the conventions used by the Lean development. The executable equalities in
 [`DeutschTests.Foundations.Concrete`](../DeutschTests/Foundations/Concrete.lean) are the authority
-when an informal diagram, a common textbook convention, or intuition disagrees. Stage 2 supplies
-small finite oracles; the public [gate layer](gates.md) turns them into reusable symbolic and
+when an informal diagram, a common textbook convention, or intuition disagrees. These small finite
+oracles are generalized by the public [gate layer](gates.md) into reusable symbolic and
 arbitrary-register theorems.
 
 ## One-qubit matrices and paper-labelled bits
@@ -54,11 +54,11 @@ Because paper bits reverse the raw indices, the corresponding paper-labelled ord
 two-qubit basis ket. `kronecker_mulVec_tensorKet` records the product-vector action used by those
 tests.
 
-The named finite-register basis and its selected-factor embeddings are now public. A `Finset`
+The named finite-register basis and its selected-factor embeddings are public. A `Finset`
 selects a subsystem, while an injection preserves the input register labels when placing a
 multi-qubit operator on nonadjacent ambient coordinates. These maps do not introduce an implicit
 linear flattening order; see [Finite Registers, Embeddings, and Pure States](registers.md).
-Abstract tensor reassociation and its coordinate bridge remain future obligations.
+Abstract tensor reassociation and its coordinate bridge are outside this finite-coordinate API.
 
 ## Products, chronology, and adjoints
 
@@ -116,7 +116,7 @@ CNOT formula without changing projectors would give the wrong result.
 
 ## Rotation sign
 
-The Stage 2 oracle instantiates the Schrödinger convention
+The concrete oracle instantiates the Schrödinger convention
 
 ```text
 Rₓ(π/2) = (I - iX) / √2,
@@ -151,7 +151,7 @@ paperBellTransformInverse = CNOT * (I ⊗ₖ H).
 products, so one accidentally reversed definition cannot pass merely by sharing the same mistake
 with its inverse.
 
-The public gate layer now proves both inverse laws, exact transition amplitudes, pair support,
+The public gate layer proves both inverse laws, exact transition amplitudes, pair support,
 unitarity, and all twelve descriptor transformations in equations (20)–(21).
 
 ## Semantic scope

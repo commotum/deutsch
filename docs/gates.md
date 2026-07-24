@@ -2,6 +2,8 @@
 
 The public gate layer is [`Deutsch.Gates`](../Deutsch/Gates.lean), split into
 [one-qubit gates](../Deutsch/Gates/OneQubit.lean),
+[arbitrary-axis rotations](../Deutsch/Gates/AxisRotation.lean),
+[current-frame axis rotations](../Deutsch/Gates/AxisRotationRegister.lean),
 [named-register CNOT](../Deutsch/Gates/CNOT.lean), and
 [Bell/inverse Bell](../Deutsch/Gates/Bell.lean). Focused positive and negative regressions are in
 [`DeutschTests.Gates`](../DeutschTests/Gates.lean). All gates use the bit, tensor, and Heisenberg

@@ -110,7 +110,7 @@ not merely the three Pauli moments displayed by the source, has the input-state 
 The coherent factorization is proved for every pair of complex amplitudes; normalization is
 needed only when packaging those amplitudes as `PureState` and `Density`. No external reference
 system is included in this five-wire theorem. The separate semantic channel theorem below is an
-identity on every one-qubit operator and density, but this stage does not claim a compiled
+identity on every one-qubit operator and density, but the five-wire API does not claim a compiled
 `identity ⊗ id_reference` theorem for an arbitrary entangled reference.
 
 ## Operational encoder, decoder, and information boundaries
@@ -145,10 +145,10 @@ Neither theorem infers a route or history from the final density operator.
 
 This semantic encoder is a separately constructed, uniformly weighted branch model used to state
 channel properties cleanly. Its branch corrections are tied to the explicit Equation (33) gate,
-but this stage does not prove that the whole encoder equals the coherent five-wire pre-correction
+but no theorem here identifies the whole encoder with the coherent five-wire pre-correction
 circuit followed by a dephasing/discard operation. The five-wire source circuit remains a
-coherent unitary model. An explicit bridge through a measurement/dephasing environment belongs to
-the next layer; without it, the coherent record wires are not called measured or classical.
+coherent unitary model. Without an explicit bridge through a measurement/dephasing environment,
+the coherent record wires are not called measured or classical.
 
 ## Equations (35)--(36) and final verification
 
