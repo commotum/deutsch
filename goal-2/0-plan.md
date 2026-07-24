@@ -568,6 +568,10 @@ paper, without turning interpretation into theorem.
 
 ### 10-AUDIT
 
+#### Status
+
+In progress. See `goal-2/10-AUDIT.md`.
+
 #### Big Picture Objective
 
 Verify the entire cutover from a clean generated state and leave a precise, reproducible public

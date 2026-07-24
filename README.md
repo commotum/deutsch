@@ -19,17 +19,24 @@ The gate layer proves exact one-qubit and arbitrary-axis rotations, their curren
 forms, arbitrary-register NOT/CNOT, Bell/inverse-Bell chronology, basis amplitudes, and the
 corresponding Pauli maps. The information layer supplies finite density states, effects and POVMs,
 partial trace, finite Kraus channels, selected-subsystem no-signalling, one-qubit tomography,
-semantic dependence/recovery predicates, and a classical one-time-pad boundary example.
+semantic dependence/recovery predicates, and a classical one-time-pad boundary example. Every
+finite density also has an explicit positive-square-root purification on a doubled register,
+exact reduction to the original density, and an enlarged-unitary fixed-reference representation
+for every embedded original-system observable; the same-register mixed-state purity obstruction
+remains separate.
 
 The EPR layer implements the four-wire circuit, proves the phase-aware state and descriptor
 identities, establishes maximally mixed singleton marginals, and derives the exact joint and
-comparison probabilities through both pair-density and literal-record routes. It also proves the
-unnumbered non-product resource-correlation witness. The teleportation layer implements the
-five-wire coherent chronology, realizes its physical correction gate, derives the full descriptor
-chain, and proves exact arbitrary-input receiver transfer at ket and reduced-density level. A
-separately scoped uniform-branch model supplies an operational encoder/decoder recovery theorem;
-the stronger identification of that model with the coherent five-wire pre-correction circuit
-remains an explicit API boundary.
+comparison probabilities through both pair-density and literal-record routes. Direct amplitude
+and density-matrix proofs show that the actual circuit resource is entangled and non-product at
+every pair of local rotation settings. The teleportation layer implements the five-wire coherent
+chronology, realizes its physical correction gate, derives the full descriptor chain, and proves
+exact arbitrary-input receiver transfer at ket and reduced-density level. Literal matrix slices
+of the coherent circuit form a channel whose receiver partial trace is the reindexed identity on
+every operator and density and preserves every effect probability; that action agrees pointwise
+with the separately constructed decoder-after-encoder. The semantic encoder alone is not
+identified with a measurement/dephasing realization of the pre-correction circuit, and no
+arbitrary-reference tensor theorem is claimed.
 
 The dephasing layer supplies computational-coordinate Kraus dephasing, a paper-zero CNOT
 environment realization, exact repeated-record stability, a record-bit-error failure,
@@ -42,7 +49,10 @@ proves the finite local-assignment inequality, and refutes every normalized nonn
 distribution over explicit setting-local deterministic response tables that reproduces those
 moments. Its strongest theorem derives positive-support equal-setting agreement from the
 probability-one predictions; zero-weight tables remain unconstrained. Counterfactual Bell
-locality is kept distinct from dynamical support locality and operational no-signalling.
+locality is kept distinct from dynamical support locality and operational no-signalling. A
+separate constructive refinement expands finite factorizable stochastic response kernels into
+complete deterministic response tables while preserving all marginals and joint outcomes, then
+applies the same contradiction under the named finite stochastic assumptions.
 
 See [Global Conventions](docs/conventions.md),
 [Representation Decision](docs/representation.md),
@@ -68,6 +78,7 @@ lake build
 python3 -B goal-1/check_source_audit.py
 python3 -B goal-1/check_lean_integrity.py
 python3 -B goal-1/check_doc_links.py
+python3 -B goal-2/check_errata_boundary.py
 ```
 
 Focused verification modules can be compiled with:
