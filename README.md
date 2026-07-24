@@ -48,10 +48,10 @@ showing that the three displayed `Z` moments alone are not an entanglement witne
 
 The Bell layer derives the all-angle moment laws and the three-setting quantum agreement table,
 proves the finite local-assignment inequality, and refutes every normalized nonnegative
-distribution over explicit setting-local deterministic response tables that reproduces those
-moments. Its strongest theorem derives positive-support equal-setting agreement from the
-probability-one predictions; zero-weight tables remain unconstrained. Counterfactual Bell
-locality is kept distinct from dynamical support locality and operational no-signalling. A
+distribution over explicit setting-local deterministic response tables that reproduces that
+agreement table. The deterministic-table theorem derives positive-support equal-setting agreement
+from the probability-one predictions; zero-weight tables remain unconstrained. Counterfactual
+Bell locality is kept distinct from dynamical support locality and operational no-signalling. A
 separate constructive refinement expands finite factorizable stochastic response kernels into
 complete deterministic response tables while preserving every Alice and Bob one-party outcome
 probability and every selected Alice–Bob joint outcome, then applies the same contradiction under

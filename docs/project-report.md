@@ -24,7 +24,7 @@ downstream development wants fewer dependencies:
 | --- | --- |
 | `Deutsch.Foundations` | Concrete qubit matrices, tensor/bit conventions, Heisenberg conjugation |
 | `Deutsch.Register` | Named finite registers, subsystem embeddings, Pauli operators, pure states |
-| `Deutsch.Locality` | Disjoint-support commutation and exact Heisenberg invariance |
+| `Deutsch.Locality` | Disjoint-support commutation and invariance under supported isometries/unitaries |
 | `Deutsch.Descriptor` | Valid descriptor families, evolution, generation, Pauli-word reconstruction |
 | `Deutsch.Gates` | NOT, square-root NOT, arbitrary-axis rotations, Hadamard, CNOT, Bell and inverse Bell |
 | `Deutsch.Information` | Densities, effects, POVMs, reduction, purification, channels, dependence and recovery |

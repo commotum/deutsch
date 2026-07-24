@@ -16,8 +16,9 @@ The foundations select a hybrid architecture.
 The convention kernel is
 [`Deutsch.Foundations.Concrete`](../Deutsch/Foundations/Concrete.lean). Public finite-register
 matrices, their Hilbert-space bridge, subsystem embeddings, and pure-state predictions are
-described in [Finite Registers, Embeddings, and Pure States](registers.md). Exact commutation and
-Heisenberg invariance for disjoint finite supports are described in
+described in [Finite Registers, Embeddings, and Pure States](registers.md). Exact commutation for
+disjoint finite supports and Heisenberg invariance under a disjointly supported isometry or
+unitary are described in
 [Finite-Support Locality](locality.md). The abstract density and measurement types described below
 remain probes under `DeutschTests.*`; the supported concrete API is documented in
 [Density States, Channels, and Information Dependence](information.md).

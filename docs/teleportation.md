@@ -225,8 +225,9 @@ operator equality and a fixed-reference expectation.
 ## Exact scope and exclusions
 
 The layer establishes exact finite matrices, coherent state transfer, a literal circuit-derived
-channel, receiver reduction, all-operator/density/effect equality, an explicit correction
-realization, and exact operational recovery in a finite channel model. It does not establish:
+channel, receiver reduction, all-operator/density action and all-effect probability equality, an
+explicit correction realization, and exact operational recovery in a finite channel model. It
+does not establish:
 
 - a measurement instrument, conditioned post-measurement state, collapse rule, or classical
   communication event;

@@ -191,6 +191,17 @@ auditable source mapping.
   and 595 axiom reports with only `Classical.choice`, `Quot.sound`, and `propext`; focused builds,
   both axiom audits, boundary/source/doc audits, two independent proof cross-reviews, and diff
   checks also passed.
+- The final audit removed only the `deutsch` package's generated build directory, confirmed the
+  pinned mathlib build and all source artifacts were preserved, and rebuilt all four targets in
+  3341 jobs. The complete post-clean integrity, axiom, source, provenance, boundary, documentation,
+  hygiene, and diff ladder passed with the same 91-source/595-report counts and accepted
+  foundations.
+- Independent final reviews cleared the equation registry and both Bell routes, the canonical
+  source and minimal Errata boundary, and every README/public-document claim. The public wording
+  now states the exact locality hypotheses, distinguishes teleportation operator/density action
+  from effect probabilities and receiver trace, keeps the deterministic agreement and direct
+  moment Bell contracts distinct, and explicitly excludes unproved authorial, ontological,
+  continuum, measurement, and arbitrary-reference claims.
 
 ## Current Assumptions to Test
 
@@ -570,7 +581,7 @@ paper, without turning interpretation into theorem.
 
 #### Status
 
-In progress. See `goal-2/10-AUDIT.md`.
+Complete with recorded evidence in `goal-2/10-AUDIT.md`.
 
 #### Big Picture Objective
 

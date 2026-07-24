@@ -2,7 +2,7 @@
 
 ## Status
 
-- In progress.
+- Complete.
 
 ## Current Facts
 
@@ -93,4 +93,79 @@
 
 ## Stage Results
 
-- In progress.
+- Frozen pre-clean state:
+  - Lean `4.32.0`, compiler commit
+    `8c9756b28d64dab099da31a4c09229a9e6a2ef35`;
+  - Lake `5.0.0-src+8c9756b`;
+  - mathlib `v4.32.0` at
+    `81a5d257c8e410db227a6665ed08f64fea08e997`;
+  - project-generated `.lake/build` present at 189 MB; and
+  - only the in-progress goal ledger files differed in the worktree.
+- `lake clean deutsch` returned successfully.  An immediate check confirmed
+  `project-build-removed` and `mathlib-build-preserved`; Git status and every canonical artifact
+  hash were unchanged.
+- `lake build Deutsch DeutschTests DeutschErrata DeutschErrataTests` then rebuilt the complete
+  package from that state and passed all 3341 jobs.  The rebuilt project output is 188 MB.
+  The clean log includes fresh builds of the arbitrary-axis rotations, explicit purification,
+  all-angle EPR entanglement, literal four-wire statistics, direct and independent Bell routes,
+  stochastic refinement, five-wire teleportation correctness and `ChannelBridge`, all four roots,
+  and both axiom audits.
+- The post-clean verification ladder passed:
+  - `python3 -B goal-1/check_lean_integrity.py`: 91 Lean sources, no forbidden declaration or
+    dependency edge, exact public import/declaration/oracle registries, exact `46/46/46`
+    equation declarations/checks/axiom targets, eight paper no-cheating wrappers, and 595
+    representative axiom reports;
+  - `lake env lean DeutschTests/Audit.lean`: 820 output lines of production/test axiom reports,
+    with no `sorryAx`;
+  - `lake env lean DeutschErrataTests/Audit.lean`: all 26 comparison axiom targets;
+  - `python3 -B goal-2/check_errata_boundary.py`: zero reverse imports, five exact Errata modules,
+    11 focused comparison wrappers, no historical production token, no superseded name, exact
+    canonical/historical hashes, and no BQP runtime dependency;
+  - `python3 -B goal-1/check_source_audit.py`: 46 unique tags, 47 displays, exact E01--E46 source
+    match, three figures, protected Equation (35) prose, corrected Equation (45) signature, and
+    complete claim/item ledgers;
+  - `python3 -B goal-1/check_doc_links.py`: all 16 expected public Markdown files and 129 local
+    links; and
+  - `git diff --check`: pass.
+- The only dependency axioms observed anywhere in the production or Errata inventories were the
+  accepted mathlib foundations `Classical.choice`, `Quot.sound`, and `propext`.
+- Independent explicit `rg` scans found no proof escape, reverse Errata import, editorial-history
+  token in `Deutsch`/`DeutschTests`, BQP runtime path in Lean, or trailing whitespace.
+- Final mathematical/registry review independently confirmed:
+  - the contiguous E01--E46 check and axiom registries;
+  - genuine arbitrary-axis Equation (17) matrix-exponential mathematics;
+  - literal four-wire Equations (28), (40), and (41);
+  - the direct Equation (42)--(46) moment derivation with Equation (43) restricted to
+    positive-weight support;
+  - a separate import-independent assignment/pigeonhole route;
+  - constructive stochastic-to-deterministic refinement; and
+  - absence of conclusion-as-premise or reflexive-definition proof shortcuts.
+- Final source/Errata review independently confirmed that Equation (35)'s prose contains neither
+  “nontrivial” nor “rank-one”; the end note politely isolates one index typo and three root
+  bookkeeping slips; Figure 3 is byte-identical to the BQP verified image; the five-module Errata
+  surface is narrow and decisive; and no reverse import, history leak, duplicated circuit, or
+  runtime BQP dependency exists.
+- Final public-claim review checked the current README and all public guides against theorem
+  signatures.  It prompted narrow wording repairs so that:
+  - locality summaries state the supported isometry/unitary hypothesis;
+  - teleportation separates all-operator/density action, receiver partial trace, and all-effect
+    probability equality;
+  - the deterministic agreement-table route remains distinct from the direct moment route;
+  - stochastic preservation names the one-party and selected Alice--Bob joint outcomes actually
+    proved; and
+  - no strength hierarchy, authorial intent, ontology, measurement/collapse, continuum, or
+    arbitrary-reference teleportation theorem is implied.
+  The reviewer cleared the resulting README and documentation with no unsupported claim.
+- The final canonical artifact SHA-256 values remain:
+  - Markdown:
+    `f18273e9da7109c3be329b17b3942f0fa0b6f064904e7334befbdee66732d032`;
+  - PDF:
+    `d90c9051e2a652c22fb7ccf5a41bede5b1f4aae797cb159d36068ac525f87edb`;
+  - figures 1--3:
+    `8c5070722164b9a804f26ad2931aaa357d382575be0e092c58f11cad1fafcbed`,
+    `5f262a847f99cb25440a76783bac8b16c323a163e229bd9a164e4691e625c4e2`,
+    and `22a3b7c5e3dc95c61151ceef02338ed4e0573c731fc0d0c33dfe931a2cab87d3`.
+- Stage 10 therefore satisfies every completion requirement.  The result is a clean,
+  historically neutral corrected-mathematics library plus a separate minimal Errata library,
+  rebuilt and audited from a clean project-generated state with its finite scope and remaining
+  limitations explicit.
